@@ -125,7 +125,7 @@ void ProfileManager::duplicateProfile(Profile *p, const QString &name)
         throw std::invalid_argument("ID already exists!");
     }
 
-    utils::copyDirectory(p->profileBaseDir(), ProfilesDir().absoluteFilePath(id), true);
+    utils::copyDirectoryProgress(p->profileBaseDir(), ProfilesDir().absoluteFilePath(id), true);
     createOrLoadProfile(id, name);
 
     // Change the profile's name

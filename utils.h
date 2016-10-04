@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QLayout>
 #include <QWidget>
+#include <QtWidgets>
+#include <QtConcurrent>
 
 namespace utils
 {
@@ -58,6 +60,59 @@ inline QStringList findAllFiles(const QDir & dir)
     return result;
 }
 
+inline void copyDirectoryProgress(const QDir & from, const QDir & to, bool overwrite)
+{
+    qInfo() << from.absolutePath() << " --> " << to.absolutePath();
+
+    QStringList files = findAllFiles(from);
+
+    QProgressDialog dialog;
+    dialog.setLabelText(QString("Copying %1 files...").arg(files.size()));
+
+    QFutureWatcher<void> futureWatcher;
+    QObject::connect(&futureWatcher, SIGNAL(finished()), &dialog, SLOT(reset()));
+    QObject::connect(&dialog, SIGNAL(canceled()), &futureWatcher, SLOT(cancel()));
+    QObject::connect(&futureWatcher, SIGNAL(progressRangeChanged(int,int)), &dialog, SLOT(setRange(int,int)));
+    QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &dialog, SLOT(setValue(int)));
+
+    futureWatcher.setFuture(QtConcurrent::map(files, [&](const QString & src) {
+        QString dst = to.absolutePath() + "/" + src.mid(from.absolutePath().size());
+
+        //QFileInfo srcinfo(src);
+        QFileInfo dstinfo(dst);
+
+        qDebug() << src << " -> " << dst;
+
+        // Delete directories or files that have the same name
+        if(dstinfo.exists())
+        {
+            if(overwrite)
+            {
+                if(dstinfo.isDir())
+                    QDir(dstinfo.absolutePath()).removeRecursively();
+                else
+                    QFile(dstinfo.absolutePath()).remove();
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        QDir parent = dstinfo.absoluteDir();
+
+        if(!parent.exists())
+            parent.mkpath(".");
+
+        QFile::copy(src, dst);
+    }));
+
+    // Display the dialog and start the event loop.
+    dialog.exec();
+
+    futureWatcher.waitForFinished();
+}
+
 inline void copyDirectory(const QDir & from, const QDir & to, bool overwrite)
 {
     qInfo() << from.absolutePath() << " --> " << to.absolutePath();
@@ -95,8 +150,6 @@ inline void copyDirectory(const QDir & from, const QDir & to, bool overwrite)
             parent.mkpath(".");
 
         QFile::copy(src, dst);
-
-
     }
 }
 

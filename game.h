@@ -3,7 +3,7 @@
 
 #include "launcher.h"
 #include <QObject>
-#include <QtConcurrent/QtConcurrent>
+#include <QtConcurrent>
 
 class Game : public QObject
 {
