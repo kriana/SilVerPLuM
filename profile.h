@@ -46,6 +46,10 @@ public:
 
     void setStardewValleyDir(const QDir & dir);
 
+    QVersionNumber StardewValleyVersion();
+
+    void setStardewValleyVersion(const QVersionNumber & version);
+
     bool exists();
 
     void setLauncher(const QString & id);

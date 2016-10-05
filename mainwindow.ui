@@ -21,7 +21,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabPlay">
        <attribute name="title">
@@ -46,6 +46,19 @@
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QPushButton" name="btnApplicationSettings">
+                   <property name="text">
+                    <string>Application settings</string>
+                   </property>
+                   <property name="icon">
+                    <iconset theme="configure"/>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
                   <spacer name="horizontalSpacer_3">
                    <property name="orientation">
@@ -196,7 +209,8 @@
                      <string>Close log</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="window-close"/>
+                     <iconset theme="window-close">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                    </widget>
                   </item>

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "profilemanager.h"
+#include "modmanager.h"
 
 namespace Ui {
 class ModManagerWidget;
@@ -16,16 +17,22 @@ public:
     explicit ModManagerWidget(QWidget *parent = 0);
     ~ModManagerWidget();
 
-    Profile *currentProfile() const;
+    ModManager *currentModManager() const;
 
 public slots:
 
-    void setCurrentProfile(Profile *currentProfile);
+    void setModManager(ModManager *currentMM);
+
+    void reloadModList();
 
 private:
     Ui::ModManagerWidget *ui;
 
-    Profile * m_currentProfile;
+    ModManager * m_currentMM = nullptr;
+
+private slots:
+
+    void search(const QString & searchstring_);
 };
 
 #endif // MODMANAGERWIDGET_H

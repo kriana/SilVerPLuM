@@ -1,13 +1,60 @@
 #include "pipeline.h"
+#include "modification.h"
+#include "modmanager.h"
 
 Pipeline::Pipeline(Modification *mod, const QString &id) : m_mod(mod), m_id(id)
 {
+    connect(mod->getModManager(),
+            SIGNAL(modEnabledDisabled(QString,QString,bool)),
+            this,
+            SLOT(modEnabledDisabled(QString,QString,bool)));
+}
 
+bool Pipeline::unsupported() const
+{
+    return m_unsupported;
+}
+
+void Pipeline::setUnsupported(bool unsupported)
+{
+    m_unsupported = unsupported;
+}
+
+bool Pipeline::search(const QString &searchstring_)
+{
+    QString searchstring = searchstring_.toLower();
+
+    return name().toLower().contains(searchstring) ||
+            description().toLower().contains(searchstring) ||
+            id().toLower().contains(searchstring);
+}
+
+void Pipeline::modEnabledDisabled(const QString &modid, const QString &contentid, bool enabled)
+{
+    if(modid == m_mod->id() && contentid == m_id)
+    {
+        emit contentEnabledDisabled(enabled);
+    }
 }
 
 QString Pipeline::id() const
 {
     return m_id;
+}
+
+bool Pipeline::isEnabled()
+{
+    return m_mod->getModManager()->isEnabled(m_mod->id(), id());
+}
+
+void Pipeline::setEnabled(bool enabled)
+{
+    m_mod->getModManager()->setEnabled(m_mod->id(), id(), enabled);
+}
+
+QDir Pipeline::profileBaseDir()
+{
+    return m_mod->modBasePath().absoluteFilePath(id());
 }
 
 Pipeline::~Pipeline()

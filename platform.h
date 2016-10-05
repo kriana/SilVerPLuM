@@ -7,7 +7,7 @@ public:
     enum Type
     {
         Windows,
-        OSX,
+        Mac,
         Linux
     };
 
@@ -23,11 +23,26 @@ public:
         }
         else if(QSysInfo::kernelType() == "darwin")
         {
-            return OSX;
+            return Mac;
         }
         else
         {
             return Windows;
+        }
+    }
+
+    static QString getPlatformString()
+    {
+        switch(getCurrentPlatform())
+        {
+        case Windows:
+            return "windows";
+        case Linux:
+            return "linux";
+        case Mac:
+            return "mac";
+        default:
+            return "windows";
         }
     }
 

@@ -4,13 +4,19 @@
 #include <QDir>
 #include <QString>
 #include <QMap>
+#include <QList>
+#include <QSet>
 #include <QSettings>
+#include <QObject>
 #include "modification.h"
 
 class Profile;
 
-class ModManager
+class ModManager : public QObject
 {
+
+    Q_OBJECT
+
 public:
     ModManager(Profile * profile);
 
@@ -20,7 +26,9 @@ public:
 
     void initialize();
 
-    Modification * getModification(const QString & mod);
+    QList<Modification*> getModifications();
+
+    Modification * getModification(const QString & id);
 
     Pipeline * getPipeline(const QString & mod, const QString & content);
 
@@ -28,17 +36,53 @@ public:
 
     bool isEnabled(const QString & mod, const QString & content);
 
+    bool priotizeUp(const QString & mod);
+
+    bool priotizeDown(const QString & mod);
+
+    bool dependencySatisfied(const Dependency & dep);
+
+    QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
+
+public slots:
+
+    void issueDependencyCheck();
+
 private:
 
     QSettings * m_config;
 
     Profile * m_profile;
 
-    QMap<QString, Modification *> m_mods;
+    QSet<QString> m_modId;
+
+    QList<Modification*> m_mods;
+
+    QMap<QString, QList<Dependency>> m_unsatisfiedDependencies;
+
+    /**
+     * @brief Priority used for sorting the mod list
+     * @param mod
+     * @return
+     */
+    int getSortPriority(const QString & mod);
+
+    void writePriorities();
 
     void loadMod(const QDir & directory);
 
     void loadMods();
+
+    void sortMods();
+
+signals:
+
+    void modListUpdated();
+
+    void modEnabledDisabled(const QString & modid, const QString & contentid, bool enabled);
+
+    void dependencyCheckFinished();
+
 };
 
 #endif // MODMANAGER_H

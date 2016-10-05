@@ -16,6 +16,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     connect(ui->profileName, SIGNAL(textEdited(QString)), ui->buttonBox, SLOT(show()));
     connect(ui->profileDescription, SIGNAL(textChanged()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvApplicationDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
+    connect(ui->sdvVersion, SIGNAL(currentTextChanged(QString)), ui->buttonBox, SLOT(show()));
 
     // Change some widget settings
     ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
@@ -59,32 +60,38 @@ void ProfileSettings::discart()
     ui->profileDirectory->setEnabled(enabled);
     ui->sdvApplicationDirectory->setEnabled(enabled);
     ui->sdvSavegameDirectory->setEnabled(enabled);
+    ui->sdvVersion->setEnabled(enabled);
+
 
     ui->profileName->setText(enabled ? m_CurrentProfile->name() : "");
     ui->profileDescription->document()->setPlainText(enabled ? m_CurrentProfile->description() : "");
     ui->profileDirectory->setCurrentPath(enabled ? m_CurrentProfile->profileBaseDir().absolutePath() : "");
     ui->sdvApplicationDirectory->setCurrentPath(enabled ? m_CurrentProfile->StardewValleyDir().absolutePath() : "");
     ui->sdvSavegameDirectory->setCurrentPath(m_CurrentProfile->StardewValleySavegameDir().absolutePath());
+    ui->sdvVersion->setCurrentText(m_CurrentProfile->StardewValleyVersion().toString());
 
     // Launchers
 
     utils::clearLayout(ui->launchersLauncherList->layout());
     utils::clearLayout(ui->launchersToolList->layout());
 
-    for(Launcher * l : m_CurrentProfile->getLaunchers())
+    if(m_CurrentProfile != nullptr)
     {
-        QRadioButton * btn = new QRadioButton(ui->launchersLauncherList);
-        btn->setText(l->name() + "\n" + l->description());
-        btn->setProperty("launcher", l->id());
-        btn->setAutoExclusive(true);
-
-        connect(btn, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
-
-        ui->launchersLauncherList->layout()->addWidget(btn);
-
-        if(l == m_CurrentProfile->getLauncher())
+        for(Launcher * l : m_CurrentProfile->getLaunchers())
         {
-            btn->setChecked(true);
+            QRadioButton * btn = new QRadioButton(ui->launchersLauncherList);
+            btn->setText(l->name() + "\n" + l->description());
+            btn->setProperty("launcher", l->id());
+            btn->setAutoExclusive(true);
+
+            connect(btn, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+
+            ui->launchersLauncherList->layout()->addWidget(btn);
+
+            if(l == m_CurrentProfile->getLauncher())
+            {
+                btn->setChecked(true);
+            }
         }
     }
 

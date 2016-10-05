@@ -41,6 +41,8 @@ private slots:
 
     void closeLogClicked();
 
+    void openApplicationSettings();
+
 protected:
 
     void closeEvent(QCloseEvent * event);

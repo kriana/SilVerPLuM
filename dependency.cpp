@@ -1,6 +1,7 @@
 #include "dependency.h"
 #include <QRegExp>
 #include <stdexcept>
+#include "modification.h"
 
 Dependency::Dependency(const QString & dependencystring)
 {
@@ -48,17 +49,46 @@ Dependency::Dependency(const QString &id, Dependency::Operation op, const QVersi
 
 }
 
-QString Dependency::getId()
+QString Dependency::getId() const
 {
     return m_Id;
 }
 
-Dependency::Operation Dependency::getOperation()
+Dependency::Operation Dependency::getOperation() const
 {
     return m_Operation;
 }
 
-QVersionNumber Dependency::getVersion()
+QVersionNumber Dependency::getVersion() const
 {
     return m_Version;
+}
+
+bool Dependency::satisfies(const QString &id, const QVersionNumber &version) const
+{
+    if(id == getId())
+    {
+        switch(getOperation())
+        {
+        case EQUALS:
+            return version == getVersion();
+        case LESS_THAN:
+            return version < getVersion();
+        case MORE_THAN:
+            return version > getVersion();
+        case EQUALS_OR_LESS_THAN:
+            return version <= getVersion();
+        case EQUALS_OR_MORE_THAN:
+            return version >= getVersion();
+        default:
+            return false;
+        }
+    }
+
+    return false;
+}
+
+bool Dependency::satisfies(Modification *mod) const
+{
+    return satisfies(mod->id(), mod->version());
 }

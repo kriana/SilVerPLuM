@@ -12,6 +12,6 @@ VanillaLauncher::VanillaLauncher(Profile * p) : Launcher(p)
     setDescription("Launches the vanilla game. Only allows content replacer mods (XNB).");
     setExecutable(Platform::Windows, LauncherExecutable("StardewValley.exe"));
     setExecutable(Platform::Linux, LauncherExecutable("StardewValley"));
-    setExecutable(Platform::OSX, LauncherExecutable("StardewValley"));
+    setExecutable(Platform::Mac, LauncherExecutable("StardewValley"));
 }
 

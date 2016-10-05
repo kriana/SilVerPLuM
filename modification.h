@@ -6,13 +6,16 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
+#include <QObject>
 #include "dependency.h"
 #include "pipeline.h"
 
 class ModManager;
 
-class Modification
+class Modification : public QObject
 {
+    Q_OBJECT
+
 private:
 
     ModManager * m_modManager;
@@ -31,7 +34,7 @@ public:
 
     ~Modification();
 
-    QString getId()
+    QString id()
     {
         return m_Id;
     }
@@ -45,21 +48,41 @@ public:
     QString description() const;
     void setDescription(const QString &Description);
     void addDependency(Dependency * dep);
+    QList<Dependency *> dependencies();
     void addContent(const QString & id, Pipeline * p);
     Pipeline * getContent(const QString & id);
 
     QDir modBasePath();
     ModManager *getModManager() const;
 
+    QList<Pipeline*> getPipelines();
+
     Pipeline * getPipeline(const QString & id);
 
     QStringList getPipelineIds();
 
     void enableDefaults();
-    QString getAuthor() const;
+
+    void disableAll();
+
+    QString author() const;
     void setAuthor(const QString &Author);
-    QString getUrl() const;
+    QString url() const;
     void setUrl(const QString &Url);
-    QString getLicense() const;
+    QString license() const;
     void setLicense(const QString &License);
+
+    bool isPartiallyEnabled();
+
+    QList<Pipeline*> getEnabledPipelines();
+
+    bool search(const QString & searchstring_);
+
+private slots:
+
+    void modEnabledDisabled(const QString & modid, const QString & contentid, bool enabled);
+
+signals:
+
+    void contentEnabledDisabled(const QString & content, bool enabled);
 };

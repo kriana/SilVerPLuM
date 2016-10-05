@@ -9,9 +9,17 @@
 #include <QWidget>
 #include <QtWidgets>
 #include <QtConcurrent>
+#include <QTextEdit>
 
 namespace utils
 {
+
+inline void moveTextCursorToEnd(QTextEdit * edit)
+{
+    QTextCursor newCursor(edit->document());
+    newCursor.movePosition(QTextCursor::End);
+    edit->setTextCursor(newCursor);
+}
 
 inline void clearLayout(QLayout * layout)
 {
@@ -32,8 +40,10 @@ inline void clearLayout(QLayout * layout)
         {
             delete item->spacerItem();
         }
-
-        delete item;
+        else
+        {
+            delete item;
+        }
     }
 }
 

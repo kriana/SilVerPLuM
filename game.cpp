@@ -4,7 +4,7 @@
 #include "profile.h"
 #include <QTemporaryDir>
 #include <QMessageBox>
-
+#include "globalsettings.h"
 Game * Game::m_pInstance = nullptr;
 
 Game::Game()
@@ -96,7 +96,7 @@ void Game::prepare()
 
     if(savegamebackups.isValid())
     {
-        if(!utils::directoryEmpty(sdvsavegames))
+        if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
         {
             log("Existing savegames will be backed up to " + savegamebackups.path());
             progress(true, 0, 6, 4);
@@ -136,13 +136,18 @@ void Game::post()
     QTemporaryDir savegamebackups;
     progress(true, 0, 5, 2);    
 
-    if(savegamebackups.isValid() && !utils::directoryEmpty(m_Launcher->profile()->profileSavegameDir()))
+    if(savegamebackups.isValid())
     {
-        savegamebackups.setAutoRemove(false);
-        log("Existing savegames will be backed up to " + savegamebackups.path());
-        progress(true, 0, 5, 3);
+        if(GlobalSettings::instance()->getRunningBackupProfileSavegames() &&
+                !utils::directoryEmpty(m_Launcher->profile()->profileSavegameDir()))
+        {
+            savegamebackups.setAutoRemove(false);
+            log("Existing savegames will be backed up to " + savegamebackups.path());
+            progress(true, 0, 5, 3);
 
-        utils::copyDirectory(m_Launcher->profile()->profileSavegameDir(), savegamebackups.path(), true);
+            utils::copyDirectory(m_Launcher->profile()->profileSavegameDir(), savegamebackups.path(), true);
+        }
+
         utils::clearDirectory(m_Launcher->profile()->profileSavegameDir());
     }
     else

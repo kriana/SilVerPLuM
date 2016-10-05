@@ -1,11 +1,17 @@
 #include "modmanagerwidget.h"
 #include "ui_modmanagerwidget.h"
+#include "utils.h"
+#include "modmanager.h"
+#include "modmanagerwidgetitem.h"
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ModManagerWidget)
 {
     ui->setupUi(this);
+
+    connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(search(QString)));
+    connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(reloadModList()));
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -13,12 +19,80 @@ ModManagerWidget::~ModManagerWidget()
     delete ui;
 }
 
-Profile *ModManagerWidget::currentProfile() const
+ModManager *ModManagerWidget::currentModManager() const
 {
-    return m_currentProfile;
+    return m_currentMM;
 }
 
-void ModManagerWidget::setCurrentProfile(Profile *currentProfile)
+void ModManagerWidget::setModManager(ModManager *currentMM)
 {
-    m_currentProfile = currentProfile;
+    if(m_currentMM != nullptr)
+    {
+        disconnect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(reloadModList()));
+        disconnect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(reloadModList()));
+    }
+
+    m_currentMM = currentMM;
+
+    if(m_currentMM != nullptr)
+    {
+        connect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(reloadModList()));
+        connect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(reloadModList()));
+    }
+
+    ui->dependencyWarning->setModManager(currentMM);
+
+    reloadModList();
+
+    ui->searchBar->setText("");
+}
+
+void ModManagerWidget::reloadModList()
+{
+    int scrollh =ui->scrollArea->horizontalScrollBar()->value();
+    int scrollv = ui->scrollArea->verticalScrollBar()->value();
+
+    utils::clearLayout(ui->modList->layout());
+
+
+    QVBoxLayout * layout = dynamic_cast<QVBoxLayout*>(ui->modList->layout());
+
+    if(m_currentMM != nullptr)
+    {
+        for(Modification * mod : m_currentMM->getModifications())
+        {
+            ModManagerWidgetItem * item = new ModManagerWidgetItem(ui->modList);
+            item->setCurrentModification(mod);
+            layout->addWidget(item);
+        }
+    }
+
+    layout->addStretch(1);
+
+
+    search(ui->searchBar->text());
+    ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
+    ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+}
+
+void ModManagerWidget::search(const QString &searchstring_)
+{
+    QString searchstring = searchstring_.trimmed();
+
+    QLayout * layout = ui->modList->layout();
+
+    for(int i = 0; i < layout->count(); ++i)
+    {
+        QLayoutItem * item = layout->itemAt(i);
+
+        if(item->widget() != nullptr)
+        {
+            ModManagerWidgetItem * mitem = dynamic_cast<ModManagerWidgetItem*>(item->widget());
+
+            if(mitem != nullptr)
+            {
+                mitem->search(searchstring);
+            }
+        }
+    }
 }

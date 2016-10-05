@@ -1,4 +1,6 @@
 #include "filepipeline.h"
+#include "platform.h"
+#include <QJsonArray>
 
 void FilePipeline::prime()
 {
@@ -32,6 +34,18 @@ FilePipeline * FilePipeline::loadFromJson(Modification *mod, const QString &id, 
 
         pip->setInstallable(src, dst);
     }
+
+    bool platform_found = false;
+
+    for(QJsonValue supported : json["platforms"].toArray())
+    {
+        if(supported.toString() == Platform::getPlatformString())
+        {
+            platform_found = true;
+        }
+    }
+
+    pip->setUnsupported(!platform_found);
 
     return pip;
 }

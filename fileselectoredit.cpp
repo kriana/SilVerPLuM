@@ -12,6 +12,7 @@ FileSelectorEdit::FileSelectorEdit(QWidget *parent) :
     connect(ui->pathSelect, &QToolButton::clicked, this, &FileSelectorEdit::triggerDialog);
     connect(ui->pathOpen, &QToolButton::clicked, this, &FileSelectorEdit::triggerOpen);
     connect(ui->pathEdit, SIGNAL(textChanged(QString)), this, SIGNAL(changed()));
+    connect(ui->pathEdit, SIGNAL(textChanged(QString)), this, SLOT(checkPath(QString)));
 }
 
 FileSelectorEdit::~FileSelectorEdit()
@@ -39,6 +40,13 @@ void FileSelectorEdit::setReadOnly(bool readonly)
 {
     ui->pathEdit->setReadOnly(readonly);
     ui->pathSelect->setEnabled(!readonly);
+}
+
+void FileSelectorEdit::checkPath(const QString &path)
+{
+    QFileInfo info(path);
+
+    ui->pathNotFound->setVisible(!info.exists());
 }
 
 void FileSelectorEdit::triggerDialog()

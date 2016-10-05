@@ -2,11 +2,15 @@
 
 #include <QString>
 #include <QMap>
+#include <QObject>
+#include <QDir>
 
 class Modification;
 
-class Pipeline
+class Pipeline : public QObject
 {
+    Q_OBJECT
+
 public:
 
     virtual ~Pipeline();
@@ -34,6 +38,18 @@ public:
 
     QString id() const;
 
+    bool isEnabled();
+
+    void setEnabled(bool enabled);
+
+    QDir profileBaseDir();
+
+    bool unsupported() const;
+
+    void setUnsupported(bool unsupported);
+
+    virtual bool search(const QString & searchstring_);
+
 protected:
 
     Pipeline(Modification * mod, const QString & id);
@@ -52,5 +68,15 @@ private:
 
     bool m_default;
 
+    bool m_unsupported;
+
     QMap<QString, QString> m_installables;
+
+private slots:
+
+    void modEnabledDisabled(const QString & modid, const QString & contentid, bool enabled);
+
+signals:
+
+    void contentEnabledDisabled(bool enabled);
 };

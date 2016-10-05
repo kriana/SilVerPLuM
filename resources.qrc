@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/icons/module.svg</file>
+        <file>resources/icons/emblem-warning-16.png</file>
+        <file>resources/icons/emblem-warning.svg</file>
+        <file>resources/icons/mod-100.png</file>
+        <file>resources/icons/mod.svg</file>
+        <file>resources/icons/module-100.png</file>
+    </qresource>
+</RCC>

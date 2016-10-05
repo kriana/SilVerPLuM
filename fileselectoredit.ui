@@ -14,6 +14,28 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="pathNotFound">
+     <property name="pixmap">
+      <pixmap resource="resources.qrc">:/resources/icons/emblem-warning-16.png</pixmap>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLineEdit" name="pathEdit"/>
    </item>
@@ -29,7 +51,8 @@
       <string>Select ...</string>
      </property>
      <property name="icon">
-      <iconset theme="folder"/>
+      <iconset theme="folder">
+       <normaloff>.</normaloff>.</iconset>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -42,7 +65,8 @@
       <string>Open</string>
      </property>
      <property name="icon">
-      <iconset theme="system-run"/>
+      <iconset theme="system-run">
+       <normaloff>.</normaloff>.</iconset>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -51,6 +75,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

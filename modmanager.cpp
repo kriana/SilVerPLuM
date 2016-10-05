@@ -3,15 +3,19 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QDebug>
+#include "globalsettings.h"
 
 ModManager::ModManager(Profile *profile) : m_profile(profile)
 {
     m_config = new QSettings(profile->profileBaseDir().absoluteFilePath("mod-config.ini"), QSettings::IniFormat);
+
+    // Issue dependency check if a profile settings changes
+    connect(profile, SIGNAL(updated()), this, SLOT(issueDependencyCheck()));
 }
 
 ModManager::~ModManager()
 {
-    for(Modification * mod : m_mods.values())
+    for(Modification * mod : m_mods)
     {
         delete mod;
     }
@@ -29,9 +33,20 @@ void ModManager::initialize()
     loadMods();
 }
 
-Modification *ModManager::getModification(const QString &mod)
+QList<Modification *> ModManager::getModifications()
 {
-    return m_mods[mod];
+    return QList<Modification*>(m_mods);
+}
+
+Modification *ModManager::getModification(const QString &id)
+{
+    for(Modification * mod : m_mods)
+    {
+        if(mod->id() == id)
+            return mod;
+    }
+
+    return nullptr;
 }
 
 Pipeline *ModManager::getPipeline(const QString &mod, const QString &content)
@@ -42,17 +57,134 @@ Pipeline *ModManager::getPipeline(const QString &mod, const QString &content)
 
 void ModManager::setEnabled(const QString &mod, const QString &content, bool enabled)
 {
-    m_config->setValue(mod + "/" + content, enabled);
+    Pipeline * p = getPipeline(mod, content);
+
+    // If not supported by platform, skip mod
+    if(p->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
+        return;
+
+    m_config->setValue(mod + "/content/" + content, enabled);
 
     if(enabled)
     {
         getPipeline(mod, content)->prime();
     }
+
+    emit modEnabledDisabled(mod, content, enabled);
+    issueDependencyCheck();
 }
 
 bool ModManager::isEnabled(const QString &mod, const QString &content)
 {
-    return m_config->value(mod + "/" + content, false).toBool();
+    return m_config->value(mod + "/content/" + content, false).toBool();
+}
+
+int ModManager::getSortPriority(const QString &mod)
+{
+    Modification * m = getModification(mod);
+    return m_config->value(mod + "/priority", m_mods.indexOf(m)).toInt();
+}
+
+void ModManager::writePriorities()
+{
+    for(int i = 0; i < m_mods.size(); ++i)
+    {
+        Modification * m = m_mods[i];
+        m_config->setValue(m->id() + "/priority", i);
+    }
+
+    m_config->sync();
+}
+
+bool ModManager::priotizeUp(const QString &mod)
+{
+    Modification * m = getModification(mod);
+    int index = m_mods.indexOf(m);
+
+    if(index > 0)
+    {
+        Modification * t = m_mods[index - 1];
+        m_mods[index - 1] = m_mods[index];
+        m_mods[index] = t;
+
+        writePriorities();
+
+        emit modListUpdated();
+        return true;
+    }
+
+    return false;
+}
+
+bool ModManager::priotizeDown(const QString &mod)
+{
+    Modification * m = getModification(mod);
+    int index = m_mods.indexOf(m);
+
+    if(index < m_mods.size() - 1)
+    {
+        Modification * t = m_mods[index + 1];
+        m_mods[index + 1] = m_mods[index];
+        m_mods[index] = t;
+
+        writePriorities();
+
+        emit modListUpdated();
+        return true;
+    }
+
+    return false;
+}
+
+bool ModManager::dependencySatisfied(const Dependency &dep)
+{
+    // Meta dependencies
+    if(dep.getId() == "stardewvalley")
+    {
+        QVersionNumber sdvv = m_profile->StardewValleyVersion();
+
+        if(sdvv.isNull())
+            return true;
+        else
+            return dep.satisfies("stardewvalley", sdvv);
+    }
+
+    // Mod dependencies
+    for(Modification * mod : m_mods)
+    {
+        if(dep.satisfies(mod))
+            return true;
+    }
+
+    return false;
+}
+
+void ModManager::issueDependencyCheck()
+{
+    m_unsatisfiedDependencies.clear();
+
+    for(Modification * tocheck : m_mods)
+    {
+        QList<Dependency> unsatisfied;
+
+        for(Dependency * dep : tocheck->dependencies())
+        {
+            if(!dependencySatisfied(*dep))
+            {
+                unsatisfied << *dep;
+            }
+        }
+
+        if(!unsatisfied.isEmpty())
+            m_unsatisfiedDependencies[tocheck->id()] = unsatisfied;
+    }
+
+    emit dependencyCheckFinished();
+}
+
+QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const
+{
+    return m_unsatisfiedDependencies;
 }
 
 void ModManager::loadMod(const QDir &directory)
@@ -104,16 +236,19 @@ void ModManager::loadMod(const QDir &directory)
 
     if(mod != nullptr)
     {
-        if(m_mods.contains(mod->getId()))
+        if(m_modId.contains(mod->id()))
         {
-            qWarning() << "Conflicting mod IDs: Will overwrite " << mod->getId();
+            qWarning() << "Conflicting mod IDs: Will overwrite " << mod->id();
+            m_mods.removeAll(getModification(mod->id()));
         }
         else
         {
-            qInfo() << "Mod " << mod->getId() << " loaded in profile " << m_profile->id();
+            qInfo() << "Mod " << mod->id() << " loaded in profile " << m_profile->id();
         }
 
-        m_mods[mod->getId()] = mod;
+        m_mods.append(mod);
+        m_modId.insert(mod->id());
+        emit modListUpdated();
     }
     else
     {
@@ -129,4 +264,16 @@ void ModManager::loadMods()
 
         loadMod(moddir);
     }
+
+    sortMods();
+}
+
+void ModManager::sortMods()
+{
+    std::sort(m_mods.begin(), m_mods.end(), [&](Modification * a, Modification * b) {
+        return getSortPriority(a->id()) < getSortPriority(b->id());
+    });
+    emit modListUpdated();
+
+    issueDependencyCheck();
 }

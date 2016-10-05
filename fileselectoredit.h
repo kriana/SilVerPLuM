@@ -28,6 +28,10 @@ private:
     Ui::FileSelectorEdit *ui;
     QFileDialog *m_fileDialog;
 
+private slots:
+
+    void checkPath(const QString & path);
+
 public slots:
 
     void triggerDialog();

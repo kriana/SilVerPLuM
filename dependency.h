@@ -2,6 +2,8 @@
 #include <QString>
 #include <QVersionNumber>
 
+class Modification;
+
 class Dependency
 {
 public:
@@ -27,9 +29,24 @@ public:
 
     Dependency(const QString & id, Operation op, const QVersionNumber & version);
 
-    QString getId();
+    QString getId() const;
 
-    Operation getOperation();
+    Operation getOperation() const;
 
-    QVersionNumber getVersion();
+    QVersionNumber getVersion() const;
+
+    /**
+     * @brief Determines if parameters satisfy this dependency
+     * @param id
+     * @param version
+     * @return
+     */
+    bool satisfies(const QString & id, const QVersionNumber & version) const;
+
+    /**
+     * @brief Determines if a mod satisfies a dependency
+     * @param mod
+     * @return
+     */
+    bool satisfies(Modification * mod) const;
 };

@@ -1,4 +1,5 @@
 #include "globalsettings.h"
+#include "platform.h"
 
 GlobalSettings * GlobalSettings::m_pInstance = nullptr;
 
@@ -32,4 +33,115 @@ void GlobalSettings::getWindowState(QMainWindow *widget)
 {
     widget->restoreGeometry(m_Settings->value("Window/Geometry").toByteArray());
     widget->restoreState(m_Settings->value("Window/State").toByteArray());
+}
+
+bool GlobalSettings::getDLLRedirectXNA()
+{
+    bool _default = false;
+
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        _default = false;
+        break;
+    case Platform::Linux:
+        _default = true;
+        break;
+    case Platform::Mac:
+        _default = true;
+        break;
+    }
+
+    return m_Settings->value("Mods/RedirectXNAToMonoGame", _default).toBool();
+}
+
+void GlobalSettings::setDLLRedirectXNA(bool enabled)
+{
+    m_Settings->setValue("Mods/RedirectXNAToMonoGame", enabled);
+    m_Settings->sync();
+}
+
+bool GlobalSettings::getForceUnsupported()
+{
+    return m_Settings->value("Mods/ForceUnsupportedMods", false).toBool();
+}
+
+void GlobalSettings::setForceUnsupported(bool enabled)
+{
+    m_Settings->setValue("Mods/ForceUnsupportedMods", enabled);
+    m_Settings->sync();
+}
+
+bool GlobalSettings::getRunningBackupSDVSavegames()
+{
+    return m_Settings->value("Running/BackupSDVSavegames", true).toBool();
+}
+
+void GlobalSettings::setRunningBackupSDVSavegames(bool enabled)
+{
+    m_Settings->setValue("Running/BackupSDVSavegames", enabled);
+    m_Settings->sync();
+}
+
+bool GlobalSettings::getRunningBackupProfileSavegames()
+{
+    return m_Settings->value("Running/BackupProfileSavegames", true).toBool();
+}
+
+void GlobalSettings::setRunningBackupProfileSavegames(bool enabled)
+{
+    m_Settings->setValue("Running/BackupProfileSavegames", enabled);
+    m_Settings->sync();
+}
+
+QString GlobalSettings::getProgramMSBUILD()
+{
+    QString _default = "";
+
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        _default = "msbuild";
+        break;
+    case Platform::Linux:
+        _default = "xbuild";
+        break;
+    case Platform::Mac:
+        _default = "xbuild";
+        break;
+    }
+
+    return m_Settings->value("Programs/MSBUILD", _default).toString();
+}
+
+void GlobalSettings::setProgramMSBUILD(const QString &program)
+{
+    m_Settings->setValue("Programs/MSBUILD", program);
+    m_Settings->sync();
+}
+
+QString GlobalSettings::getProgramNuget()
+{
+    QString _default = "";
+
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        _default = "nuget";
+        break;
+    case Platform::Linux:
+        _default = "nuget";
+        break;
+    case Platform::Mac:
+        _default = "nuget";
+        break;
+    }
+
+    return m_Settings->value("Programs/Nuget", _default).toString();
+}
+
+void GlobalSettings::setProgramNuget(const QString &program)
+{
+    m_Settings->setValue("Programs/Nuget", program);
+    m_Settings->sync();
 }

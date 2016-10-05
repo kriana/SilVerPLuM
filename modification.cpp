@@ -4,40 +4,9 @@
 #include <QDebug>
 #include "filepipeline.h"
 
-
-QString Modification::getAuthor() const
-{
-    return m_Author;
-}
-
-void Modification::setAuthor(const QString &Author)
-{
-    m_Author = Author;
-}
-
-QString Modification::getUrl() const
-{
-    return m_Url;
-}
-
-void Modification::setUrl(const QString &Url)
-{
-    m_Url = Url;
-}
-
-QString Modification::getLicense() const
-{
-    return m_License;
-}
-
-void Modification::setLicense(const QString &License)
-{
-    m_License = License;
-}
-
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
-
+    connect(modmgr, SIGNAL(modEnabledDisabled(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));
 }
 
 Modification::~Modification()
@@ -50,6 +19,95 @@ Modification::~Modification()
     for(Pipeline * p : m_Content)
     {
         delete p;
+    }
+}
+
+
+QString Modification::author() const
+{
+    return m_Author;
+}
+
+void Modification::setAuthor(const QString &Author)
+{
+    m_Author = Author;
+}
+
+QString Modification::url() const
+{
+    return m_Url;
+}
+
+void Modification::setUrl(const QString &Url)
+{
+    m_Url = Url;
+}
+
+QString Modification::license() const
+{
+    return m_License;
+}
+
+void Modification::setLicense(const QString &License)
+{
+    m_License = License;
+}
+
+bool Modification::isPartiallyEnabled()
+{
+    for(Pipeline * p : m_Content.values())
+    {
+        if(p->isEnabled())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+QList<Pipeline *> Modification::getEnabledPipelines()
+{
+    QList<Pipeline*> result;
+
+    for(Pipeline * p : m_Content.values())
+    {
+        if(p->isEnabled())
+            result << p;
+    }
+
+    return result;
+}
+
+bool Modification::search(const QString &searchstring_)
+{
+    QString searchstring = searchstring_.toLower();
+
+    if(name().toLower().contains(searchstring) ||
+            description().toLower().contains(searchstring) ||
+            id().toLower().contains(searchstring) ||
+            author().toLower().contains(searchstring) ||
+            version().toString().toLower().contains(searchstring) ||
+            license().toLower().contains(searchstring) ||
+            url().toLower().contains(searchstring))
+    {
+        return true;
+    }
+
+    for(Pipeline * p : m_Content.values())
+    {
+        if(p->search(searchstring))
+            return true;
+    }
+
+    return false;
+}
+
+void Modification::modEnabledDisabled(const QString &modid, const QString &contentid, bool enabled)
+{
+    if(modid == id())
+    {
+        emit contentEnabledDisabled(contentid, enabled);
     }
 }
 
@@ -149,6 +207,11 @@ void Modification::addDependency(Dependency *dep)
     m_Dependencies.append(dep);
 }
 
+QList<Dependency*> Modification::dependencies()
+{
+    return QList<Dependency*>(m_Dependencies);
+}
+
 void Modification::addContent(const QString &id, Pipeline *p)
 {
     m_Content[id] = p;
@@ -170,14 +233,27 @@ void Modification::enableDefaults()
     {
         if(pip->isdefault())
         {
-            m_modManager->setEnabled(m_Id, pip->id(), true);
+           pip->setEnabled(true);
         }
+    }
+}
+
+void Modification::disableAll()
+{
+    for(Pipeline * pip : m_Content.values())
+    {
+        pip->setEnabled(false);
     }
 }
 
 ModManager *Modification::getModManager() const
 {
     return m_modManager;
+}
+
+QList<Pipeline *> Modification::getPipelines()
+{
+    return QList<Pipeline*>(m_Content.values());
 }
 
 Pipeline *Modification::getPipeline(const QString &id)

@@ -18,6 +18,30 @@ public:
 
     void getWindowState(QMainWindow *widget);
 
+    bool getDLLRedirectXNA();
+
+    void setDLLRedirectXNA(bool enabled);
+
+    bool getForceUnsupported();
+
+    void setForceUnsupported(bool enabled);
+
+    bool getRunningBackupSDVSavegames();
+
+    void setRunningBackupSDVSavegames(bool enabled);
+
+    bool getRunningBackupProfileSavegames();
+
+    void setRunningBackupProfileSavegames(bool enabled);
+
+    QString getProgramMSBUILD();
+
+    void setProgramMSBUILD(const QString & program);
+
+    QString getProgramNuget();
+
+    void setProgramNuget(const QString & program);
+
 private:
 
     static GlobalSettings * m_pInstance;

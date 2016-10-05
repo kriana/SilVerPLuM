@@ -6,6 +6,7 @@
 #include <QScrollBar>
 #include <QMenu>
 #include "globalsettings.h"
+#include "globalsettingsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,11 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect events
     connect(ProfileManager::instance(), &ProfileManager::updated, this, &MainWindow::profilesUpdated);
     connect(ProfileManager::instance(), &ProfileManager::selected, this, &MainWindow::profileSelected);
-    connect(ProfileManager::instance(), &ProfileManager::selected, ui->configProfileConfig, &ProfileSettings::setCurrentProfile);
-    connect(ProfileManager::instance(), &ProfileManager::selected, ui->modManager, &ModManagerWidget::setCurrentProfile);
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::playClicked);
     connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
     connect(ui->playLogClose, &QPushButton::clicked, this, &MainWindow::closeLogClicked);
+    connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
     connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
     connect(Game::instance(), SIGNAL(logged(QString)), this, SLOT(gameLog(QString)));
     connect(Game::instance(), SIGNAL(progressed(bool,int,int,int)), this, SLOT(gameProgress(bool,int,int,int)));
@@ -110,7 +110,9 @@ void MainWindow::profileSelected(Profile *p)
     ui->btnPlay->setMenu(populated ? play_menu : nullptr);
     ui->btnPlay->setPopupMode(populated ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup);
 
-
+    // Set matching views
+    ui->configProfileConfig->setCurrentProfile(p);
+    ui->modManager->setModManager(p->getModManager());
 }
 
 void MainWindow::profilesUpdated()
@@ -163,6 +165,15 @@ void MainWindow::closeLogClicked()
 {
     ui->mainTabWidget->setCurrentWidget(ui->tabPlay);
     ui->playStackedWidget->setCurrentWidget(ui->playLauncherPage);
+}
+
+void MainWindow::openApplicationSettings()
+{
+    GlobalSettingsDialog dlg;
+    dlg.exec();
+
+    // Trigger update of mod list
+    ui->modManager->reloadModList();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -36,7 +36,10 @@ SOURCES += main.cpp\
     modmanagerwidget.cpp \
     modmanager.cpp \
     filepipeline.cpp \
-    modmanagerwidgetitem.cpp
+    modmanagerwidgetitem.cpp \
+    globalsettingsdialog.cpp \
+    modmanagerwidgetpipelineitem.cpp \
+    dependencycheckerwidget.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -61,11 +64,20 @@ HEADERS  += mainwindow.h \
     modmanagerwidget.h \
     modmanager.h \
     filepipeline.h \
-    modmanagerwidgetitem.h
+    modmanagerwidgetitem.h \
+    globalsettingsdialog.h \
+    modmanagerwidgetpipelineitem.h \
+    dependencycheckerwidget.h
 
 FORMS    += mainwindow.ui \
     fileselectoredit.ui \
     profilesettings.ui \
     profilemanagerwidget.ui \
     modmanagerwidget.ui \
-    modmanagerwidgetitem.ui
+    modmanagerwidgetitem.ui \
+    globalsettingsdialog.ui \
+    modmanagerwidgetpipelineitem.ui \
+    dependencycheckerwidget.ui
+
+RESOURCES += \
+    resources.qrc
