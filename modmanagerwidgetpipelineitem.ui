@@ -138,12 +138,18 @@
          <property name="text">
           <string>Disable</string>
          </property>
+         <property name="icon">
+          <iconset theme="dialog-cancel"/>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btnEnable">
          <property name="text">
           <string>Enable</string>
+         </property>
+         <property name="icon">
+          <iconset theme="dialog-ok"/>
          </property>
         </widget>
        </item>

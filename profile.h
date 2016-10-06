@@ -9,6 +9,7 @@
 #include "launcher.h"
 #include "vanillalauncher.h"
 #include "modmanager.h"
+#include "logger.h"
 
 class Profile : public QObject
 {
@@ -76,6 +77,8 @@ private:
 
     ModManager * m_modManager;
 
+    Logger m_logger;
+
 signals:
 
     void updated();
@@ -91,6 +94,8 @@ public:
     static QDir DefaultStardewValleyDir();
 
     ModManager *getModManager() const;
+
+    Logger & getLogger();
 };
 
 #endif // PROFILE_H

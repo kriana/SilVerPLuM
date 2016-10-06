@@ -1,6 +1,7 @@
 #include "dependencycheckerwidget.h"
 #include "ui_dependencycheckerwidget.h"
 #include "utils.h"
+#include <QStringBuilder>
 
 DependencyCheckerWidget::DependencyCheckerWidget(QWidget *parent) :
     QWidget(parent),
@@ -50,16 +51,33 @@ void DependencyCheckerWidget::updateData()
     }
     else
     {
-        ui->lblIssues->setText("");
-        show();
+        QString html;
 
-        ui->lblIssues->insertHtml("<p>Some mods might need other mods to run. Following dependencies could not be found:</p>\n");
+        html += "<html><body>";
+        html += "<p>Some mods might need other mods to run. Following dependencies could not be found:</p>";
 
         for(QString modid : issues.keys())
         {
-            utils::moveTextCursorToEnd(ui->lblIssues);
-            ui->lblIssues->insertHtml("<h4>" + modid + "</h4>\n");
+            Modification * mod = m_currentMM->getModification(modid);
+
+            html += "<h4>" + mod->name() + " (" + modid + ")" + "</h4>";
+            html += "<ul>";
+
+            for(const Dependency & dep : issues[modid])
+            {
+                html += "<li>" + dep.toPrettyString() + "</li>";
+            }
+
+            html += "</ul>";
         }
+
+        html += "</body></html>";
+
+        ui->lblIssues->document()->setHtml(html);
+
+        show();
+
+
     }
 }
 

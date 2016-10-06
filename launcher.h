@@ -5,10 +5,13 @@
 #include <QObject>
 #include <QMap>
 #include <QProcess>
+#include <QJsonObject>
+#include <QJsonArray>
 #include "platform.h"
 #include "launcherexecutable.h"
 
 class Profile;
+class Pipeline;
 
 /**
  * @brief A launcher executes the game or other processes after all launch configurations were done
@@ -19,7 +22,7 @@ class Launcher : public QObject
 
 public:    
 
-    Launcher(Profile * p);
+    Launcher(Profile * p, Pipeline * pip = nullptr);
 
     ~Launcher();
 
@@ -39,7 +42,11 @@ public:
 
     LauncherExecutable getExecutable(Platform::Type platform);
 
-    Profile *profile() const;
+    static Launcher * loadFromJson(Profile * p, Pipeline * pip, const QString & id, const QJsonObject & json);
+
+    Pipeline *getPipeline() const;
+
+    Profile *getProfile() const;
 
 private:
 
@@ -52,6 +59,8 @@ private:
     QMap<Platform::Type, LauncherExecutable> m_executable;
 
     Profile * m_profile;
+
+    Pipeline * m_pipeline;
 
     QProcess * m_process = nullptr;
 

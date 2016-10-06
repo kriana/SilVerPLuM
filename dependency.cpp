@@ -15,7 +15,15 @@ Dependency::Dependency(const QString & dependencystring)
     m_Id = cell[0];
     m_Version = QVersionNumber::fromString(cell[1]);
 
-    if(dependencystring.contains("=="))
+    if(dependencystring.contains("<="))
+    {
+        m_Operation = EQUALS_OR_LESS_THAN;
+    }
+    else if(dependencystring.contains(">="))
+    {
+        m_Operation = EQUALS_OR_MORE_THAN;
+    }
+    else if(dependencystring.contains("="))
     {
         m_Operation = EQUALS;
     }
@@ -26,14 +34,6 @@ Dependency::Dependency(const QString & dependencystring)
     else if(dependencystring.contains(">"))
     {
         m_Operation = MORE_THAN;
-    }
-    else if(dependencystring.contains("<="))
-    {
-        m_Operation = EQUALS_OR_LESS_THAN;
-    }
-    else if(dependencystring.contains(">="))
-    {
-        m_Operation = EQUALS_OR_MORE_THAN;
     }
     else
     {
@@ -62,6 +62,64 @@ Dependency::Operation Dependency::getOperation() const
 QVersionNumber Dependency::getVersion() const
 {
     return m_Version;
+}
+
+QString Dependency::toString() const
+{
+    QString op;
+
+    switch(getOperation())
+    {
+    case EQUALS:
+        op = "=";
+        break;
+    case LESS_THAN:
+        op = "<";
+        break;
+    case MORE_THAN:
+        op = ">";
+        break;
+    case EQUALS_OR_LESS_THAN:
+        op = "<=";
+        break;
+    case EQUALS_OR_MORE_THAN:
+        op = ">=";
+        break;
+    default:
+        op = "??";
+        break;
+    }
+
+    return getId() + op + getVersion().toString();
+}
+
+QString Dependency::toPrettyString() const
+{
+    QString op;
+
+    switch(getOperation())
+    {
+    case EQUALS:
+        op = "=";
+        break;
+    case LESS_THAN:
+        op = "<";
+        break;
+    case MORE_THAN:
+        op = ">";
+        break;
+    case EQUALS_OR_LESS_THAN:
+        op = "≤";
+        break;
+    case EQUALS_OR_MORE_THAN:
+        op = "≥";
+        break;
+    default:
+        op = "?";
+        break;
+    }
+
+    return getId() + " " + op + " " + getVersion().toString();
 }
 
 bool Dependency::satisfies(const QString &id, const QVersionNumber &version) const

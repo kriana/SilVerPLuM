@@ -92,6 +92,9 @@ QVersionNumber Profile::StardewValleyVersion()
 void Profile::setStardewValleyVersion(const QVersionNumber &version)
 {
     m_Settings->setValue("StardewValley/Version", version.toString());
+    m_Settings->sync();
+
+    emit updated();
 }
 
 bool Profile::exists()
@@ -101,7 +104,7 @@ bool Profile::exists()
 
 void Profile::setLauncher(const QString &id)
 {
-    for(Launcher * l : m_Launchers)
+    for(Launcher * l : getLaunchers())
     {
         if(l->id() == id)
         {
@@ -123,7 +126,7 @@ Launcher *Profile::getLauncher()
 
 Launcher *Profile::getLauncher(const QString &id)
 {
-    for(Launcher * l : m_Launchers)
+    for(Launcher * l : getLaunchers())
     {
         if(l->id() == id)
             return l;
@@ -134,7 +137,24 @@ Launcher *Profile::getLauncher(const QString &id)
 
 QList<Launcher *> Profile::getLaunchers()
 {
-    return QList<Launcher*>(m_Launchers);
+    QList<Launcher*> result(m_Launchers);
+
+    // Add launchers of enabled pipelines
+    for(Modification * mod : m_modManager->getModifications())
+    {
+        for(Pipeline * pip : mod->getPipelines())
+        {
+            if(pip->isEnabled())
+            {
+                for(Launcher * l : pip->launchers())
+                {
+                    result << l;
+                }
+            }
+        }
+    }
+
+    return result;
 }
 
 void Profile::repairDirectories()
@@ -143,6 +163,11 @@ void Profile::repairDirectories()
 
     basedir.mkpath("savegames");
     basedir.mkpath("mods");
+}
+
+Logger &Profile::getLogger()
+{
+    return m_logger;
 }
 
 ModManager *Profile::getModManager() const
@@ -154,19 +179,21 @@ void Profile::initialize()
 {
     // Guard
     if(!ProfileManager::instance()->getProfiles().contains(this))
+    {
+        getLogger().log(Logger::ERROR, "profiles", "profile", "init", "Cannot create profile outside profile manager!");
         throw std::runtime_error("Cannot create profile outside profile manager!");
+    }
 
     QDir basedir = profileBaseDir();
     QDir profilesavegamedir = basedir.absoluteFilePath("savegames");
 
     m_Settings = new QSettings(basedir.absoluteFilePath("profile.ini"), QSettings::IniFormat);
 
-
-    qInfo() << "Initializing profile " << m_Id << " in " << basedir.absolutePath();
+    getLogger().log(Logger::INFO, "profiles", "profile", "init", "Initializing profile " + m_Id + " in " + basedir.absolutePath());
 
     if(!basedir.exists())
     {
-        qInfo() << "Initializing profile directory the first time for " << m_Id;
+        getLogger().log(Logger::INFO, "profiles", "profile", "init", "Initializing profile directory the first time for " + m_Id);
 
         // Initialize directory
         repairDirectories();
@@ -174,7 +201,7 @@ void Profile::initialize()
         // If its a default profile, copy savegames to this profile
         if(m_Id == DEFAULT_PROFILE_ID)
         {
-            qInfo() << "Profile is default profile. Copying savegames.";
+            getLogger().log(Logger::INFO, "profiles", "profile", "init", "Profile is default profile. Copying savegames.");
 
             QDir savegamedir = StardewValleySavegameDir();
 

@@ -21,6 +21,11 @@ ProfileManager::ProfileManager()
 {
 }
 
+Logger & ProfileManager::getLogger()
+{
+    return m_logger;
+}
+
 ProfileManager::~ProfileManager()
 {
     for(Profile * p : m_Profiles)
@@ -75,9 +80,15 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
     QString id_ = id.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
 
     if(id_ != id)
+    {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "create-or-load", "Invalid ID " + id);
         throw std::invalid_argument("Invalid ID!");
+    }
     if(idExists(id))
+    {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "create-or-load", "ID alread exists: " + id);
         throw std::invalid_argument("Profile with same id already exists!");
+    }
 
     Profile * p = new Profile(id);
     m_Profiles.append(p);
@@ -100,9 +111,15 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
 void ProfileManager::deleteProfile(Profile *p)
 {
     if(p == nullptr || !m_Profiles.contains(p))
+    {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "delete", "Unknown profile");
         throw std::invalid_argument("Profile is unknown!");
+    }
     if(p->id() == Profile::DEFAULT_PROFILE_ID)
+    {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "delete", "Cannot delete default profile");
         throw std::invalid_argument("Cannot remove default profile!");
+    }
 
     if(m_SelectedProfile == p)
         selectProfile(m_Profiles.first());
@@ -122,6 +139,7 @@ void ProfileManager::duplicateProfile(Profile *p, const QString &name)
 
     if(idExists(id))
     {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "duplicate", "ID alread exists: " + id);
         throw std::invalid_argument("ID already exists!");
     }
 
@@ -162,6 +180,9 @@ void ProfileManager::selectProfile(Profile *p)
 {
     if(p == nullptr || !m_Profiles.contains(p))
         p = m_Profiles.first();
+
+    if(p == m_SelectedProfile)
+        return;
 
     m_SelectedProfile = p;
 

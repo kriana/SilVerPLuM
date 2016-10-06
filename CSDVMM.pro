@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network concurrent
+QT       += core gui network concurrent xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -39,7 +39,9 @@ SOURCES += main.cpp\
     modmanagerwidgetitem.cpp \
     globalsettingsdialog.cpp \
     modmanagerwidgetpipelineitem.cpp \
-    dependencycheckerwidget.cpp
+    dependencycheckerwidget.cpp \
+    dllpipeline.cpp \
+    logger.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -67,7 +69,9 @@ HEADERS  += mainwindow.h \
     modmanagerwidgetitem.h \
     globalsettingsdialog.h \
     modmanagerwidgetpipelineitem.h \
-    dependencycheckerwidget.h
+    dependencycheckerwidget.h \
+    dllpipeline.h \
+    logger.h
 
 FORMS    += mainwindow.ui \
     fileselectoredit.ui \

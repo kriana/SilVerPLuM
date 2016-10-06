@@ -2,7 +2,24 @@
 #include "modmanager.h"
 #include "profile.h"
 #include <QDebug>
+#include <QRegExp>
 #include "filepipeline.h"
+#include "dllpipeline.h"
+
+QDir Modification::modBasePath() const
+{
+    return m_modBasePath;
+}
+
+void Modification::setModBasePath(const QDir &modBasePath)
+{
+    m_modBasePath = modBasePath;
+}
+
+Logger &Modification::getLogger()
+{
+    return m_logger;
+}
 
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
@@ -16,7 +33,7 @@ Modification::~Modification()
         delete dep;
     }
 
-    for(Pipeline * p : m_Content)
+    for(Pipeline * p : m_Pipelines)
     {
         delete p;
     }
@@ -55,7 +72,7 @@ void Modification::setLicense(const QString &License)
 
 bool Modification::isPartiallyEnabled()
 {
-    for(Pipeline * p : m_Content.values())
+    for(Pipeline * p : m_Pipelines)
     {
         if(p->isEnabled())
         {
@@ -70,7 +87,7 @@ QList<Pipeline *> Modification::getEnabledPipelines()
 {
     QList<Pipeline*> result;
 
-    for(Pipeline * p : m_Content.values())
+    for(Pipeline * p : m_Pipelines) //Pipelines are sorted by priority
     {
         if(p->isEnabled())
             result << p;
@@ -94,13 +111,21 @@ bool Modification::search(const QString &searchstring_)
         return true;
     }
 
-    for(Pipeline * p : m_Content.values())
+    for(Pipeline * p : m_Pipelines)
     {
         if(p->search(searchstring))
             return true;
     }
 
     return false;
+}
+
+void Modification::install()
+{
+    for(Pipeline * p : getEnabledPipelines())
+    {
+        p->install();
+    }
 }
 
 void Modification::modEnabledDisabled(const QString &modid, const QString &contentid, bool enabled)
@@ -111,15 +136,43 @@ void Modification::modEnabledDisabled(const QString &modid, const QString &conte
     }
 }
 
-Modification * Modification::loadFromJson(ModManager * modmgr, const QJsonObject &json)
+Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & basepath, const QJsonObject &json)
 {
-    QString id = json["id"].toString();
+    QString id = json["id"].toString().trimmed();
+
+    if(id == "stardewvalley")
+    {
+        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mods with id 'stardewvalley' are forbidden. Skipping mod in " + basepath.absolutePath());
+        throw std::invalid_argument("Illegal mod ID");
+    }
+    if(id.toLower() != id)
+    {
+        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs must be lowercase! Skipping mod in " + basepath.absolutePath());
+
+        throw std::invalid_argument("Illegal mod ID");
+    }
+    if(id.replace(QRegExp("[^a-z0-9_.\\-]+"), "") != id)
+    {
+        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs must be alphanumeric with additional chars '.', '-' and '_'. Skipping mod in " + basepath.absolutePath());
+
+        throw std::invalid_argument("Illegal mod ID");
+    }
+    if(id.contains(".."))
+    {
+        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs are not allowed to contain '..' due to prevention of container breakout. Skipping mod in " + basepath.absolutePath());
+
+        throw std::invalid_argument("Illegal mod ID");
+    }
 
     if(id.isEmpty())
+    {
+        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Modification ID is empty. Skipping mod in " + basepath.absolutePath());
         throw std::invalid_argument("Modification ID is empty!");
+    }
 
     Modification * mod = new Modification(modmgr, id);
 
+    mod->setModBasePath(basepath);
     mod->setName(json["name"].toString());
     mod->setDescription(json["description"].toString());
     mod->setAuthor(json["author"].toString());
@@ -139,11 +192,10 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QJsonObject
     for(QString key : contents_json.keys())
     {
         QJsonObject content_json = contents_json[key].toObject();
+        Pipeline * pipeline = nullptr;
 
         if(content_json["pipeline"] == "file")
         {
-            FilePipeline * pipeline = nullptr;
-
             try
             {
                 pipeline = FilePipeline::loadFromJson(mod, key, content_json);
@@ -152,20 +204,34 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QJsonObject
             {
 
             }
-
-            if(pipeline != nullptr)
+        }
+        else if(content_json["pipeline"] == "compile-dll")
+        {
+            try
             {
-                mod->addContent(key, pipeline);
-                qInfo() << "- Content " << key << " is available";
+                pipeline = DllPipeline::loadFromJson(mod, key, content_json);
             }
-            else
+            catch(...)
             {
-                qWarning() << "- Content " << key << " COULD NOT BE LOADED!";
+
             }
         }
         else
         {
-            qWarning() << "Cannot identify pipeline " << content_json["pipeline"];
+            mod->getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", "Cannot identify pipeline " + content_json["pipeline"].toString());
+        }
+
+        if(pipeline != nullptr)
+        {
+            if(pipeline != nullptr)
+            {
+                mod->addPipeline(key, pipeline);
+                mod->getLogger().log(Logger::INFO, "modification", id, "load-pipeline", "Loaded pipeline " + key);
+            }
+            else
+            {
+                mod->getLogger().log(Logger::WARNING, "modification", id, "load-pipeline", "Could not load pipeline " + key);
+            }
         }
     }
 
@@ -212,24 +278,56 @@ QList<Dependency*> Modification::dependencies()
     return QList<Dependency*>(m_Dependencies);
 }
 
-void Modification::addContent(const QString &id, Pipeline *p)
+void Modification::addPipeline(const QString &id, Pipeline *p)
 {
-    m_Content[id] = p;
-}
+    if(id == "stardewvalley")
+    {
+        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content with id 'stardewvalley' is forbidden.");
 
-Pipeline *Modification::getContent(const QString &id)
-{
-    return m_Content[id];
-}
+        throw std::invalid_argument("Illegal content ID");
+    }
+    if(id.toLower() != id)
+    {
+        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs must be lowercase!");
 
-QDir Modification::modBasePath()
-{
-    return m_modManager->profile()->profileModDir().absoluteFilePath(m_Id);
+        throw std::invalid_argument("Illegal content ID");
+    }
+    if(QString(id).replace(QRegExp("[^a-z0-9_.\\-]+"), "") != id)
+    {
+        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs be alphanumeric with additional chars '.', '-' and '_'!");
+
+        throw std::invalid_argument("Illegal content ID");
+    }
+    if(id.contains(".."))
+    {
+        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs are not allowed to contain '..' due to prevention of container breakout");
+
+        throw std::invalid_argument("Illegal content ID");
+    }
+
+    if(id.isEmpty())
+    {
+        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content ID is empty!");
+        throw std::invalid_argument("Content ID is empty!");
+    }
+
+    Pipeline * existing = getPipeline(id);
+
+    if(existing != nullptr)
+        m_Pipelines.removeAll(existing);
+
+    m_Pipelines.append(p);
+    m_PipelineIds.insert(p->id());
+
+    // sort pipelines
+    std::sort(m_Pipelines.begin(), m_Pipelines.end(), [](Pipeline * a, Pipeline * b) {
+       return a->priority() < b->priority();
+    });
 }
 
 void Modification::enableDefaults()
 {
-    for(Pipeline * pip : m_Content.values())
+    for(Pipeline * pip : m_Pipelines)
     {
         if(pip->isdefault())
         {
@@ -240,7 +338,7 @@ void Modification::enableDefaults()
 
 void Modification::disableAll()
 {
-    for(Pipeline * pip : m_Content.values())
+    for(Pipeline * pip : m_Pipelines)
     {
         pip->setEnabled(false);
     }
@@ -253,15 +351,21 @@ ModManager *Modification::getModManager() const
 
 QList<Pipeline *> Modification::getPipelines()
 {
-    return QList<Pipeline*>(m_Content.values());
+    return QList<Pipeline*>(m_Pipelines);
 }
 
 Pipeline *Modification::getPipeline(const QString &id)
 {
-    return m_Content[id];
+    for(Pipeline * p : m_Pipelines)
+    {
+        if(p->id() == id)
+            return p;
+    }
+
+    return nullptr;
 }
 
 QStringList Modification::getPipelineIds()
 {
-    return m_Content.keys();
+    return m_PipelineIds.toList();
 }

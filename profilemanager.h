@@ -4,6 +4,7 @@
 #include <QList>
 #include <QObject>
 #include "profile.h"
+#include "logger.h"
 
 class ProfileManager : public QObject
 {  
@@ -24,6 +25,8 @@ private:
     QList<Profile *> m_Profiles;
 
     Profile * m_SelectedProfile = nullptr;
+
+    Logger m_logger;
 
     void initialize();
 
@@ -48,6 +51,8 @@ public:
     Profile * getSelectedProfile();
 
     void selectProfile(Profile * p);
+
+    Logger &getLogger();
 
 signals:
 

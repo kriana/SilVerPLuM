@@ -31,6 +31,26 @@ public:
         }
     }
 
+    static Type getPlatformFromString(const QString & str)
+    {
+        if(str == "windows")
+        {
+            return Windows;
+        }
+        else if(str == "linux")
+        {
+            return Linux;
+        }
+        else if(str == "mac")
+        {
+            return Mac;
+        }
+        else
+        {
+            return Windows;
+        }
+    }
+
     static QString getPlatformString()
     {
         switch(getCurrentPlatform())

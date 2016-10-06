@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <QObject>
 #include "modification.h"
+#include "logger.h"
 
 class Profile;
 
@@ -44,6 +45,17 @@ public:
 
     QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
 
+    void install();
+
+    /**
+     * @brief Resolves mod file paths like modid://file
+     * @param url
+     * @return
+     */
+    QString resolveModUrl(const QString & url);
+
+    Logger & getLogger();
+
 public slots:
 
     void issueDependencyCheck();
@@ -59,6 +71,8 @@ private:
     QList<Modification*> m_mods;
 
     QMap<QString, QList<Dependency>> m_unsatisfiedDependencies;
+
+    Logger m_logger;
 
     /**
      * @brief Priority used for sorting the mod list

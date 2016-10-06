@@ -4,8 +4,10 @@
 #include <QMap>
 #include <QObject>
 #include <QDir>
+#include "logger.h"
 
 class Modification;
+class Launcher;
 
 class Pipeline : public QObject
 {
@@ -28,6 +30,8 @@ public:
 
     void setInstallable(const QString & src, const QString & dst);
 
+    void setLauncher(const QString & id, Launcher * launcher);
+
     /**
      * @brief This function is called to create missing files for installation
      */
@@ -42,7 +46,7 @@ public:
 
     void setEnabled(bool enabled);
 
-    QDir profileBaseDir();
+    QDir pipelineBaseDir();
 
     bool unsupported() const;
 
@@ -50,9 +54,19 @@ public:
 
     virtual bool search(const QString & searchstring_);
 
+    QList<Launcher *> launchers() const;
+
+    virtual void install();
+
+    Logger & getLogger();
+
 protected:
 
     Pipeline(Modification * mod, const QString & id);
+
+    static void loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
+
+    virtual QMap<QString, QString> resolveInstallables();
 
 private:
 
@@ -71,6 +85,10 @@ private:
     bool m_unsupported;
 
     QMap<QString, QString> m_installables;
+
+    QMap<QString, Launcher *> m_launchers;
+
+    Logger m_logger;
 
 private slots:
 

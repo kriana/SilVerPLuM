@@ -21,31 +21,7 @@ FilePipeline * FilePipeline::loadFromJson(Modification *mod, const QString &id, 
 {
     FilePipeline * pip = new FilePipeline(mod, id);
 
-    pip->setName(json["name"].toString());
-    pip->setDescription(json["description"].toString());
-    pip->setPriority(json["priority"].toInt());
-    pip->setDefault(json["default"].toBool());
-
-    QJsonObject installables = json["installables"].toObject();
-
-    for(QString src : installables.keys())
-    {
-        QString dst = installables[src].toString();
-
-        pip->setInstallable(src, dst);
-    }
-
-    bool platform_found = false;
-
-    for(QJsonValue supported : json["platforms"].toArray())
-    {
-        if(supported.toString() == Platform::getPlatformString())
-        {
-            platform_found = true;
-        }
-    }
-
-    pip->setUnsupported(!platform_found);
+    loadGenericFromJson(json, pip);
 
     return pip;
 }

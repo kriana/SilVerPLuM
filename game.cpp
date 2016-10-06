@@ -72,7 +72,7 @@ void Game::progress(bool enabled, int _min, int _max, int _val)
 
 void Game::prepare()
 {
-    QDir sdvdir = m_Launcher->profile()->StardewValleyDir();
+    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
     QDir sdvsavegames = Profile::StardewValleySavegameDir();
@@ -114,7 +114,11 @@ void Game::prepare()
     }
 
     progress(true, 0, 6, 6);
-    utils::copyDirectory(m_Launcher->profile()->profileSavegameDir(), sdvsavegames, true);
+    utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), sdvsavegames, true);
+
+    log("Installing mods ...");
+
+    m_Launcher->getProfile()->getModManager()->install();
 
 }
 
@@ -139,16 +143,16 @@ void Game::post()
     if(savegamebackups.isValid())
     {
         if(GlobalSettings::instance()->getRunningBackupProfileSavegames() &&
-                !utils::directoryEmpty(m_Launcher->profile()->profileSavegameDir()))
+                !utils::directoryEmpty(m_Launcher->getProfile()->profileSavegameDir()))
         {
             savegamebackups.setAutoRemove(false);
             log("Existing savegames will be backed up to " + savegamebackups.path());
             progress(true, 0, 5, 3);
 
-            utils::copyDirectory(m_Launcher->profile()->profileSavegameDir(), savegamebackups.path(), true);
+            utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), savegamebackups.path(), true);
         }
 
-        utils::clearDirectory(m_Launcher->profile()->profileSavegameDir());
+        utils::clearDirectory(m_Launcher->getProfile()->profileSavegameDir());
     }
     else
     {
@@ -156,10 +160,10 @@ void Game::post()
     }
 
     progress(true, 0, 5, 4);
-    utils::copyDirectory(sdvsavegames, m_Launcher->profile()->profileSavegameDir(), true);
+    utils::copyDirectory(sdvsavegames, m_Launcher->getProfile()->profileSavegameDir(), true);
 
     log("Restoring content folder ...");
-    QDir sdvdir = m_Launcher->profile()->StardewValleyDir();
+    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
 

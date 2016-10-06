@@ -31,8 +31,28 @@ ProfileSettings::~ProfileSettings()
 
 void ProfileSettings::setCurrentProfile(Profile *profile)
 {
-    m_CurrentProfile = profile;
-    discart();
+    if(profile != m_CurrentProfile)
+    {
+        if(m_CurrentProfile != nullptr)
+        {
+            disconnect(m_CurrentProfile->getModManager(),
+                       SIGNAL(modEnabledDisabled(QString,QString,bool)),
+                       this,
+                       SLOT(discart()));
+        }
+
+        m_CurrentProfile = profile;
+
+        if(m_CurrentProfile != nullptr)
+        {
+            connect(m_CurrentProfile->getModManager(),
+                       SIGNAL(modEnabledDisabled(QString,QString,bool)),
+                       this,
+                       SLOT(discart()));
+        }
+
+        discart();
+    }
 }
 
 void ProfileSettings::saveOrDiscart(QAbstractButton *button)
@@ -52,6 +72,9 @@ void ProfileSettings::saveOrDiscart(QAbstractButton *button)
 
 void ProfileSettings::discart()
 {
+    if(saving)
+        return;
+
     bool enabled = m_CurrentProfile != nullptr;
 
     ui->buttonBox->setEnabled(enabled);
@@ -73,7 +96,6 @@ void ProfileSettings::discart()
     // Launchers
 
     utils::clearLayout(ui->launchersLauncherList->layout());
-    utils::clearLayout(ui->launchersToolList->layout());
 
     if(m_CurrentProfile != nullptr)
     {
@@ -100,9 +122,14 @@ void ProfileSettings::discart()
 
 void ProfileSettings::save()
 {
+    if(saving)
+        return;
+    saving = true;
+
     m_CurrentProfile->setName(ui->profileName->text().trimmed());
     m_CurrentProfile->setDescription(ui->profileDescription->document()->toPlainText());
     m_CurrentProfile->setStardewValleyDir(ui->sdvApplicationDirectory->getCurrentPath());
+    m_CurrentProfile->setStardewValleyVersion(QVersionNumber::fromString(ui->sdvVersion->currentText()));
 
     for(QRadioButton * btn : ui->launchersLauncherList->findChildren<QRadioButton*>())
     {
@@ -111,6 +138,8 @@ void ProfileSettings::save()
             m_CurrentProfile->setLauncher(btn->property("launcher").toString());
         }
     }
+
+    saving = false;
 
     discart(); // Reload to be sure
 }

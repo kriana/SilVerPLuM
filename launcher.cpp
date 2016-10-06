@@ -1,8 +1,9 @@
 #include "launcher.h"
 #include "profile.h"
+#include "pipeline.h"
 #include "game.h"
 
-Launcher::Launcher(Profile *p) : m_profile(p)
+Launcher::Launcher(Profile *p, Pipeline *pip) : m_profile(p), m_pipeline(pip)
 {
 
 }
@@ -104,7 +105,41 @@ LauncherExecutable Launcher::getExecutable(Platform::Type platform)
     return m_executable[platform];
 }
 
-Profile *Launcher::profile() const
+Launcher *Launcher::loadFromJson(Profile * p, Pipeline *pip, const QString &id, const QJsonObject &json)
+{
+    qInfo() << "Loading launcher " << id << " in profile " << p->id();
+
+    Launcher * launcher = new Launcher(p, pip);
+
+    launcher->setId(id);
+    launcher->setName(json["name"].toString());
+    launcher->setDescription(json["description"].toString());
+
+    QJsonObject executables_map = json["executables"].toObject();
+
+    for(QString platformid : executables_map.keys())
+    {
+        Platform::Type platform = Platform::getPlatformFromString(platformid);
+        QString exe = executables_map[platformid].toObject()["executable"].toString();
+        QStringList args;
+
+        for(QJsonValue v : executables_map[platformid].toObject()["arguments"].toArray())
+        {
+            args << v.toString();
+        }
+
+        launcher->setExecutable(platform, LauncherExecutable(exe, args));
+    }
+
+    return launcher;
+}
+
+Pipeline *Launcher::getPipeline() const
+{
+    return m_pipeline;
+}
+
+Profile *Launcher::getProfile() const
 {
     return m_profile;
 }

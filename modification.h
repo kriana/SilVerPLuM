@@ -7,8 +7,10 @@
 #include <QJsonArray>
 #include <QDir>
 #include <QObject>
+#include <QSet>
 #include "dependency.h"
 #include "pipeline.h"
+#include "logger.h"
 
 class ModManager;
 
@@ -19,6 +21,7 @@ class Modification : public QObject
 private:
 
     ModManager * m_modManager;
+    QDir m_modBasePath;
     QString m_Id;
     QString m_Name;
     QString m_Author;
@@ -27,7 +30,9 @@ private:
     QVersionNumber m_Version;
     QString m_Description;
     QList<Dependency*> m_Dependencies;
-    QMap<QString, Pipeline*> m_Content;
+    QList<Pipeline*> m_Pipelines;
+    QSet<QString> m_PipelineIds;
+    Logger m_logger;
 
 public:
     Modification(ModManager * modmgr, const QString & id);
@@ -39,7 +44,7 @@ public:
         return m_Id;
     }
 
-    static Modification *loadFromJson(ModManager *modmgr, const QJsonObject & json);
+    static Modification *loadFromJson(ModManager *modmgr, const QDir &basepath, const QJsonObject & json);
 
     QString name() const;
     void setName(const QString &Name);
@@ -49,10 +54,8 @@ public:
     void setDescription(const QString &Description);
     void addDependency(Dependency * dep);
     QList<Dependency *> dependencies();
-    void addContent(const QString & id, Pipeline * p);
-    Pipeline * getContent(const QString & id);
+    void addPipeline(const QString & id, Pipeline * p);
 
-    QDir modBasePath();
     ModManager *getModManager() const;
 
     QList<Pipeline*> getPipelines();
@@ -77,6 +80,13 @@ public:
     QList<Pipeline*> getEnabledPipelines();
 
     bool search(const QString & searchstring_);
+
+    void install();
+
+    QDir modBasePath() const;
+    void setModBasePath(const QDir &modBasePath);
+
+    Logger & getLogger();
 
 private slots:
 

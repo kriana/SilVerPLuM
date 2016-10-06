@@ -26,6 +26,10 @@ public:
 
     void setForceUnsupported(bool enabled);
 
+    bool getEnableFileGuard();
+
+    void setEnableFileGuard(bool enabled);
+
     bool getRunningBackupSDVSavegames();
 
     void setRunningBackupSDVSavegames(bool enabled);

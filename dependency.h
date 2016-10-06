@@ -35,6 +35,10 @@ public:
 
     QVersionNumber getVersion() const;
 
+    QString toString() const;
+
+    QString toPrettyString() const;
+
     /**
      * @brief Determines if parameters satisfy this dependency
      * @param id

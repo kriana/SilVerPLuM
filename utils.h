@@ -114,6 +114,11 @@ inline void copyDirectoryProgress(const QDir & from, const QDir & to, bool overw
         if(!parent.exists())
             parent.mkpath(".");
 
+        if(QFileInfo(dst).exists())
+        {
+            QFile(dst).remove();
+        }
+
         QFile::copy(src, dst);
     }));
 
@@ -158,6 +163,11 @@ inline void copyDirectory(const QDir & from, const QDir & to, bool overwrite)
 
         if(!parent.exists())
             parent.mkpath(".");
+
+        if(QFileInfo(dst).exists())
+        {
+            QFile(dst).remove();
+        }
 
         QFile::copy(src, dst);
     }

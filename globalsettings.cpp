@@ -72,6 +72,17 @@ void GlobalSettings::setForceUnsupported(bool enabled)
     m_Settings->sync();
 }
 
+bool GlobalSettings::getEnableFileGuard()
+{
+    return m_Settings->value("Mods/EnableFileGuard", true).toBool();
+}
+
+void GlobalSettings::setEnableFileGuard(bool enabled)
+{
+    m_Settings->setValue("Mods/EnableFileGuard", enabled);
+    m_Settings->sync();
+}
+
 bool GlobalSettings::getRunningBackupSDVSavegames()
 {
     return m_Settings->value("Running/BackupSDVSavegames", true).toBool();

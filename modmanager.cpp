@@ -143,7 +143,7 @@ bool ModManager::dependencySatisfied(const Dependency &dep)
     {
         QVersionNumber sdvv = m_profile->StardewValleyVersion();
 
-        if(sdvv.isNull())
+        if(sdvv.majorVersion() == 0)
             return true;
         else
             return dep.satisfies("stardewvalley", sdvv);
@@ -182,20 +182,58 @@ void ModManager::issueDependencyCheck()
     emit dependencyCheckFinished();
 }
 
+Logger &ModManager::getLogger()
+{
+    return m_logger;
+}
+
 QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const
 {
     return m_unsatisfiedDependencies;
 }
 
+void ModManager::install()
+{
+    for(Modification * mod : m_mods)
+    {
+        mod->install();
+    }
+}
+
+QString ModManager::resolveModUrl(const QString &url)
+{
+    if(!url.contains("://"))
+        return "";
+    if(url.contains("..") && GlobalSettings::instance()->getEnableFileGuard())
+        return "";
+
+    QString modid = url.split("://")[0];
+    QString path = url.split("://")[1];
+
+    if(modid != "stardewvalley")
+    {
+         Modification * mod = getModification(modid);
+
+         if(mod == nullptr)
+             return "";
+         return mod->modBasePath().absolutePath() + "/" + path;
+    }
+    else
+    {
+        return profile()->StardewValleyDir().absolutePath() + "/" + path;
+    }
+}
+
 void ModManager::loadMod(const QDir &directory)
 {
-    qInfo() << "Trying to load mod in " << directory.absolutePath();
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "load-mod", "Trying to load mod in " + directory.absolutePath());
 
     QString mod_config_path = directory.absoluteFilePath("mod.json");
 
     if(!QFileInfo(mod_config_path).exists())
     {
-        qWarning() << "Cannot find mod.json! Skipping";
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Cannot find mod.json! Skipping");
+
         return;
     }
 
@@ -203,7 +241,8 @@ void ModManager::loadMod(const QDir &directory)
 
     if(!mod_file.open(QFile::ReadOnly))
     {
-        qWarning() << "Cannot open mod.json! Skipping";
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
+
         return;
     }
 
@@ -212,14 +251,15 @@ void ModManager::loadMod(const QDir &directory)
 
     if(error.error != QJsonParseError::NoError)
     {
-        qWarning() << "Error while parsing JSON! Skipping!";
-        qWarning() << error.errorString();
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Error while parsing JSON! Skipping!");
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "json error: " + error.errorString());
+
         return;
     }
 
     if(json.isEmpty())
     {
-        qWarning() << "JSON is empty! Skipping!";
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "JSON is empty! Skipping!");
         return;
     }
 
@@ -227,7 +267,7 @@ void ModManager::loadMod(const QDir &directory)
 
     try
     {
-        mod = Modification::loadFromJson(this, json.object());
+        mod = Modification::loadFromJson(this, directory, json.object());
     }
     catch(...)
     {
@@ -238,12 +278,14 @@ void ModManager::loadMod(const QDir &directory)
     {
         if(m_modId.contains(mod->id()))
         {
-            qWarning() << "Conflicting mod IDs: Will overwrite " << mod->id();
+            getLogger().log(Logger::WARNING, "modmanager", "modmanager", "load-mod", "Conflicting mod IDs: Will overwrite " + mod->id());
+
             m_mods.removeAll(getModification(mod->id()));
         }
         else
         {
-            qInfo() << "Mod " << mod->id() << " loaded in profile " << m_profile->id();
+            getLogger().log(Logger::INFO, "modmanager", "modmanager", "load-mod", "Mod " + mod->id() + " loaded in profile " + m_profile->id());
+
         }
 
         m_mods.append(mod);
@@ -252,7 +294,7 @@ void ModManager::loadMod(const QDir &directory)
     }
     else
     {
-        qWarning() << "Could not load mod from JSON!";
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Could not load mod from JSON!");
     }
 }
 
@@ -262,7 +304,14 @@ void ModManager::loadMods()
     {
         QDir moddir = m_profile->profileModDir().absoluteFilePath(entry);
 
-        loadMod(moddir);
+        try
+        {
+            loadMod(moddir);
+        }
+        catch(...)
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Loading mod from " + moddir.absolutePath() + " failed!");
+        }
     }
 
     sortMods();

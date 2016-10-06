@@ -52,7 +52,7 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
         ui->btnEnable->setVisible(!enabled);
 
         // Set icon if available
-        QString iconfilename = m_currentPipeline->profileBaseDir().absoluteFilePath("icon.png");
+        QString iconfilename = m_currentPipeline->pipelineBaseDir().absoluteFilePath("icon.png");
         QPixmap icon;
 
         if(!icon.load(iconfilename))

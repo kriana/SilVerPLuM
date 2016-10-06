@@ -123,6 +123,7 @@ void ModManagerWidgetItem::updateData()
     ui->lblVersion->setText(mod->version().toString());
     ui->lblWebsite->setText(QString("<html><head/><body><p><a href=\"%1\"><span style=\" text-decoration: underline; color:#4c6b8a;\">Website</span></a></p></body></html>")
                             .arg(mod->url()));
+    ui->lblWebsite->setToolTip(mod->url());
 
     QList<Pipeline*> enabled = mod->getEnabledPipelines();
 

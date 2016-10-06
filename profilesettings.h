@@ -30,6 +30,7 @@ public slots:
 private:
     Ui::ProfileSettings *ui;
     Profile * m_CurrentProfile = nullptr;
+    bool saving = false;
 };
 
 #endif // PROFILESETTINGS_H

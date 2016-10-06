@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     GlobalSettings::instance()->getWindowState(this);
 
     profilesUpdated();
+    profileSelected(ProfileManager::instance()->getSelectedProfile());
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +47,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::playClicked()
 {
+    ui->playLogLog->clear();
+
     Game::instance()->setLauncher(ProfileManager::instance()->getSelectedProfile()->getLauncher());
     Game::instance()->prepareAndRun();
 }
@@ -64,10 +67,6 @@ void MainWindow::playSubActionTriggered()
                 Game::instance()->setLauncher(l);
                 Game::instance()->prepareAndRun();
             }
-        }
-        else
-        {
-
         }
     }
 }
