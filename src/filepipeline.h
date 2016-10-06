@@ -13,7 +13,7 @@ public:
 
     static FilePipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    void prime();
+    int prime();
 
 private:
 

@@ -70,9 +70,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QTextEdit" name="profileDescription"/>
-          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_5">
             <property name="minimumSize">
@@ -95,6 +92,9 @@
              </sizepolicy>
             </property>
            </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="MarkdownTextEditor" name="profileDescription"/>
           </item>
          </layout>
         </widget>
@@ -306,6 +306,11 @@
    <extends>QWidget</extends>
    <header>fileselectoredit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MarkdownTextEditor</class>
+   <extends>QPlainTextEdit</extends>
+   <header>markdowntexteditor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

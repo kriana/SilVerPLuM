@@ -36,6 +36,8 @@ private slots:
 
     void moveDownClicked();
 
+    void deleteClicked();
+
 private:
     Ui::ModManagerWidgetItem *ui;
 

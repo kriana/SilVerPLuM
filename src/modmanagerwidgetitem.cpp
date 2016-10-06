@@ -16,6 +16,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     connect(ui->btnDisableAll, &QPushButton::clicked, this, &ModManagerWidgetItem::disableClicked);
     connect(ui->btnSortUp, &QToolButton::clicked, this, &ModManagerWidgetItem::moveUpClicked);
     connect(ui->btnSortDown, &QToolButton::clicked, this, &ModManagerWidgetItem::moveDownClicked);
+    connect(ui->btnDelete, &QPushButton::clicked, this, &ModManagerWidgetItem::deleteClicked);
 
     ui->expandWidget->hide();
 }
@@ -83,7 +84,12 @@ void ModManagerWidgetItem::enableClicked()
 {
     if(m_currentModification != nullptr)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         m_currentModification->enableDefaults();
+
+        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -91,7 +97,12 @@ void ModManagerWidgetItem::disableClicked()
 {
     if(m_currentModification != nullptr)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         m_currentModification->disableAll();
+
+        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -108,6 +119,30 @@ void ModManagerWidgetItem::moveDownClicked()
     if(m_currentModification != nullptr)
     {
         m_currentModification->getModManager()->priotizeDown(m_currentModification->id());
+    }
+}
+
+void ModManagerWidgetItem::deleteClicked()
+{
+    if(m_currentModification != nullptr)
+    {
+        if(QMessageBox::question(this,
+                                 "Delete modification",
+                                 "Do you really want to delete the modification " + m_currentModification->name() + "?",
+                                 QMessageBox::Yes,
+                                 QMessageBox::No) != QMessageBox::Yes)
+            return;
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        QString id = m_currentModification->id();
+        ModManager * mgr = m_currentModification->getModManager();
+        setCurrentModification(nullptr);
+
+        mgr->deleteMod(id);
+
+        QApplication::restoreOverrideCursor();
     }
 }
 

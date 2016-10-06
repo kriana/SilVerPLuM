@@ -124,6 +124,10 @@ void ProfileSettings::save()
 {
     if(saving)
         return;
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
     saving = true;
 
     m_CurrentProfile->setName(ui->profileName->text().trimmed());
@@ -142,4 +146,6 @@ void ProfileSettings::save()
     saving = false;
 
     discart(); // Reload to be sure
+
+    QApplication::restoreOverrideCursor();
 }

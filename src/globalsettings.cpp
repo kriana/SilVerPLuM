@@ -5,7 +5,7 @@ GlobalSettings * GlobalSettings::m_pInstance = nullptr;
 
 GlobalSettings::GlobalSettings()
 {
-    m_Settings = new QSettings("CSDVMM", "CSDVMM");
+    m_Settings = new QSettings("SilVerPLuM", "SilVerPLuM");
 }
 
 GlobalSettings::~GlobalSettings()
@@ -33,6 +33,17 @@ void GlobalSettings::getWindowState(QMainWindow *widget)
 {
     widget->restoreGeometry(m_Settings->value("Window/Geometry").toByteArray());
     widget->restoreState(m_Settings->value("Window/State").toByteArray());
+}
+
+QString GlobalSettings::getCurrentProfile()
+{
+    return m_Settings->value("General/CurrentProfile", "").toString();
+}
+
+void GlobalSettings::setCurrentProfile(const QString &profileid)
+{
+    m_Settings->setValue("General/CurrentProfile", profileid);
+    m_Settings->sync();
 }
 
 bool GlobalSettings::getDLLRedirectXNA()

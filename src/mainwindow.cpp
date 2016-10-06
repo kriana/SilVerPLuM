@@ -7,6 +7,8 @@
 #include <QMenu>
 #include "globalsettings.h"
 #include "globalsettingsdialog.h"
+#include "utils.h"
+#include "logviewer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,10 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect events
     connect(ProfileManager::instance(), &ProfileManager::updated, this, &MainWindow::profilesUpdated);
     connect(ProfileManager::instance(), &ProfileManager::selected, this, &MainWindow::profileSelected);
-    connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::playClicked);
-    connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
+    connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::playClicked);    
     connect(ui->playLogClose, &QPushButton::clicked, this, &MainWindow::closeLogClicked);
     connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
+    connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);
     connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
     connect(Game::instance(), SIGNAL(logged(QString)), this, SLOT(gameLog(QString)));
     connect(Game::instance(), SIGNAL(progressed(bool,int,int,int)), this, SLOT(gameProgress(bool,int,int,int)));
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Update splitter
     ui->splitter->setSizes(QList<int>() << 100 << 500);
     ui->splitter_2->setSizes(QList<int>() << 100 << 500);
+    ui->splitter_3->setSizes(QList<int>() << 100 << 500);
 
     // UI lazyness
     ui->mainTabWidget->setCurrentWidget(ui->tabPlay);
@@ -38,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     profilesUpdated();
     profileSelected(ProfileManager::instance()->getSelectedProfile());
+
+    // Moved to here as it otherwise would reset the profile to default
+    connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
 }
 
 MainWindow::~MainWindow()
@@ -112,6 +118,9 @@ void MainWindow::profileSelected(Profile *p)
     // Set matching views
     ui->configProfileConfig->setCurrentProfile(p);
     ui->modManager->setModManager(p->getModManager());
+
+    // Set profile info in launcher screen
+    ui->profileInfo->setText(utils::makeTextEditHTML(utils::markdownToHTML(p->description())));
 }
 
 void MainWindow::profilesUpdated()
@@ -173,6 +182,11 @@ void MainWindow::openApplicationSettings()
 
     // Trigger update of mod list
     ui->modManager->reloadModList();
+}
+
+void MainWindow::openProfileLog()
+{
+    LogViewer::execForProfile(ProfileManager::instance()->getSelectedProfile());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

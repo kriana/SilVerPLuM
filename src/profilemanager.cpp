@@ -2,6 +2,7 @@
 #include <QRegExp>
 #include <QStandardPaths>
 #include "utils.h"
+#include "globalsettings.h"
 
 ProfileManager * ProfileManager::m_pInstance = nullptr;
 
@@ -49,7 +50,12 @@ void ProfileManager::initialize()
     if(m_Profiles.empty())
         createOrLoadProfile(Profile::DEFAULT_PROFILE_ID, Profile::DEFAULT_PROFILE_NAME);
 
-    selectProfile(m_Profiles.first());
+    Profile * current_by_setting = getProfile(GlobalSettings::instance()->getCurrentProfile());
+
+    if(current_by_setting == nullptr)
+        selectProfile(m_Profiles.first());
+    else
+        selectProfile(current_by_setting);
 }
 
 QList<Profile *> ProfileManager::getProfiles()
@@ -185,6 +191,6 @@ void ProfileManager::selectProfile(Profile *p)
         return;
 
     m_SelectedProfile = p;
-
+    GlobalSettings::instance()->setCurrentProfile(p->id());
     emit selected(p);
 }

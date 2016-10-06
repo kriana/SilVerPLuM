@@ -81,7 +81,7 @@
       <item row="0" column="0">
        <widget class="QTextEdit" name="lblIssues">
         <property name="styleSheet">
-         <string notr="true">background-color: transparent;</string>
+         <string notr="true">QTextEdit { background-color: transparent; }</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>

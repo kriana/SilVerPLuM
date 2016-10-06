@@ -45,18 +45,32 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
     return pip;
 }
 
-void DllPipeline::prime()
+int DllPipeline::prime()
 {
     /*if(alreadyPrimed())
     {
-        qInfo() << "Priming of dll-compile " << id() << " not needed.";
+        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
         return;
     }*/
 
-    qInfo() << "Priming dll-compile pipeline " << id();
+    int this_exit = 0;
+
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Start priming");
 
     if(enableNugetRestore())
-        runNuget();
+    {
+        int exit = runNuget();
+
+        if(exit != 0)
+        {
+            this_exit = -1;
+            getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime-nuget", "Nuget returned exit code " + QString::number(exit) + "!");
+        }
+        else
+        {
+            getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget", "Nuget operation was successful");
+        }
+    }
 
     // Look for *.csproj files and fix the dependencies
     for(QString file : utils::findAllFiles(pipelineBaseDir()))
@@ -67,7 +81,32 @@ void DllPipeline::prime()
         }
     }
 
-    writePrimeFile();
+    {
+        int exit = runMSBUILD();
+
+        if(exit != 0)
+        {
+            this_exit = -1;
+            getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild returned exit code " + QString::number(exit) + "!");
+        }
+        else
+        {
+            getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild was successful");
+        }
+    }
+
+    if(this_exit == 0)
+    {
+        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming was successful. Writing PRIME file.");
+        writePrimeFile();
+    }
+    else
+    {
+        getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime", "Priming was NOT successful!");
+        QFile(pipelineBaseDir().absoluteFilePath("PRIME")).remove(); // Remove PRIME
+    }
+
+    return this_exit;
 }
 
 bool DllPipeline::enableNugetRestore() const
@@ -105,7 +144,7 @@ void DllPipeline::writePrimeFile()
 {
     QFile lockfile(pipelineBaseDir().absoluteFilePath("PRIME"));
 
-    qInfo() << "PRIME info file will be written into " << pipelineBaseDir().absoluteFilePath("PRIME");
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "PRIME info file will be written into " + pipelineBaseDir().absoluteFilePath("PRIME"));
 
     if (!lockfile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -114,9 +153,9 @@ void DllPipeline::writePrimeFile()
     stream << Platform::getPlatformString();
 }
 
-void DllPipeline::runNuget()
+int DllPipeline::runNuget()
 {
-    qInfo() << "Running nuget restore in " << pipelineBaseDir().absolutePath();
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget", "Running nuget restore in " + pipelineBaseDir().absolutePath());
 
     QProcess process;
     process.setProgram(GlobalSettings::instance()->getProgramNuget());
@@ -125,11 +164,28 @@ void DllPipeline::runNuget()
 
     process.start();
     process.waitForFinished(-1);
+
+    return process.exitCode();
+}
+
+int DllPipeline::runMSBUILD()
+{
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
+
+    QProcess process;
+    process.setProgram(GlobalSettings::instance()->getProgramMSBUILD());
+    process.setArguments(QStringList());
+    process.setWorkingDirectory(pipelineBaseDir().absolutePath());
+
+    process.start();
+    process.waitForFinished(-1);
+
+    return process.exitCode();
 }
 
 void DllPipeline::fixReferences(const QString &projectFile)
 {
-    qInfo() << "REF_FIX Fixing references in " << projectFile;
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Fixing references in " + projectFile);
 
     QFile::copy(projectFile, projectFile + ".bak");
 
@@ -137,7 +193,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
     QFile file(projectFile);
     if (!file.open(QIODevice::ReadWrite) || !doc.setContent(&file))
     {
-        qWarning() << "Unable to open or parse file!";
+        getLogger().log(Logger::ERROR, "pipeline-dll-compile", id(), "prime-reffix", "Cannot read or parse project file!");
         return;
     }
 
@@ -150,7 +206,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
         if(nd.attributes().contains("Include"))
         {
             QString raw_include = nd.attributes().namedItem("Include").toAttr().value();
-            qDebug() << "REF " <<raw_include;
+            getLogger().log(Logger::DEBUG, "pipeline-dll-compile", id(), "prime-reffix", "Visiting " + raw_include);
 
             QString current_include;
 
@@ -166,7 +222,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
             // For XNA -> MonoGame override
             if(current_include.startsWith("Microsoft.Xna.Framework") && GlobalSettings::instance()->getDLLRedirectXNA())
             {
-                qInfo() << "Redirecting " << raw_include << " to MonoGame";
+                getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Redirecting " + raw_include + " to MonoGame");
 
                 current_include = "MonoGame.Framework";
             }
@@ -174,7 +230,8 @@ void DllPipeline::fixReferences(const QString &projectFile)
             if(m_referenceMap.contains(current_include))
             {
                 QString hint = mod()->getModManager()->resolveModUrl(m_referenceMap[current_include]);
-                qInfo() << "Include " << raw_include << " detected as " << current_include << " will be hinted to " << hint;
+                getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Include " + raw_include + " was detected as " + current_include + " and will be hinted to " + hint);
+
 
                 // Change the reference and add the hint path
                 nd.attributes().namedItem("Include").toAttr().setValue(current_include);
@@ -185,8 +242,6 @@ void DllPipeline::fixReferences(const QString &projectFile)
                 {
                     hint_element = doc.createElement("HintPath");
                     nd.appendChild(hint_element);
-
-                    qDebug() << "Created a new HintPath element for this";
                 }
 
                 if(hint_element.hasChildNodes()) // Expect text node here or something is extremely wrong
@@ -199,7 +254,6 @@ void DllPipeline::fixReferences(const QString &projectFile)
                     hint_element.appendChild(text_element);
                 }
 
-                qDebug() << "HI " << hint_element.nodeValue();
             }
         }
     }
@@ -208,5 +262,5 @@ void DllPipeline::fixReferences(const QString &projectFile)
     QTextStream stream(&file);
     doc.save(stream, 4);
 
-    qInfo() << "INFO Finished.";
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Finished");
 }

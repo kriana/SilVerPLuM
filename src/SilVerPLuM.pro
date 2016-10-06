@@ -8,11 +8,8 @@ QT       += core gui network concurrent xml webenginewidgets webchannel
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = CSDVMM
+TARGET = SilVerPLuM
 TEMPLATE = app
-
-DEFINES += QUAZIP_STATIC
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -44,9 +41,16 @@ SOURCES += main.cpp\
     dependencycheckerwidget.cpp \
     dllpipeline.cpp \
     logger.cpp \
-    markdownviewer.cpp \
-    markdownviewerpage.cpp \
-    markdowndocument.cpp
+    sundown/src/autolink.c \
+    sundown/src/buffer.c \
+    sundown/src/markdown.c \
+    sundown/src/stack.c \
+    sundown/html/houdini_href_e.c \
+    sundown/html/houdini_html_e.c \
+    sundown/html/html.c \
+    sundown/html/html_smartypants.c \
+    markdowntexteditor.cpp \
+    logviewer.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -77,9 +81,15 @@ HEADERS  += mainwindow.h \
     dependencycheckerwidget.h \
     dllpipeline.h \
     logger.h \
-    markdownviewer.h \
-    markdownviewerpage.h \
-    markdowndocument.h
+    sundown/src/autolink.h \
+    sundown/src/buffer.h \
+    sundown/src/html_blocks.h \
+    sundown/src/markdown.h \
+    sundown/src/stack.h \
+    sundown/html/houdini.h \
+    sundown/html/html.h \
+    markdowntexteditor.h \
+    logviewer.h
 
 
 FORMS    += mainwindow.ui \
@@ -91,9 +101,12 @@ FORMS    += mainwindow.ui \
     globalsettingsdialog.ui \
     modmanagerwidgetpipelineitem.ui \
     dependencycheckerwidget.ui \
-    markdownviewer.ui
+    markdownviewer.ui \
+    logviewer.ui
 
 RESOURCES += \
     resources.qrc
 
-unix:!macx: LIBS += -lquazip5
+# We need zlib and quazip for extracting/installing new mods
+unix: LIBS += -lquazip5 -lz
+unix: INCLUDEPATH += /usr/include/quazip5/

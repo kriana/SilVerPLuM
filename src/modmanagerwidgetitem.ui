@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
+    <width>675</width>
     <height>391</height>
    </rect>
   </property>
@@ -191,7 +191,8 @@
                 <string>Enable</string>
                </property>
                <property name="icon">
-                <iconset theme="dialog-ok"/>
+                <iconset theme="dialog-ok">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
@@ -201,7 +202,8 @@
                 <string>Disable</string>
                </property>
                <property name="icon">
-                <iconset theme="dialog-cancel"/>
+                <iconset theme="dialog-cancel">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
@@ -211,7 +213,8 @@
                 <string>Show more</string>
                </property>
                <property name="icon">
-                <iconset theme="arrow-down"/>
+                <iconset theme="arrow-down">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
                <property name="checkable">
                 <bool>true</bool>
@@ -231,7 +234,7 @@
          <item>
           <widget class="QTextEdit" name="lblDescription">
            <property name="styleSheet">
-            <string notr="true">background-color: transparent;</string>
+            <string notr="true">QTextEdit { background-color: transparent; }</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
@@ -317,6 +320,16 @@
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="btnDelete">
+             <property name="text">
+              <string>Delete modification</string>
+             </property>
+             <property name="icon">
+              <iconset theme="list-remove"/>
+             </property>
+            </widget>
+           </item>
            <item>
             <spacer name="horizontalSpacer">
              <property name="orientation">

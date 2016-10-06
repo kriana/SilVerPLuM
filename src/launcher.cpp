@@ -23,16 +23,19 @@ void Launcher::start()
         return;
     }
 
-    QString path = m_profile->StardewValleyDir().absoluteFilePath(executable.executable());
+    QString path = m_profile->getModManager()->resolveModUrl(executable.executable());
 
     Game::instance()->log("Running: " + path);
 
-    if(!QFileInfo(path).exists())
+    if(!QFileInfo(path).exists() || !QFileInfo(path).isFile())
     {
         Game::instance()->log("Could not run! Executable does not exist!");
         emit finished(-1);
         return;
     }
+
+    // Set permissions to executable
+    QFile(path).setPermissions(QFile(path).permissions() | QFile::ExeUser);
 
     if(m_process != nullptr)
         delete m_process;

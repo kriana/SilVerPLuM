@@ -2,9 +2,11 @@
 #include "platform.h"
 #include <QJsonArray>
 
-void FilePipeline::prime()
+int FilePipeline::prime()
 {
     // File mods don't have anything to prime
+
+    return 0;
 }
 
 FilePipeline::FilePipeline(Modification *mod, const QString & id) : Pipeline(mod, id)

@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "modmanager.h"
 #include "modmanagerwidgetitem.h"
+#include <QFileDialog>
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +13,7 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
 
     connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(search(QString)));
     connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(reloadModList()));
+    connect(ui->btnInstallMod, &QToolButton::clicked, this, &ModManagerWidget::installModClicked);
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -73,6 +75,35 @@ void ModManagerWidget::reloadModList()
     search(ui->searchBar->text());
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+}
+
+void ModManagerWidget::installModClicked()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::ExistingFiles);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        for(QString file : dlg.selectedFiles())
+        {
+            try
+            {
+                m_currentMM->addMod(file);
+            }
+            catch(...)
+            {
+                if(QMessageBox::critical(this,
+                                      "Add modification",
+                                      "Could not add " + file,
+                                      QMessageBox::Ok,
+                                      QMessageBox::Cancel) == QMessageBox::Cancel)
+                {
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void ModManagerWidget::search(const QString &searchstring_)

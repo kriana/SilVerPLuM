@@ -56,6 +56,10 @@ public:
 
     Logger & getLogger();
 
+    void addMod(const QString & filename);
+
+    void deleteMod(const QString & modid);
+
 public slots:
 
     void issueDependencyCheck();

@@ -10,9 +10,62 @@
 #include <QtWidgets>
 #include <QtConcurrent>
 #include <QTextEdit>
+#include <sundown/src/markdown.h>
+#include <sundown/html/html.h>
+#include <sundown/src/buffer.h>
 
 namespace utils
 {
+
+inline QString readAllTextFrom(const QString & path)
+{
+    QFile file(path);
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+        return "";
+
+    QTextStream stream(&file);
+    return stream.readAll();
+}
+
+inline QString makeTextEditHTML(const QString & htmlbody)
+{
+    return "<html><head/><body>" + htmlbody + "</body></html>";
+}
+
+/**
+ * @brief Took from https://github.com/sschober/qarkdown/blob/master/mainwindow.cpp
+ * @param in
+ * @return
+ */
+inline QString markdownToHTML(const QString & in)
+{
+    struct buf *ib, *ob;
+    struct sd_callbacks cbs;
+    struct html_renderopt opts;
+    struct sd_markdown *mkd;
+
+    if(in.size() > 0)
+    {
+        QByteArray qba = in.toUtf8();
+        const char *txt = qba.constData();
+        if(NULL == txt) qDebug() << "txt was null!";
+        if(0 < qba.size())
+        {
+            ib = bufnew(qba.size());
+            bufputs(ib,txt);
+            ob = bufnew(64);
+            sdhtml_renderer(&cbs,&opts,0);
+            mkd = sd_markdown_new(0,16,&cbs,&opts);
+            sd_markdown_render(ob,ib->data,ib->size,mkd);
+            sd_markdown_free(mkd);
+            return QString::fromUtf8(bufcstr(ob));
+        }
+        else
+            qDebug() <<"qstrlen was null";
+    }
+    return "";
+}
 
 inline void moveTextCursorToEnd(QTextEdit * edit)
 {

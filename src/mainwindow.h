@@ -43,6 +43,8 @@ private slots:
 
     void openApplicationSettings();
 
+    void openProfileLog();
+
 protected:
 
     void closeEvent(QCloseEvent * event);

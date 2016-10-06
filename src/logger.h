@@ -30,7 +30,7 @@ public:
         QString message;
         QTime timestamp = QTime::currentTime();
 
-        QString toString()
+        QString levelToString() const
         {
             QString msg;
 
@@ -53,6 +53,15 @@ public:
                 break;
             }
 
+            return msg;
+        }
+
+        QString toString() const
+        {
+            QString msg;
+
+            msg += levelToString();
+
             msg += "\t" + component;
             msg += "\t" + subcomponent;
             msg += "\t" + operation;
@@ -61,7 +70,7 @@ public:
             return msg;
         }
 
-        void print()
+        void print() const
         {
             switch(level)
             {
@@ -91,6 +100,10 @@ public:
     void log(Level level, const QString & component, const QString & subcomponent, const QString & operation, const QStringList & message);
 
     void insert(const Logger & log);
+
+    QList<Entry> entries() const;
+
+    void clear();
 
 private:
 

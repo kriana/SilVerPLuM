@@ -4,6 +4,9 @@
 #include <QJsonParseError>
 #include <QDebug>
 #include "globalsettings.h"
+#include <quazip.h>
+#include <JlCompress.h>
+#include "utils.h"
 
 ModManager::ModManager(Profile *profile) : m_profile(profile)
 {
@@ -185,6 +188,105 @@ void ModManager::issueDependencyCheck()
 Logger &ModManager::getLogger()
 {
     return m_logger;
+}
+
+void ModManager::addMod(const QString &filename)
+{
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "add-mod", "Trying to add mod " + filename);
+
+    QTemporaryDir temp;
+
+    if(temp.isValid())
+    {
+        QStringList extractedfiles = JlCompress::extractDir(filename, temp.path());
+
+        if(extractedfiles.isEmpty())
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "add-mod", "Extraction failed!");
+            throw std::runtime_error("Extraction failed!");
+        }
+
+        // Check files by loading the config as Modification
+        QString mod_config_path = QDir(temp.path()).absoluteFilePath("mod.json");
+        QFile mod_file(mod_config_path);
+
+        if(!mod_file.open(QFile::ReadOnly))
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
+
+            return;
+        }
+
+        QJsonParseError error;
+        QJsonDocument json = QJsonDocument::fromJson(mod_file.readAll(), &error);
+
+        if(error.error != QJsonParseError::NoError)
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "add-mod", "Loading JSON failed!");
+            throw std::runtime_error("Loading JSON failed!");
+        }
+
+        Modification * mod = Modification::loadFromJson(this, temp.path(), json.object());
+
+        if(mod == nullptr)
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "add-mod", "Loading mod failed!");
+            throw std::runtime_error("Loading mod failed!");
+        }
+
+        QString mod_id = mod->id();
+        delete mod;
+
+        // Copy to correct directory
+        QDir destination = profile()->profileModDir().absoluteFilePath(mod_id);
+
+        if(destination.exists())
+        {
+            getLogger().log(Logger::ERROR, "modmanager", "modmanager", "add-mod", "Cannot copy: Folder already existing!");
+            throw std::runtime_error("Folder already existing!");
+        }
+
+        utils::copyDirectoryProgress(temp.path(), destination.absolutePath(), true);
+
+        // Now load mod from destination
+        loadMod(destination);
+        sortMods();
+    }
+    else
+    {
+        getLogger().log(Logger::ERROR, "modmanager", "modmanager", "add-mod", "Could not create temp. dir");
+        throw std::runtime_error("Could not create temp. dir");
+    }
+}
+
+void ModManager::deleteMod(const QString &modid)
+{
+    Modification * mod = getModification(modid);
+
+    if(mod == nullptr)
+        throw std::invalid_argument("Cannot find mod id");
+
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "delete-mod", "Starting to remove mod " + mod->id());
+
+    // Deactivate it
+    mod->disableAll();
+
+    // Get rid of the directory
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "delete-mod", "Removing mod directory " + mod->modBasePath().absolutePath());
+
+    if(!mod->modBasePath().removeRecursively())
+    {
+        getLogger().log(Logger::WARNING, "modmanager", "modmanager", "delete-mod", "Could not remove directory " + mod->modBasePath().absolutePath());
+    }
+
+    // Free the mod and unload everything
+    m_modId.remove(mod->id());
+    m_mods.removeAll(mod);
+
+    delete mod;
+
+    // Re-define priorities and reload mod list
+    sortMods();
 }
 
 QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const

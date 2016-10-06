@@ -17,6 +17,8 @@ void Logger::log(Logger::Level level, const QString &component, const QString &s
     e.message = message;
 
     e.print();
+
+    m_entries << e;
 }
 
 void Logger::log(Logger::Level level, const QString &component, const QString &subcomponent, const QString &operation, const QStringList &message)
@@ -38,4 +40,14 @@ void Logger::insert(const Logger &log)
     std::sort(m_entries.begin(), m_entries.end(), [](const Entry & a, const Entry & b) {
        return a.timestamp < b.timestamp;
     });
+}
+
+QList<Logger::Entry> Logger::entries() const
+{
+    return QList<Entry>(m_entries);
+}
+
+void Logger::clear()
+{
+    m_entries.clear();
 }

@@ -13,7 +13,7 @@ public:
 
     static DllPipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    void prime();
+    int prime();
 
     bool enableNugetRestore() const;
 
@@ -40,7 +40,9 @@ private:
 
     void writePrimeFile();
 
-    void runNuget();
+    int runNuget();
+
+    int runMSBUILD();
 
     void fixReferences(const QString &projectFile);
 };

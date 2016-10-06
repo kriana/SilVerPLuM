@@ -18,6 +18,10 @@ public:
 
     void getWindowState(QMainWindow *widget);
 
+    QString getCurrentProfile();
+
+    void setCurrentProfile(const QString & profileid);
+
     bool getDLLRedirectXNA();
 
     void setDLLRedirectXNA(bool enabled);

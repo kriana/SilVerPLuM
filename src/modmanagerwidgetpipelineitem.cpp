@@ -81,7 +81,12 @@ void ModManagerWidgetPipelineItem::enableClicked()
 {
     if(m_currentPipeline != nullptr)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         m_currentPipeline->setEnabled(true);
+
+        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -89,6 +94,11 @@ void ModManagerWidgetPipelineItem::disableClicked()
 {
     if(m_currentPipeline != nullptr)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         m_currentPipeline->setEnabled(false);
+
+        QApplication::restoreOverrideCursor();
     }
 }
