@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/icons/module.svg</file>
+        <file>resources/icons/emblem-warning-16.png</file>
+        <file>resources/icons/emblem-warning.svg</file>
+        <file>resources/icons/mod-100.png</file>
+        <file>resources/icons/mod.svg</file>
+        <file>resources/icons/module-100.png</file>
+        <file>resources/images/default_background.jpg</file>
+        <file>resources/markdown/markdown.css</file>
+        <file>resources/markdown/marked.min.css</file>
+        <file>resources/markdown/qwebchannel.js</file>
+    </qresource>
+</RCC>
