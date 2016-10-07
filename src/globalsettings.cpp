@@ -94,6 +94,28 @@ void GlobalSettings::setEnableFileGuard(bool enabled)
     m_Settings->sync();
 }
 
+bool GlobalSettings::getEnableDepencencyCheck()
+{
+    return m_Settings->value("Mods/EnableDependencyCheck", true).toBool();
+}
+
+void GlobalSettings::setEnableDependencyCheck(bool enabled)
+{
+    m_Settings->setValue("Mods/EnableDependencyCheck", enabled);
+    m_Settings->sync();
+}
+
+bool GlobalSettings::getEnableDepencyCheckPriorityAwareness()
+{
+    return m_Settings->value("Mods/EnableDepencyCheckPriorityAwareness", true).toBool();
+}
+
+void GlobalSettings::setEnableDepencyCheckPriorityAwareness(bool enabled)
+{
+    m_Settings->setValue("Mods/EnableDepencyCheckPriorityAwareness", enabled);
+    m_Settings->sync();
+}
+
 bool GlobalSettings::getRunningBackupSDVSavegames()
 {
     return m_Settings->value("Running/BackupSDVSavegames", true).toBool();

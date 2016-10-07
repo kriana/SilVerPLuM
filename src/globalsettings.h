@@ -34,6 +34,14 @@ public:
 
     void setEnableFileGuard(bool enabled);
 
+    bool getEnableDepencencyCheck();
+
+    void setEnableDependencyCheck(bool enabled);
+
+    bool getEnableDepencyCheckPriorityAwareness();
+
+    void setEnableDepencyCheckPriorityAwareness(bool enabled);
+
     bool getRunningBackupSDVSavegames();
 
     void setRunningBackupSDVSavegames(bool enabled);

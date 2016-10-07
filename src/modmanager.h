@@ -41,7 +41,7 @@ public:
 
     bool priotizeDown(const QString & mod);
 
-    bool dependencySatisfied(const Dependency & dep);
+    bool dependencySatisfied(const Dependency & dep, Modification *requester, bool priorityaware);
 
     QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
 

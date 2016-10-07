@@ -113,6 +113,7 @@ bool ModManager::priotizeUp(const QString &mod)
         writePriorities();
 
         emit modListUpdated();
+        issueDependencyCheck();
         return true;
     }
 
@@ -133,13 +134,14 @@ bool ModManager::priotizeDown(const QString &mod)
         writePriorities();
 
         emit modListUpdated();
+        issueDependencyCheck();
         return true;
     }
 
     return false;
 }
 
-bool ModManager::dependencySatisfied(const Dependency &dep)
+bool ModManager::dependencySatisfied(const Dependency &dep, Modification * requester, bool priorityaware)
 {
     // Meta dependencies
     if(dep.getId() == "stardewvalley")
@@ -157,6 +159,13 @@ bool ModManager::dependencySatisfied(const Dependency &dep)
     {
         if(dep.satisfies(mod))
             return true;
+
+        if(priorityaware && requester == mod)
+        {
+            // We require an already INSTALLED mod
+            // Cancel here
+            break;
+        }
     }
 
     return false;
@@ -166,20 +175,26 @@ void ModManager::issueDependencyCheck()
 {
     m_unsatisfiedDependencies.clear();
 
-    for(Modification * tocheck : m_mods)
+
+    if(GlobalSettings::instance()->getEnableDepencencyCheck())
     {
-        QList<Dependency> unsatisfied;
+        bool priorityaware = GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness();
 
-        for(Dependency * dep : tocheck->dependencies())
+        for(Modification * tocheck : m_mods)
         {
-            if(!dependencySatisfied(*dep))
-            {
-                unsatisfied << *dep;
-            }
-        }
+            QList<Dependency> unsatisfied;
 
-        if(!unsatisfied.isEmpty())
-            m_unsatisfiedDependencies[tocheck->id()] = unsatisfied;
+            for(Dependency * dep : tocheck->dependencies())
+            {
+                if(!dependencySatisfied(*dep, tocheck, priorityaware))
+                {
+                    unsatisfied << *dep;
+                }
+            }
+
+            if(!unsatisfied.isEmpty())
+                m_unsatisfiedDependencies[tocheck->id()] = unsatisfied;
+        }
     }
 
     emit dependencyCheckFinished();
