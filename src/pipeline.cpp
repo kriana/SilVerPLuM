@@ -98,14 +98,14 @@ QMap<QString, QString> Pipeline::resolveInstallables()
 
                 QString rdst = dst + "/" + rsrc.mid(src.length());
 
-                getLogger().log(Logger::WARNING, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
+                getLogger().log(Logger::INFO, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
 
                 result[rsrc] = rdst;
             }
         }
         else
         {
-            getLogger().log(Logger::WARNING, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
+            getLogger().log(Logger::INFO, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 
             result[src] = dst;
         }
