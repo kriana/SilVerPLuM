@@ -157,6 +157,9 @@ bool ModManager::dependencySatisfied(const Dependency &dep, Modification * reque
     // Mod dependencies
     for(Modification * mod : m_mods)
     {
+        if(!mod->isPartiallyEnabled())
+            continue;
+
         if(dep.satisfies(mod))
             return true;
 

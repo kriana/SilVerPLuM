@@ -47,11 +47,11 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
 
 int DllPipeline::prime()
 {
-    /*if(alreadyPrimed())
+    if(alreadyPrimed())
     {
         getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
-        return;
-    }*/
+        return 0;
+    }
 
     int this_exit = 0;
 
