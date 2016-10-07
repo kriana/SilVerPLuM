@@ -35,7 +35,7 @@ private slots:
 
     void gameRunning(bool running);
 
-    void gameLog(const QString & log);
+    void gameLog(const Logger::Entry &entry);
 
     void gameProgress(bool enabled, int _min, int _max, int _value);
 

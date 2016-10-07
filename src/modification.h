@@ -83,6 +83,8 @@ public:
 
     void install();
 
+    void uninstall();
+
     QDir modBasePath() const;
     void setModBasePath(const QDir &modBasePath);
 

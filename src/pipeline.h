@@ -58,6 +58,8 @@ public:
 
     virtual void install();
 
+    virtual void uninstall();
+
     Logger & getLogger();
 
 protected:
@@ -89,6 +91,8 @@ private:
     QMap<QString, Launcher *> m_launchers;
 
     Logger m_logger;
+
+    QSet<QString> m_fgInstalledFiles;
 
 private slots:
 

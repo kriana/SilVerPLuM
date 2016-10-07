@@ -1,6 +1,6 @@
 #include "logger.h"
 
-Logger::Logger()
+Logger::Logger(QObject *parent) : QObject(parent)
 {
 
 }
@@ -19,6 +19,8 @@ void Logger::log(Logger::Level level, const QString &component, const QString &s
     e.print();
 
     m_entries << e;
+    emit logged(e);
+    emit loggedAsString(e.toString());
 }
 
 void Logger::log(Logger::Level level, const QString &component, const QString &subcomponent, const QString &operation, const QStringList &message)

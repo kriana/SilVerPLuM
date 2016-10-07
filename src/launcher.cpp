@@ -18,18 +18,22 @@ void Launcher::start()
 
     if(executable.empty())
     {
-        Game::instance()->log("Could not run! No executable for this platform!");
+        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! No executable for this platform!");
+
         emit finished(-1);
         return;
     }
 
     QString path = m_profile->getModManager()->resolveModUrl(executable.executable());
 
-    Game::instance()->log("Running: " + path);
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Executable url: " + executable.executable());
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute executable path: " + path);
+
 
     if(!QFileInfo(path).exists() || !QFileInfo(path).isFile())
     {
-        Game::instance()->log("Could not run! Executable does not exist!");
+        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Executable does not exist!");
+
         emit finished(-1);
         return;
     }
@@ -59,7 +63,7 @@ void Launcher::start()
         m_process->setArguments( QStringList() << "-c" << bash_argument);
     }
 
-    Game::instance()->log(m_process->program() + " " + m_process->arguments().join(" "));
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
 
     m_process->setWorkingDirectory(m_profile->StardewValleyDir().absolutePath());
 
@@ -149,13 +153,14 @@ Profile *Launcher::getProfile() const
 
 void Launcher::processFinished(int retcode)
 {
-    Game::instance()->log("Process finished with exit code " + QString::number(retcode));
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished", "Process finished with exit code " + QString::number(retcode));
+
     emit finished(retcode);
 }
 
 void Launcher::processError(QProcess::ProcessError error)
 {
-    Game::instance()->log("Process finished with error QProcess::ProcessError::" + QString::number(error));
+    getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "finished", "Process finished with error QProcess::ProcessError::" + QString::number(error));
 
     emit finished(-1);
 }

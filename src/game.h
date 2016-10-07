@@ -4,6 +4,7 @@
 #include "launcher.h"
 #include <QObject>
 #include <QtConcurrent>
+#include "logger.h"
 
 class Game : public QObject
 {
@@ -26,9 +27,9 @@ public:
 
     void prepareAndRun();
 
-    void log(const QString & text);
-
     int exitCode() const;
+
+    Logger & getLogger();
 
 private:
 
@@ -46,6 +47,18 @@ private:
 
     void progress(bool enabled, int _min = 0, int _max = 0, int _val = 0);    
 
+    void prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup);
+
+    void prepareCopySavegames(QDir sdvsavegames);
+
+    void postMoveSavegames();
+
+    void postRestoreContent();
+
+    void prepareInstallMods();
+
+    void postUninstallMods();
+
 private slots:
 
     void gameFinished(int retcode);
@@ -61,8 +74,6 @@ private slots:
 signals:
 
     void running(bool running);
-
-    void logged(const QString & text);
 
     void progressed(bool enabled, int _min, int _max, int _val);
 };

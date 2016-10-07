@@ -53,16 +53,17 @@ void Game::prepareAndRun()
     if(m_Running)
         throw std::runtime_error("Game already running!");
 
+    getLogger().log(Logger::INFO, "launcher", "launcher", "", "Start launching of launcher " + m_Launcher->id());
+
     m_Running = true;
     emit running(m_Running);
 
     m_prepareWatcher.setFuture(QtConcurrent::run(this, &Game::prepare));
 }
 
-void Game::log(const QString &text)
+Logger &Game::getLogger()
 {
-    qInfo() << text;
-    emit logged(text);
+    return m_Launcher->getProfile()->getLogger();
 }
 
 void Game::progress(bool enabled, int _min, int _max, int _val)
@@ -70,26 +71,26 @@ void Game::progress(bool enabled, int _min, int _max, int _val)
     emit progressed(enabled, _min, _max, _val);
 }
 
-void Game::prepare()
+void Game::prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup)
 {
-    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
-    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
-    QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
-    QDir sdvsavegames = Profile::StardewValleySavegameDir();
+    getLogger().log(Logger::INFO, "launcher", "prepare", "backup-content", "Backing up content directory");
 
-    log("[1/3] Preparing game data ...");
-    log("Backing up Content directory ...");
     progress(true, 0, 6, 1);
     if(sdvcontentbackup.exists())
     {
-        log("Warning: Content backup directory already exists. Deleting it now!");
+        getLogger().log(Logger::WARNING, "launcher", "prepare", "backup-content", "Content backup directory already exists. Deleting it now!");
         sdvcontentbackup.removeRecursively();
     }
 
     progress(true, 0, 6, 2);
     utils::copyDirectory(sdvcontentdir, sdvcontentbackup , true);
 
-    log("Copying savegames from profile ...");
+    getLogger().log(Logger::INFO, "launcher", "prepare", "backup-content", "Content folder backup created");
+}
+
+void Game::prepareCopySavegames(QDir sdvsavegames)
+{
+    getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Copying savegames to savegame folder");
 
     progress(true, 0, 6, 3);
     QTemporaryDir savegamebackups;
@@ -98,7 +99,7 @@ void Game::prepare()
     {
         if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
         {
-            log("Existing savegames will be backed up to " + savegamebackups.path());
+            getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
             progress(true, 0, 6, 4);
             utils::copyDirectory(sdvsavegames, savegamebackups.path(), true);
 
@@ -110,35 +111,51 @@ void Game::prepare()
     }
     else
     {
-        qWarning() << "Could not backup savegames. Refusing to clear directory.";
+        getLogger().log(Logger::ERROR, "launcher", "prepare", "restore-profile-savegames", "Could not backup savegames. Refusing to clear directory.");
     }
 
     progress(true, 0, 6, 6);
     utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), sdvsavegames, true);
 
-    log("Installing mods ...");
+    getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Savegames copied");
+}
 
+void Game::prepareInstallMods()
+{
+    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Starting to install mods");
     m_Launcher->getProfile()->getModManager()->install();
+    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Mods installed");
+}
 
+void Game::prepare()
+{
+    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Copying savegames to savegame folder");
+
+    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
+    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
+    QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
+    QDir sdvsavegames = Profile::StardewValleySavegameDir();
+
+    prepareBackupContent(sdvcontentdir, sdvcontentbackup);
+    prepareCopySavegames(sdvsavegames);
+    prepareInstallMods();
 }
 
 void Game::run()
 {
-    log("[2/3] Running game ...");
+    getLogger().log(Logger::INFO, "launcher", "run", "run", "Running launcher");
     progress(false, 0, 0, 0);
     m_Launcher->start();
 }
 
-void Game::post()
+void Game::postMoveSavegames()
 {
-    log("[3/3] Post-game actions ...");
-
-    log("Copying savegames to profile ...");
+    getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Moving savegames back to profile directory");
     progress(true, 0, 5, 1);
     QDir sdvsavegames = Profile::StardewValleySavegameDir();
 
     QTemporaryDir savegamebackups;
-    progress(true, 0, 5, 2);    
+    progress(true, 0, 5, 2);
 
     if(savegamebackups.isValid())
     {
@@ -146,7 +163,8 @@ void Game::post()
                 !utils::directoryEmpty(m_Launcher->getProfile()->profileSavegameDir()))
         {
             savegamebackups.setAutoRemove(false);
-            log("Existing savegames will be backed up to " + savegamebackups.path());
+            getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
+
             progress(true, 0, 5, 3);
 
             utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), savegamebackups.path(), true);
@@ -156,13 +174,18 @@ void Game::post()
     }
     else
     {
-        qWarning() << "Could not backup savegames. Refusing to clear directory.";
+        getLogger().log(Logger::ERROR, "launcher", "post", "move-savegames", "Could not backup savegames. Refusing to clear directory.");
     }
 
     progress(true, 0, 5, 4);
     utils::copyDirectory(sdvsavegames, m_Launcher->getProfile()->profileSavegameDir(), true);
 
-    log("Restoring content folder ...");
+    getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Savegames moved");
+}
+
+void Game::postRestoreContent()
+{
+    getLogger().log(Logger::INFO, "launcher", "post", "restore-content", "Starting to restore content directory");
     QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
@@ -175,13 +198,31 @@ void Game::post()
     }
     else
     {
-        qWarning() << "Backup does not exist! Please do not interfere with those processes or you'll lose data!";
+        getLogger().log(Logger::ERROR, "launcher", "post", "restore-content", "Backup does not exist! Please do not interfere with those processes or you'll lose data!");
     }
+}
+
+void Game::postUninstallMods()
+{
+    getLogger().log(Logger::INFO, "launcher", "post", "uninstall-mods", "Beginning to uninstall mods");
+    m_Launcher->getProfile()->getModManager()->uninstall();
+    getLogger().log(Logger::INFO, "launcher", "post", "uninstall-mods", "Mods have been uninstalled");
+}
+
+void Game::post()
+{
+    getLogger().log(Logger::INFO, "launcher", "post", "post", "Beginning post-launch actions");
+
+    postMoveSavegames();
+
+    postUninstallMods();
+
+    postRestoreContent();
 }
 
 void Game::finish()
 {
-    log("[] Finished. Last exit code is " + QString::number(m_exitCode));
+    getLogger().log(Logger::INFO, "launcher", "post", "finish", "Launcher finished operation with exit code " + QString::number(m_exitCode));
 
     m_Running = false;
     emit running(m_Running);
@@ -189,6 +230,21 @@ void Game::finish()
 
 void Game::gameFinished(int retcode)
 {
-    m_exitCode = retcode;
+    if(retcode != 0)
+    {
+        if(Platform::getCurrentPlatform() != Platform::Windows)
+        {
+            // The Mono kickstarter script leads to 137 error code on Linux/Mac (?)
+            if(retcode != 137)
+            {
+                m_exitCode = retcode;
+            }
+        }
+        else
+        {
+            m_exitCode = retcode;
+        }
+    }
+
     m_postWatcher.setFuture(QtConcurrent::run(this, &Game::post));
 }

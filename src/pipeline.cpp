@@ -128,25 +128,27 @@ void Pipeline::install()
 {
     getLogger().log(Logger::INFO, "pipeline", id(), "install", "Started installation");
 
-
+    m_fgInstalledFiles.clear();
     QMap<QString, QString> resolved_installables = resolveInstallables();
 
     for(QString src : resolved_installables.keys())
     {
         QString dst = resolved_installables[src];
 
-        QDir dst_file_dir = QFileInfo(src).absoluteDir();
+        QDir dst_file_dir = QFileInfo(dst).absoluteDir();
 
         // Prevent overwriting files outside Content dir
         if(QFileInfo(dst).exists() && GlobalSettings::instance()->getEnableFileGuard())
         {
             QDir sdvdir = mod()->getModManager()->profile()->StardewValleyDir();
 
-            if(dst_file_dir == sdvdir ||
-                    dst_file_dir == sdvdir.absoluteFilePath("_MACOSX") ||
-                    dst_file_dir == sdvdir.absoluteFilePath("lib") ||
-                    dst_file_dir == sdvdir.absoluteFilePath("lib64") ||
-                    dst_file_dir == sdvdir.absoluteFilePath("mono"))
+            //getLogger().log(Logger::DEBUG, "pipeline", id(), "install", dst_file_dir.absolutePath() + " == " + sdvdir.absolutePath());
+
+            if(dst_file_dir.absolutePath() == sdvdir.absolutePath() ||
+                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("_MACOSX")).absolutePath() ||
+                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib")).absolutePath() ||
+                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib64")).absolutePath() ||
+                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("mono")).absolutePath())
             {
                 getLogger().log(Logger::WARNING, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
 
@@ -178,7 +180,28 @@ void Pipeline::install()
             getLogger().log(Logger::WARNING, "pipeline", id(), "install", "Could not install " + src + " to " + dst);
         }
 
+        m_fgInstalledFiles.insert(dst); // Mark as installed
+
     }
+}
+
+void Pipeline::uninstall()
+{
+    getLogger().log(Logger::INFO, "pipeline", id(), "uninstall", "Started uninstallation");
+
+    for(QString dst : m_fgInstalledFiles)
+    {
+        if(QFile(dst).remove())
+        {
+            getLogger().log(Logger::INFO, "pipeline", id(), "uninstall", "Successfully uninstalled " + dst);
+        }
+        else
+        {
+            getLogger().log(Logger::WARNING, "pipeline", id(), "uninstall", "Could not uninstall " + dst);
+        }
+    }
+
+    m_fgInstalledFiles.clear();
 }
 
 bool Pipeline::unsupported() const

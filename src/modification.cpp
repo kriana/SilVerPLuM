@@ -128,6 +128,14 @@ void Modification::install()
     }
 }
 
+void Modification::uninstall()
+{
+    for(Pipeline * p : getEnabledPipelines())
+    {
+        p->uninstall();
+    }
+}
+
 void Modification::modEnabledDisabled(const QString &modid, const QString &contentid, bool enabled)
 {
     if(modid == id())

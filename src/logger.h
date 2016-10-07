@@ -8,9 +8,12 @@
 #include <QDebug>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QObject>
 
-class Logger
+class Logger : public QObject
 {
+    Q_OBJECT
+
 public:
 
     enum Level
@@ -93,7 +96,7 @@ public:
         }
     };
 
-    Logger();
+    Logger(QObject * parent = 0);
 
     void log(Level level, const QString & component, const QString & subcomponent, const QString & operation, const QString & message);
 
@@ -110,6 +113,14 @@ private:
     QMutex m_mutex;
 
     QList<Entry> m_entries;
+
+signals:
+
+    void logged(const Entry & entry);
+
+    void loggedAsString(const QString & message);
 };
+
+Q_DECLARE_METATYPE(Logger::Entry)
 
 #endif // LOGGER_H

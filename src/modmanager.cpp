@@ -323,6 +323,14 @@ void ModManager::install()
     }
 }
 
+void ModManager::uninstall()
+{
+    for(Modification * mod : m_mods)
+    {
+        mod->uninstall();
+    }
+}
+
 QString ModManager::resolveModUrl(const QString &url)
 {
     if(!url.contains("://"))

@@ -47,6 +47,8 @@ public:
 
     void install();
 
+    void uninstall();
+
     /**
      * @brief Resolves mod file paths like modid://file
      * @param url

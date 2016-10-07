@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
     connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);
     connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
-    connect(Game::instance(), SIGNAL(logged(QString)), this, SLOT(gameLog(QString)));
     connect(Game::instance(), SIGNAL(progressed(bool,int,int,int)), this, SLOT(gameProgress(bool,int,int,int)));
 
     // Update splitter
@@ -54,6 +53,13 @@ MainWindow::~MainWindow()
 void MainWindow::playClicked()
 {
     ui->playLogLog->clear();
+    qRegisterMetaType<Logger::Entry>();
+    connect(&ProfileManager::instance()->getSelectedProfile()->getLogger(),
+            &Logger::logged,
+            this,
+            &MainWindow::gameLog,
+            Qt::QueuedConnection);
+    QApplication::processEvents();
 
     Game::instance()->setLauncher(ProfileManager::instance()->getSelectedProfile()->getLauncher());
     Game::instance()->prepareAndRun();
@@ -138,6 +144,7 @@ void MainWindow::gameRunning(bool running)
     ui->tabConfigure->setEnabled(!running);
     ui->tabMod->setEnabled(!running);
     ui->playLogClose->setEnabled(!running);
+    ui->tabManage->setEnabled(!running);
 
     if(running)
     {
@@ -147,6 +154,11 @@ void MainWindow::gameRunning(bool running)
     }
     else
     {
+        disconnect(&ProfileManager::instance()->getSelectedProfile()->getLogger(),
+                &Logger::logged,
+                this,
+                &MainWindow::gameLog);
+
         ui->mainTabWidget->setCurrentWidget(ui->tabPlay);
 
         // Go back if everything is OK
@@ -155,9 +167,16 @@ void MainWindow::gameRunning(bool running)
     }
 }
 
-void MainWindow::gameLog(const QString &log)
+void MainWindow::gameLog(const Logger::Entry &entry)
 {
-    ui->playLogLog->insertPlainText(log + "\n");
+    ui->playLogLog->addTopLevelItem(new QTreeWidgetItem(ui->playLogLog,
+                                                        QStringList() <<
+                                                        entry.levelToString() <<
+                                                        entry.timestamp.toString() <<
+                                                        entry.component <<
+                                                        entry.subcomponent <<
+                                                        entry.operation <<
+                                                        entry.message));
     ui->playLogLog->verticalScrollBar()->setValue(ui->playLogLog->verticalScrollBar()->maximum());
 }
 
