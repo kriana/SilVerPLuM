@@ -185,6 +185,9 @@ void ModManager::issueDependencyCheck()
 
         for(Modification * tocheck : m_mods)
         {
+            if(!tocheck->isPartiallyEnabled())
+                continue;
+
             QList<Dependency> unsatisfied;
 
             for(Dependency * dep : tocheck->dependencies())
