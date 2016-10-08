@@ -273,7 +273,7 @@ inline bool fileEqual(const QString & file1, const QString & file2)
     return h1 == h2;
 }
 
-inline bool folderEqual(const QDir & dir1, const QDir & dir2)
+inline bool folderEqual(const QDir & dir1, const QDir & dir2, const QStringList & excluded = QStringList())
 {
     QStringList dir1_files = findAllFiles(dir1);
     QStringList dir2_files = findAllFiles(dir2);
@@ -285,7 +285,12 @@ inline bool folderEqual(const QDir & dir1, const QDir & dir2)
 
     for(QString path : dir1_files)
     {
-        QString path2 = dir2.absolutePath() + "/" + path.mid(dir1.absolutePath().size());
+        QString sub = path.mid(dir1.absolutePath().size() + 1);
+
+        if(excluded.contains(sub))
+            continue;
+
+        QString path2 = dir2.absolutePath() + "/" + sub;
 
         if(!fileEqual(path, path2))
             return false;

@@ -49,7 +49,7 @@
   </layout>
   <action name="actionDelete">
    <property name="icon">
-    <iconset theme="list-remove">
+    <iconset theme="edit-delete">
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
@@ -67,7 +67,8 @@
   </action>
   <action name="actionSingleOut">
    <property name="icon">
-    <iconset theme="edit-copy"/>
+    <iconset theme="edit-copy">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Single out</string>

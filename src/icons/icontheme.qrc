@@ -4115,6 +4115,5 @@
         <file>breeze/status/symbolic/rating-unrated.svg</file>
         <file>breeze/status/symbolic/semi-starred-symbolic-rtl.svg</file>
         <file>breeze/status/symbolic/semi-starred-symbolic.svg</file>
-        <file>resources.qrc</file>
     </qresource>
 </RCC>

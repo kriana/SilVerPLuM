@@ -147,6 +147,6 @@ QDir Savegame::directory() const
 
 bool Savegame::contentEquals(Savegame *other) const
 {
-    return utils::folderEqual(directory(), other->directory());
+    return utils::folderEqual(directory(), other->directory(), QStringList() << "SilVerPLuM-info.ini");
 }
 

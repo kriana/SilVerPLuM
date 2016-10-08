@@ -123,8 +123,14 @@ FORMS    += mainwindow.ui \
     savegameviewerdialog.ui
 
 RESOURCES += \
-    resources.qrc \
-    icons/icontheme.qrc
+    resources.qrc
+
+
+# The icon theme is only needed for Mac and Windows
+win32: RESOURCES += icons/icontheme.qrc
+win64: RESOURCES += icons/icontheme.qrc
+macx: RESOURCES += icons/icontheme.qrc
+
 
 # We need zlib and quazip for extracting/installing new mods
 unix: LIBS += -lquazip5 -lz
