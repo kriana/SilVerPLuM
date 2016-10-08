@@ -321,12 +321,19 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QPushButton" name="btnDelete">
+            <widget class="QToolButton" name="btnDelete">
              <property name="text">
               <string>Delete modification</string>
              </property>
              <property name="icon">
-              <iconset theme="list-remove"/>
+              <iconset theme="list-remove">
+               <normaloff>.</normaloff>.</iconset>
+             </property>
+             <property name="popupMode">
+              <enum>QToolButton::MenuButtonPopup</enum>
+             </property>
+             <property name="toolButtonStyle">
+              <enum>Qt::ToolButtonFollowStyle</enum>
              </property>
             </widget>
            </item>
@@ -372,6 +379,14 @@
     </widget>
    </item>
   </layout>
+  <action name="actionCopyToProfile">
+   <property name="icon">
+    <iconset theme="edit-copy"/>
+   </property>
+   <property name="text">
+    <string>Copy to another profile</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>

@@ -33,7 +33,7 @@ public:
 
     Pipeline * getPipeline(const QString & mod, const QString & content);
 
-    void setEnabled(const QString & mod, const QString & content, bool enabled);
+    int setEnabled(const QString & mod, const QString & content, bool enabled);
 
     bool isEnabled(const QString & mod, const QString & content);
 
@@ -61,6 +61,8 @@ public:
     void addMod(const QString & filename);
 
     void deleteMod(const QString & modid);
+
+    void copyModTo(const QString & modid, Profile * p);
 
 public slots:
 

@@ -3,6 +3,7 @@
 #include "modification.h"
 #include "modmanager.h"
 #include "globalsettings.h"
+#include <QMessageBox>
 
 ModManagerWidgetPipelineItem::ModManagerWidgetPipelineItem(QWidget *parent) :
     QWidget(parent),
@@ -84,9 +85,14 @@ void ModManagerWidgetPipelineItem::enableClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        m_currentPipeline->setEnabled(true);
+        int err = m_currentPipeline->setEnabled(true);
 
         QApplication::restoreOverrideCursor();
+
+        if(err != 0)
+        {
+            QMessageBox::information(this, "Enable content", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+        }
     }
 }
 

@@ -44,7 +44,7 @@ public:
 
     bool isEnabled();
 
-    void setEnabled(bool enabled);
+    int setEnabled(bool enabled);
 
     QDir pipelineBaseDir();
 

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network concurrent xml
+QT       += core gui concurrent xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -135,3 +135,6 @@ macx: RESOURCES += icons/icontheme.qrc
 # We need zlib and quazip for extracting/installing new mods
 unix: LIBS += -lquazip5 -lz
 unix: INCLUDEPATH += /usr/include/quazip5/
+
+# Make the windows executable have an icon
+RC_FILE = SilVerPLuM.rc

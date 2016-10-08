@@ -8,6 +8,9 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->appName->setText(QApplication::applicationName());
+    ui->appVersion->setText(QApplication::applicationVersion());
+
     connect(ui->programsMSBUILD, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->programsNuget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->modsRedirectXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));

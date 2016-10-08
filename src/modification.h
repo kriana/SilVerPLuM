@@ -64,7 +64,7 @@ public:
 
     QStringList getPipelineIds();
 
-    void enableDefaults();
+    int enableDefaults();
 
     void disableAll();
 

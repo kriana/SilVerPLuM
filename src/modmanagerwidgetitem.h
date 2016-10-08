@@ -38,6 +38,8 @@ private slots:
 
     void deleteClicked();
 
+    void copyToProfileClicked();
+
 private:
     Ui::ModManagerWidgetItem *ui;
 

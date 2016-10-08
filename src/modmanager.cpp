@@ -58,23 +58,27 @@ Pipeline *ModManager::getPipeline(const QString &mod, const QString &content)
     return m->getPipeline(content);
 }
 
-void ModManager::setEnabled(const QString &mod, const QString &content, bool enabled)
+int ModManager::setEnabled(const QString &mod, const QString &content, bool enabled)
 {
     Pipeline * p = getPipeline(mod, content);
 
     // If not supported by platform, skip mod
     if(p->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
-        return;
+        return -1;
 
     m_config->setValue(mod + "/content/" + content, enabled);
 
+    int err = 0;
+
     if(enabled)
     {
-        getPipeline(mod, content)->prime();
+        err = getPipeline(mod, content)->prime();
     }
 
     emit modEnabledDisabled(mod, content, enabled);
     issueDependencyCheck();
+
+    return err;
 }
 
 bool ModManager::isEnabled(const QString &mod, const QString &content)
@@ -308,6 +312,27 @@ void ModManager::deleteMod(const QString &modid)
 
     // Re-define priorities and reload mod list
     sortMods();
+}
+
+void ModManager::copyModTo(const QString &modid, Profile *p)
+{
+    Modification * mod = getModification(modid);
+
+    if(mod == nullptr)
+        throw std::invalid_argument("Cannot find mod id");
+
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "copy-mod", "Started to copy mod " + modid + " to " + p->id());
+
+    QDir destination = p->profileModDir().absoluteFilePath(mod->id());
+    destination.removeRecursively();
+
+    utils::copyDirectory(mod->modBasePath(), destination, true);
+
+    getLogger().log(Logger::INFO, "modmanager", "modmanager", "copy-mod", "Finished");
+
+    // Evil
+    p->getModManager()->loadMod(destination);
+    p->getModManager()->sortMods();
 }
 
 QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const

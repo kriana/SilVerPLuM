@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
         QIcon::setThemeName("breeze");
     }
 
+    QApplication::setApplicationName("SilVerPLuM");
+    QApplication::setApplicationVersion("1.0.0.0");
+
     MainWindow w;
     w.show();
     ret = a.exec();

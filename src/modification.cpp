@@ -333,15 +333,22 @@ void Modification::addPipeline(const QString &id, Pipeline *p)
     });
 }
 
-void Modification::enableDefaults()
+int Modification::enableDefaults()
 {
+    int err = 0;
+
     for(Pipeline * pip : m_Pipelines)
     {
         if(pip->isdefault())
         {
-           pip->setEnabled(true);
+           int e = pip->setEnabled(true);
+
+           if(e != 0)
+               err = e;
         }
     }
+
+    return err;
 }
 
 void Modification::disableAll()

@@ -12,6 +12,26 @@ Included is a simple savegame manager that can make backups of your savegames wi
 ## Mod manager
 The mod manager supports content replacer mods and DLL mods. It has dependency-checking, so you don't have to fear that you are missing a mod that is needed by another mod. A simple interface offers easy enabling/disabling of mods and optional content of mods with just one click.
 
+# Installation
+
+<Precompiled>
+
+SilVerPLuM will need following programs to be able to compile DLL mods:
+
+* Nuget
+* msbuild (Windows) or xbuild (Mac, Linux)
+
+You may need to set the correct paths of these programs in SilVerPLuM's application settings.
+
+## Building
+SilVerPLuM is written in Qt5 with qmake building system and has following dependencies:
+
+* Qt5 (core gui concurrent xml)
+* Quazip5
+* zlib
+
+If you want to use the commandline, you can use `qmake` and then `make`. Otherwise you can use an IDE like QtCreator.
+
 # Using SilVerPLuM
 
 ## Concepts

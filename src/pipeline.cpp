@@ -241,9 +241,9 @@ bool Pipeline::isEnabled()
     return m_mod->getModManager()->isEnabled(m_mod->id(), id());
 }
 
-void Pipeline::setEnabled(bool enabled)
+int Pipeline::setEnabled(bool enabled)
 {
-    m_mod->getModManager()->setEnabled(m_mod->id(), id(), enabled);
+    return m_mod->getModManager()->setEnabled(m_mod->id(), id(), enabled);
 }
 
 QDir Pipeline::pipelineBaseDir()

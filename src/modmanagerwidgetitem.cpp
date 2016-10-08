@@ -4,6 +4,8 @@
 #include "modmanagerwidgetpipelineitem.h"
 #include "modmanager.h"
 #include <QPixmap>
+#include <QMenu>
+#include "profilemanager.h"
 
 ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     QWidget(parent),
@@ -11,12 +13,17 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    QMenu *action_menu = new QMenu(ui->btnDelete);
+    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile);
+    ui->btnDelete->setMenu(action_menu);
+
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
     connect(ui->btnEnableDefaults, &QPushButton::clicked, this,&ModManagerWidgetItem::enableClicked);
     connect(ui->btnDisableAll, &QPushButton::clicked, this, &ModManagerWidgetItem::disableClicked);
     connect(ui->btnSortUp, &QToolButton::clicked, this, &ModManagerWidgetItem::moveUpClicked);
     connect(ui->btnSortDown, &QToolButton::clicked, this, &ModManagerWidgetItem::moveDownClicked);
     connect(ui->btnDelete, &QPushButton::clicked, this, &ModManagerWidgetItem::deleteClicked);
+    connect(ui->actionCopyToProfile, &QAction::triggered, this, &ModManagerWidgetItem::copyToProfileClicked);
 
     ui->expandWidget->hide();
 }
@@ -87,9 +94,14 @@ void ModManagerWidgetItem::enableClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        m_currentModification->enableDefaults();
+        int err = m_currentModification->enableDefaults();
 
         QApplication::restoreOverrideCursor();
+
+        if(err != 0)
+        {
+            QMessageBox::information(this, "Enable defaults", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+        }
     }
 }
 
@@ -141,6 +153,63 @@ void ModManagerWidgetItem::deleteClicked()
         setCurrentModification(nullptr);
 
         mgr->deleteMod(id);
+
+        QApplication::restoreOverrideCursor();
+    }
+}
+
+void ModManagerWidgetItem::copyToProfileClicked()
+{
+    QStringList profiles;
+
+    for(Profile * p : ProfileManager::instance()->getProfiles())
+    {
+        if(p != m_currentModification->getModManager()->profile())
+        {
+            profiles << p->name() + " (" + p->id() + ")";
+        }
+    }
+
+    if(profiles.isEmpty())
+    {
+        QMessageBox::information(this, "Copy modification to ...", "You don't have other profiles.", QMessageBox::Ok);
+        return;
+    }
+
+    QInputDialog dlg;
+    dlg.setInputMode(QInputDialog::TextInput);
+    dlg.setOption(QInputDialog::UseListViewForComboBoxItems, true);
+    dlg.setComboBoxItems(profiles);
+    dlg.setLabelText("Select the profile where the modification should be copied to:");
+    dlg.setOkButtonText("Copy modification");
+
+    if(dlg.exec() == QInputDialog::Accepted)
+    {
+        QString profileid = dlg.textValue().split(" ").last();
+        profileid = profileid.mid(1, profileid.size() - 2);
+        Profile * p = ProfileManager::instance()->getProfile(profileid);
+
+        if(p == nullptr)
+        {
+            throw std::runtime_error("Implementation fail!");
+        }
+
+        if(p->getModManager()->getModification(m_currentModification->id()) != nullptr)
+        {
+            QMessageBox overwritedlg;
+            overwritedlg.setText("Copy to ...");
+            overwritedlg.setInformativeText("There is already a modification with the same name. What do you want to do? Keep in mind that this could break some thins.");
+            overwritedlg.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            overwritedlg.setButtonText(QMessageBox::Ok, "Overwrite");
+
+            if(overwritedlg.exec() == QMessageBox::Cancel)
+                return;
+        }
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        m_currentModification->getModManager()->copyModTo(m_currentModification->id(), p);
 
         QApplication::restoreOverrideCursor();
     }

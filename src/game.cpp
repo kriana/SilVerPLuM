@@ -128,6 +128,27 @@ void Game::prepareCopySavegames(QDir sdvsavegames)
 void Game::prepareInstallMods()
 {
     getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Starting to install mods");
+
+    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods-prime", "Pipelines will be primed for added cross-platform capabilities ...");
+
+    // Call prime(), again, which may be necessary if the user switched OSes
+    // Still mod manager widget prime() is important as the user gets direct feedback
+
+    for(Modification * mod : m_Launcher->getProfile()->getModManager()->getModifications())
+    {
+        for(Pipeline * p : mod->getPipelines())
+        {
+            if(p->isEnabled())
+            {
+                int err = p->prime();
+                if(err != 0)
+                {
+                    getLogger().log(Logger::WARNING, "launcher", "prepare", "install-mods-prime", "Priming " + p->id() + " in " + mod->id() + " returned errorcode " + QString::number(err));
+                }
+            }
+        }
+    }
+
     m_Launcher->getProfile()->getModManager()->install();
     getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Mods installed");
 }
