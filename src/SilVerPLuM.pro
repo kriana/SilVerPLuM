@@ -123,7 +123,8 @@ FORMS    += mainwindow.ui \
     savegameviewerdialog.ui
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    icons/icontheme.qrc
 
 # We need zlib and quazip for extracting/installing new mods
 unix: LIBS += -lquazip5 -lz

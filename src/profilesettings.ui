@@ -280,6 +280,9 @@
             <property name="text">
              <string>Try to auto-detect</string>
             </property>
+            <property name="icon">
+             <iconset theme="edit-find"/>
+            </property>
            </widget>
           </item>
           <item row="5" column="1">

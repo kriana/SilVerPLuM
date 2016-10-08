@@ -15,6 +15,12 @@ int main(int argc, char *argv[])
 
     int ret = -1;
 
+    // Import the icon theme if its not set. Needed for Windows and MacOS
+    if(QIcon::themeName().isEmpty())
+    {
+        QIcon::setThemeName("breeze");
+    }
+
     MainWindow w;
     w.show();
     ret = a.exec();

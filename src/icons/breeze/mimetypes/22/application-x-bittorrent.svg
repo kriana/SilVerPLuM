@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="22" version="1.1" xmlns="http://www.w3.org/2000/svg" height="22" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+ <defs id="defs3871"/>
+ <metadata id="metadata3874"/>
+ <g inkscape:label="Capa 1" inkscape:groupmode="layer" id="layer1" transform="matrix(1 0 0 1 -326 -534.3622)">
+  <g inkscape:label="Capa 1" style="fill:#04896a" id="g4153" transform="matrix(1 0 0 1 326 -496)">
+   <path inkscape:connector-curvature="0" id="rect4161" d="m 4,17 0,2 1,0 12,0 1,0 0,-2 -1,0 0,1 -12,0 0,-1 -1,0 z" transform="matrix(1 0 0 1 0 1030.3622)"/>
+   <path inkscape:connector-curvature="0" id="rect4167" d="M 8,3 8,9 9,9 9,4 13,4 13,9 14,9 14,3 13,3 9,3 8,3 Z" transform="matrix(1 0 0 1 0 1030.3622)"/>
+   <path inkscape:connector-curvature="0" style="shape-rendering:auto;color-interpolation-filters:linearRGB;image-rendering:auto;text-rendering:auto;color:#000000;fill-rule:evenodd;color-rendering:auto;color-interpolation:sRGB" id="path4178" d="M 5.7924114,1040.3622 5,1041.1788 l 6,6.1834 6,-6.1834 -0.792412,-0.8166 L 11,1045.7289 5.7924114,1040.3622 Z"/>
+  </g>
+  <rect width="0" x="287.74176" y="526.70184" height="10.999983" style="fill:#04896a" id="rect4035"/>
+ </g>
+</svg>
