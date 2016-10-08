@@ -10,6 +10,7 @@
 #include "vanillalauncher.h"
 #include "modmanager.h"
 #include "logger.h"
+#include "savegamemanager.h"
 
 class Profile : public QObject
 {
@@ -29,6 +30,8 @@ public:
 
     QDir profileSavegameDir();
 
+    QDir profileSavegameBackupDir();
+
     QDir profileModDir();
 
     QString id() const;
@@ -46,6 +49,10 @@ public:
     QDir StardewValleyDir();
 
     void setStardewValleyDir(const QDir & dir);
+
+    QDir StardewValleySavegameDir();
+
+    void setStardewValleySavegameDir(const QDir & dir);
 
     QVersionNumber StardewValleyVersion();
 
@@ -77,6 +84,8 @@ private:
 
     ModManager * m_modManager;
 
+    SavegameManager * m_savegameManager;
+
     Logger m_logger;
 
 signals:
@@ -85,7 +94,11 @@ signals:
 
 public:
 
-    static QDir StardewValleySavegameDir();
+    /**
+     * @brief Platform-specific locations for Stardew Valley savegames
+     * @return
+     */
+    static QDir DefaultStardewValleySavegameDir();
 
     /**
      * @brief Platform-specific locations for Stardew Valley
@@ -96,6 +109,8 @@ public:
     ModManager *getModManager() const;
 
     Logger & getLogger();
+
+    SavegameManager *getSavegameManager() const;
 };
 
 #endif // PROFILE_H

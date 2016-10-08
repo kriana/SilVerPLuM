@@ -27,6 +27,8 @@ public slots:
 
     void save();
 
+    void autodetectSDV();
+
 private:
     Ui::ProfileSettings *ui;
     Profile * m_CurrentProfile = nullptr;

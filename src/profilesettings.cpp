@@ -11,6 +11,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
 
     // Connect events
     connect(ui->buttonBox, &QDialogButtonBox::clicked, this, &ProfileSettings::saveOrDiscart);
+    connect(ui->btnSDVAutodetect, &QPushButton::clicked, this, &ProfileSettings::autodetectSDV);
 
     //Events for dynamic button box
     connect(ui->profileName, SIGNAL(textEdited(QString)), ui->buttonBox, SLOT(show()));
@@ -19,8 +20,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     connect(ui->sdvVersion, SIGNAL(currentTextChanged(QString)), ui->buttonBox, SLOT(show()));
 
     // Change some widget settings
-    ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
-    ui->sdvSavegameDirectory->setReadOnly(true);
+    ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);    
     ui->profileDirectory->setReadOnly(true);
 }
 
@@ -133,6 +133,7 @@ void ProfileSettings::save()
     m_CurrentProfile->setName(ui->profileName->text().trimmed());
     m_CurrentProfile->setDescription(ui->profileDescription->document()->toPlainText());
     m_CurrentProfile->setStardewValleyDir(ui->sdvApplicationDirectory->getCurrentPath());
+    m_CurrentProfile->setStardewValleySavegameDir(ui->sdvSavegameDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleyVersion(QVersionNumber::fromString(ui->sdvVersion->currentText()));
 
     for(QRadioButton * btn : ui->launchersLauncherList->findChildren<QRadioButton*>())
@@ -148,4 +149,12 @@ void ProfileSettings::save()
     discart(); // Reload to be sure
 
     QApplication::restoreOverrideCursor();
+}
+
+void ProfileSettings::autodetectSDV()
+{
+    // For now: Reset to defaults
+    ui->sdvApplicationDirectory->setCurrentPath(Profile::DefaultStardewValleyDir().absolutePath());
+    ui->sdvSavegameDirectory->setCurrentPath(Profile::DefaultStardewValleySavegameDir().absolutePath());
+    ui->sdvVersion->setCurrentText("0");
 }

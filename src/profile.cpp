@@ -11,6 +11,7 @@ QString Profile::DEFAULT_PROFILE_ID = "default";
 Profile::Profile(const QString &id) : m_Id(id)
 {
     m_modManager = new ModManager(this);
+    m_savegameManager = new SavegameManager(this);
 }
 
 Profile::~Profile()
@@ -22,6 +23,7 @@ Profile::~Profile()
         delete l;
     }
 
+    delete m_savegameManager;
     delete m_modManager;
 }
 
@@ -66,6 +68,11 @@ QDir Profile::profileSavegameDir()
     return profileBaseDir().absoluteFilePath("savegames");
 }
 
+QDir Profile::profileSavegameBackupDir()
+{
+    return profileBaseDir().absoluteFilePath("savegame-backups");
+}
+
 QDir Profile::profileModDir()
 {
     return profileBaseDir().absoluteFilePath("mods");
@@ -82,6 +89,22 @@ void Profile::setStardewValleyDir(const QDir &dir)
     m_Settings->sync();
 
     emit updated();
+}
+
+QDir Profile::StardewValleySavegameDir()
+{
+    return m_Settings->value("StardewValley/SavegameDir", DefaultStardewValleySavegameDir().absolutePath()).toString();
+}
+
+void Profile::setStardewValleySavegameDir(const QDir &dir)
+{
+    m_Settings->setValue("StardewValley/SavegameDir", dir.absolutePath());
+    m_Settings->sync();
+
+    emit updated();
+
+    // Trigger savegame list reload
+    getSavegameManager()->reloadSavegames();
 }
 
 QVersionNumber Profile::StardewValleyVersion()
@@ -159,10 +182,15 @@ QList<Launcher *> Profile::getLaunchers()
 
 void Profile::repairDirectories()
 {
-    QDir basedir = profileBaseDir();
+    profileBaseDir().mkpath(".");
+    profileModDir().mkpath(".");
+    profileSavegameDir().mkpath(".");
+    profileSavegameBackupDir().mkpath(".");
+}
 
-    basedir.mkpath("savegames");
-    basedir.mkpath("mods");
+SavegameManager *Profile::getSavegameManager() const
+{
+    return m_savegameManager;
 }
 
 Logger &Profile::getLogger()
@@ -224,11 +252,14 @@ void Profile::initialize()
     // Initialize all mod-related stuff
     m_modManager->initialize();
 
+    // Initialize savegame manager
+    m_savegameManager->initialize();
+
     // Build launchers
     m_Launchers.append(new VanillaLauncher(this));
 }
 
-QDir Profile::StardewValleySavegameDir()
+QDir Profile::DefaultStardewValleySavegameDir()
 {
     switch(Platform::getCurrentPlatform())
     {

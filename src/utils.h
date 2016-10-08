@@ -10,12 +10,33 @@
 #include <QtWidgets>
 #include <QtConcurrent>
 #include <QTextEdit>
+#include <QtXml>
 #include <sundown/src/markdown.h>
 #include <sundown/html/html.h>
 #include <sundown/src/buffer.h>
 
 namespace utils
 {
+
+inline QString extractXMLTextNodeContent(const QDomDocument &doc, const QString & tag)
+{
+    QDomNodeList list = doc.elementsByTagName(tag);
+
+    for(int i = 0; i < list.count(); ++i)
+    {
+        QDomNode elem = list.at(i);
+
+        if(elem.isElement())
+        {
+            if(elem.hasChildNodes() && elem.firstChildElement().isText())
+            {
+                return elem.firstChildElement().nodeValue();
+            }
+        }
+    }
+
+    return "";
+}
 
 inline QString readAllTextFrom(const QString & path)
 {
@@ -87,7 +108,7 @@ inline void clearLayout(QLayout * layout)
         if(item->widget() != nullptr)
         {
             item->widget()->hide();
-            delete item->widget();
+            item->widget()->deleteLater();
         }
         if(item->spacerItem() != nullptr)
         {

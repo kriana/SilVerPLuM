@@ -33,6 +33,8 @@ private slots:
 
     void profilesUpdated();
 
+    void updateLauncherInfo();
+
     void gameRunning(bool running);
 
     void gameLog(const Logger::Entry &entry);

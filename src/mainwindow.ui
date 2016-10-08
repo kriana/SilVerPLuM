@@ -28,7 +28,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tabPlay">
        <property name="autoFillBackground">
@@ -125,8 +125,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>578</width>
-                    <height>181</height>
+                    <width>71</width>
+                    <height>30</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_5">
@@ -398,7 +398,7 @@
            <enum>Qt::Horizontal</enum>
           </property>
           <widget class="ProfileManagerWidget" name="manageProfileList" native="true"/>
-          <widget class="QWidget" name="manageManager" native="true"/>
+          <widget class="SavegameManagerWidget" name="savegameManager" native="true"/>
          </widget>
         </item>
        </layout>
@@ -426,6 +426,12 @@
    <class>ModManagerWidget</class>
    <extends>QWidget</extends>
    <header>modmanagerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SavegameManagerWidget</class>
+   <extends>QWidget</extends>
+   <header>savegamemanagerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

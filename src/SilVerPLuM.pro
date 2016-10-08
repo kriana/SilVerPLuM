@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network concurrent xml webenginewidgets webchannel
+QT       += core gui network concurrent xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -50,7 +50,13 @@ SOURCES += main.cpp\
     sundown/html/html.c \
     sundown/html/html_smartypants.c \
     markdowntexteditor.cpp \
-    logviewer.cpp
+    logviewer.cpp \
+    savegame.cpp \
+    savegamemanager.cpp \
+    backupsavegame.cpp \
+    savegamemanagerwidget.cpp \
+    savegamemanagerwidgetitem.cpp \
+    savegamemanagerwidgetbackupitem.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -89,7 +95,13 @@ HEADERS  += mainwindow.h \
     sundown/html/houdini.h \
     sundown/html/html.h \
     markdowntexteditor.h \
-    logviewer.h
+    logviewer.h \
+    savegame.h \
+    savegamemanager.h \
+    backupsavegame.h \
+    savegamemanagerwidget.h \
+    savegamemanagerwidgetitem.h \
+    savegamemanagerwidgetbackupitem.h
 
 
 FORMS    += mainwindow.ui \
@@ -102,7 +114,10 @@ FORMS    += mainwindow.ui \
     modmanagerwidgetpipelineitem.ui \
     dependencycheckerwidget.ui \
     markdownviewer.ui \
-    logviewer.ui
+    logviewer.ui \
+    savegamemanagerwidget.ui \
+    savegamemanagerwidgetitem.ui \
+    savegamemanagerwidgetbackupitem.ui
 
 RESOURCES += \
     resources.qrc

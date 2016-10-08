@@ -129,16 +129,18 @@ void Game::prepareInstallMods()
 
 void Game::prepare()
 {
-    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Copying savegames to savegame folder");
+    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
 
     QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
-    QDir sdvsavegames = Profile::StardewValleySavegameDir();
+    QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
     prepareBackupContent(sdvcontentdir, sdvcontentbackup);
     prepareCopySavegames(sdvsavegames);
     prepareInstallMods();
+
+    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Preparation ended");
 }
 
 void Game::run()
@@ -152,7 +154,7 @@ void Game::postMoveSavegames()
 {
     getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Moving savegames back to profile directory");
     progress(true, 0, 5, 1);
-    QDir sdvsavegames = Profile::StardewValleySavegameDir();
+    QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
     QTemporaryDir savegamebackups;
     progress(true, 0, 5, 2);
@@ -223,6 +225,8 @@ void Game::post()
 void Game::finish()
 {
     getLogger().log(Logger::INFO, "launcher", "post", "finish", "Launcher finished operation with exit code " + QString::number(m_exitCode));
+
+    m_Launcher->getProfile()->getSavegameManager()->reloadSavegames(); // May have added savegames
 
     m_Running = false;
     emit running(m_Running);

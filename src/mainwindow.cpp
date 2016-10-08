@@ -124,9 +124,11 @@ void MainWindow::profileSelected(Profile *p)
     // Set matching views
     ui->configProfileConfig->setCurrentProfile(p);
     ui->modManager->setModManager(p->getModManager());
+    ui->savegameManager->setSavegameManager(p->getSavegameManager());
 
-    // Set profile info in launcher screen
-    ui->profileInfo->setText(utils::makeTextEditHTML(utils::markdownToHTML(p->description())));
+    updateLauncherInfo();
+
+    connect(p, &Profile::updated, this, &MainWindow::updateLauncherInfo, Qt::UniqueConnection);
 }
 
 void MainWindow::profilesUpdated()
@@ -137,6 +139,12 @@ void MainWindow::profilesUpdated()
     {
         ui->cmbProfile->addItem(p->name());
     }
+}
+
+void MainWindow::updateLauncherInfo()
+{
+    // Set profile info in launcher screen
+    ui->profileInfo->setText(utils::makeTextEditHTML(utils::markdownToHTML(ProfileManager::instance()->getSelectedProfile()->description())));
 }
 
 void MainWindow::gameRunning(bool running)

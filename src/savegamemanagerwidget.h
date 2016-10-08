@@ -1,0 +1,35 @@
+#ifndef SAVEGAMEMANAGERWIDGET_H
+#define SAVEGAMEMANAGERWIDGET_H
+
+#include <QWidget>
+
+#include "savegamemanager.h"
+#include "profile.h"
+
+namespace Ui {
+class SavegameManagerWidget;
+}
+
+class SavegameManagerWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit SavegameManagerWidget(QWidget *parent = 0);
+    ~SavegameManagerWidget();
+
+    SavegameManager *savegameManager() const;
+
+    void setSavegameManager(SavegameManager *savegameManager);
+
+public slots:
+
+    void reloadList();
+
+private:
+    Ui::SavegameManagerWidget *ui;
+
+    SavegameManager * m_savegameManager = nullptr;
+};
+
+#endif // SAVEGAMEMANAGERWIDGET_H

@@ -35,7 +35,7 @@ Modification::~Modification()
 
     for(Pipeline * p : m_Pipelines)
     {
-        delete p;
+        p->deleteLater();
     }
 }
 
