@@ -25,6 +25,7 @@ void Launcher::start()
     }
 
     QString path = m_profile->getModManager()->resolveModUrl(executable.executable());
+    QString workdir = m_profile->getModManager()->resolveModUrl(executable.workdir());
 
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Executable url: " + executable.executable());
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute executable path: " + path);
@@ -33,6 +34,14 @@ void Launcher::start()
     if(!QFileInfo(path).exists() || !QFileInfo(path).isFile())
     {
         getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Executable does not exist!");
+
+        emit finished(-1);
+        return;
+    }
+
+    if(workdir.isEmpty() || !QFileInfo(workdir).exists() || !QFileInfo(workdir).isFile())
+    {
+        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Workdir is no directory or doesn't exist!");
 
         emit finished(-1);
         return;
@@ -128,6 +137,7 @@ Launcher *Launcher::loadFromJson(Profile * p, Pipeline *pip, const QString &id, 
     {
         Platform::Type platform = Platform::getPlatformFromString(platformid);
         QString exe = executables_map[platformid].toObject()["executable"].toString();
+        QString wd = executables_map[platformid].toObject()["workdir"].toString();
         QStringList args;
 
         for(QJsonValue v : executables_map[platformid].toObject()["arguments"].toArray())
@@ -135,7 +145,7 @@ Launcher *Launcher::loadFromJson(Profile * p, Pipeline *pip, const QString &id, 
             args << v.toString();
         }
 
-        launcher->setExecutable(platform, LauncherExecutable(exe, args));
+        launcher->setExecutable(platform, LauncherExecutable(exe, args, wd));
     }
 
     return launcher;

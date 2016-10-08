@@ -6,10 +6,11 @@ LauncherExecutable::LauncherExecutable()
 
 }
 
-LauncherExecutable::LauncherExecutable(const QString &executable, const QStringList &arguments)
+LauncherExecutable::LauncherExecutable(const QString &executable, const QStringList &arguments, const QString &workdir)
 {
     setExecutable(executable);
     setArguments(arguments);
+    setWorkdir(workdir);
 }
 
 QString LauncherExecutable::executable() const
@@ -35,4 +36,14 @@ void LauncherExecutable::setArguments(const QStringList &arguments)
 bool LauncherExecutable::empty() const
 {
     return m_executable.isEmpty();
+}
+
+QString LauncherExecutable::workdir() const
+{
+    return m_workdir;
+}
+
+void LauncherExecutable::setWorkdir(const QString &workdir)
+{
+    m_workdir = workdir;
 }

@@ -9,7 +9,7 @@ class LauncherExecutable
 public:
     LauncherExecutable();
 
-    LauncherExecutable(const QString & executable, const QStringList & arguments = QStringList());
+    LauncherExecutable(const QString & executable, const QStringList & arguments = QStringList(), const QString& workdir = "");
 
     QString executable() const;
     void setExecutable(const QString &executable);
@@ -19,11 +19,17 @@ public:
 
     bool empty() const;
 
+    QString workdir() const;
+
+    void setWorkdir(const QString &workdir);
+
 private:
 
     QString m_executable;
 
     QStringList m_arguments;
+
+    QString m_workdir;
 };
 
 #endif // LAUNCHEREXECUTABLE_H
