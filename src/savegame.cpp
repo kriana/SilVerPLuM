@@ -145,6 +145,8 @@ QDir Savegame::directory() const
     return m_directory;
 }
 
-
-
+bool Savegame::contentEquals(Savegame *other) const
+{
+    return utils::folderEqual(directory(), other->directory());
+}
 

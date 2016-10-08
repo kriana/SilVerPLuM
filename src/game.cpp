@@ -5,12 +5,17 @@
 #include <QTemporaryDir>
 #include <QMessageBox>
 #include "globalsettings.h"
+#include "savegamemanager.h"
 Game * Game::m_pInstance = nullptr;
 
 Game::Game()
 {
+    m_backupTimer = new QTimer();
+
     connect(&m_prepareWatcher, SIGNAL(finished()), this, SLOT(run()));
     connect(&m_postWatcher, SIGNAL(finished()), this, SLOT(finish()));
+
+    connect(m_backupTimer, SIGNAL(timeout()), this, SLOT(issueFullBackup()));
 }
 
 int Game::exitCode() const
@@ -30,7 +35,7 @@ Game *Game::instance()
 
 Game::~Game()
 {
-
+    m_backupTimer->deleteLater();
 }
 
 bool Game::running()
@@ -136,6 +141,13 @@ void Game::prepare()
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
+    if(m_Launcher->getProfile()->enableBackupOnStart())
+    {
+        getLogger().log(Logger::INFO, "launcher", "prepare", "autobackup-start", "Creating a backup for all savegames");
+
+        issueFullBackup();
+    }
+
     prepareBackupContent(sdvcontentdir, sdvcontentbackup);
     prepareCopySavegames(sdvsavegames);
     prepareInstallMods();
@@ -148,6 +160,14 @@ void Game::run()
     getLogger().log(Logger::INFO, "launcher", "run", "run", "Running launcher");
     progress(false, 0, 0, 0);
     m_Launcher->start();
+
+    // Start backup timer
+    int interval = m_Launcher->getProfile()->backupInterval();
+
+    if(interval > 0)
+    {
+        m_backupTimer->start(interval * 1000 * 60);
+    }
 }
 
 void Game::postMoveSavegames()
@@ -232,6 +252,22 @@ void Game::finish()
     emit running(m_Running);
 }
 
+void Game::issueFullBackup()
+{
+    if(!m_Running)
+        return;
+
+    getLogger().log(Logger::INFO, "launcher", "post", "auto-backup", "Issuing full-backup");
+    for(BackupSavegame * sav : m_Launcher->getProfile()->getSavegameManager()->getSavegames().values())
+    {
+        // If check disabled or useful
+        if(!m_Launcher->getProfile()->checkForExistingBackups() ||  sav->backupUseful())
+        {
+            sav->backup();
+        }
+    }
+}
+
 void Game::gameFinished(int retcode)
 {
     if(retcode != 0)
@@ -249,6 +285,9 @@ void Game::gameFinished(int retcode)
             m_exitCode = retcode;
         }
     }
+
+    // Stop timer
+    m_backupTimer->stop();
 
     m_postWatcher.setFuture(QtConcurrent::run(this, &Game::post));
 }

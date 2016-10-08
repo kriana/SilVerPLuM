@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-226</y>
         <width>538</width>
-        <height>528</height>
+        <height>664</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -306,7 +306,7 @@
              <item>
               <widget class="QRadioButton" name="sdvTechXNA">
                <property name="text">
-                <string>XNA</string>
+                <string>X&amp;NA</string>
                </property>
               </widget>
              </item>
@@ -361,6 +361,71 @@
               </widget>
              </item>
             </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Savegames</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Auto-backup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="backupBeforeStart">
+            <property name="text">
+             <string>Backup before game starts</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Backup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="backupCheckExisting">
+            <property name="text">
+             <string>Don't allow duplicate backups</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="backupInterval">
+            <property name="toolTip">
+             <string>Set this to 0 to disable ato-backup</string>
+            </property>
+            <property name="suffix">
+             <string> min</string>
+            </property>
+            <property name="prefix">
+             <string>Backup interval: </string>
+            </property>
+            <property name="maximum">
+             <number>999</number>
+            </property>
            </widget>
           </item>
          </layout>

@@ -73,12 +73,28 @@ public:
      */
     bool copyTo(Profile * p, QString as = "");
 
+
+    /**
+     * @brief Returns true if the savegame actually changed and a backup is useful
+     * @return
+     */
+    bool backupUseful();
+
+
+    /**
+     * @brief Removes all backups that have duplicates
+     */
+    void pruneBackups();
+
     /**
      * @brief Finds a new valid ID
      * @param sav
      * @return
      */
     static QString findNewIdFor(BackupSavegame *sav, const QStringList & ids );
+
+    static void renameSavegame(QDir dir, const QString & old_id, const QString & new_id);
+
 
 private:
 

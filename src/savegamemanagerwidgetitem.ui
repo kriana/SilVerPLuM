@@ -210,10 +210,19 @@
   </action>
   <action name="actionDeleteMainSavegame">
    <property name="icon">
-    <iconset theme="list-remove"/>
+    <iconset theme="list-remove">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Delete only savegame</string>
+   </property>
+  </action>
+  <action name="actionPrune">
+   <property name="icon">
+    <iconset theme="edit-find"/>
+   </property>
+   <property name="text">
+    <string>Remove duplicate backups</string>
    </property>
   </action>
  </widget>

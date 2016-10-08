@@ -40,9 +40,8 @@ QString Profile::name() const
 void Profile::setName(const QString &name)
 {
     m_Settings->setValue("General/Name", name);
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
 }
 
 QString Profile::description() const
@@ -53,9 +52,8 @@ QString Profile::description() const
 void Profile::setDescription(const QString &desc)
 {
     m_Settings->setValue("General/Description", desc);
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
 }
 
 QDir Profile::profileBaseDir()
@@ -86,9 +84,8 @@ QDir Profile::StardewValleyDir()
 void Profile::setStardewValleyDir(const QDir &dir)
 {
     m_Settings->setValue("StardewValley/GameDir", dir.absolutePath());
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
 }
 
 QDir Profile::StardewValleySavegameDir()
@@ -99,9 +96,8 @@ QDir Profile::StardewValleySavegameDir()
 void Profile::setStardewValleySavegameDir(const QDir &dir)
 {
     m_Settings->setValue("StardewValley/SavegameDir", dir.absolutePath());
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
 
     // Trigger savegame list reload
     getSavegameManager()->reloadSavegames();
@@ -115,9 +111,8 @@ QVersionNumber Profile::StardewValleyVersion()
 void Profile::setStardewValleyVersion(const QVersionNumber &version)
 {
     m_Settings->setValue("StardewValley/Version", version.toString());
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
 }
 
 Platform::GameTechnology Profile::StardewValleyTechnology()
@@ -138,9 +133,46 @@ Platform::GameTechnology Profile::StardewValleyTechnology()
 void Profile::setStardewValleyTechnology(Platform::GameTechnology tech)
 {
     m_Settings->setValue("StardewValley/GameTechnology", tech);
-    m_Settings->sync();
 
-    emit updated();
+    setting_changed();
+}
+
+bool Profile::enableBackupOnStart()
+{
+    return m_Settings->value("Savegames/BackupOnStart", false).toBool();
+}
+
+void Profile::setEnableBackupOnStart(bool enabled)
+{
+    m_Settings->setValue("Savegames/BackupOnStart", enabled);
+
+    setting_changed();
+}
+
+bool Profile::checkForExistingBackups()
+{
+    return m_Settings->value("Savegames/CheckForExistingBackups", true).toBool();
+}
+
+void Profile::setCheckForExistingBackups(bool enabled)
+{
+    m_Settings->setValue("Savegames/CheckForExistingBackups", enabled);
+
+    setting_changed();
+}
+
+int Profile::backupInterval()
+{
+    int i = m_Settings->value("Savegames/BackupInterval", 0).toInt();
+
+    return i >= 0 ? i : 0;
+}
+
+void Profile::setBackupInterval(int interval)
+{
+    m_Settings->setValue("Savegames/BackupInterval", interval);
+
+    setting_changed();
 }
 
 bool Profile::exists()
@@ -211,6 +243,25 @@ void Profile::repairDirectories()
     profileSavegameBackupDir().mkpath(".");
 }
 
+void Profile::setting_changed()
+{
+    if(!m_updateBatch)
+    {
+        m_Settings->sync();
+        emit updated();
+    }
+}
+
+bool Profile::getUpdateBatch() const
+{
+    return m_updateBatch;
+}
+
+void Profile::setUpdateBatch(bool updateBatch)
+{
+    m_updateBatch = updateBatch;
+    setting_changed();
+}
 
 
 SavegameManager *Profile::getSavegameManager() const

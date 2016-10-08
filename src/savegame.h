@@ -48,6 +48,12 @@ public:
 
     Profile *profile() const;
 
+    /**
+     * @brief Returns true if this and the other savegame have the same content
+     * @return
+     */
+    bool contentEquals(Savegame * other) const;
+
 protected:
 
     Savegame(const QDir & directory, Profile * p);

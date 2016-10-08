@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     backupsavegame.cpp \
     savegamemanagerwidget.cpp \
     savegamemanagerwidgetitem.cpp \
-    savegamemanagerwidgetbackupitem.cpp
+    savegamemanagerwidgetbackupitem.cpp \
+    savegameviewerdialog.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -101,7 +102,8 @@ HEADERS  += mainwindow.h \
     backupsavegame.h \
     savegamemanagerwidget.h \
     savegamemanagerwidgetitem.h \
-    savegamemanagerwidgetbackupitem.h
+    savegamemanagerwidgetbackupitem.h \
+    savegameviewerdialog.h
 
 
 FORMS    += mainwindow.ui \
@@ -117,7 +119,8 @@ FORMS    += mainwindow.ui \
     logviewer.ui \
     savegamemanagerwidget.ui \
     savegamemanagerwidgetitem.ui \
-    savegamemanagerwidgetbackupitem.ui
+    savegamemanagerwidgetbackupitem.ui \
+    savegameviewerdialog.ui
 
 RESOURCES += \
     resources.qrc

@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtConcurrent>
 #include "logger.h"
+#include <QTimer>
 
 class Game : public QObject
 {
@@ -36,6 +37,8 @@ private:
     Game();
 
     Launcher * m_Launcher;
+
+    QTimer * m_backupTimer;
 
     bool m_Running = false;
 
@@ -70,6 +73,8 @@ private slots:
     void post();
 
     void finish();
+
+    void issueFullBackup();
 
 signals:
 

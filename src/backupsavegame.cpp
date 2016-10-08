@@ -106,11 +106,7 @@ bool BackupSavegame::single(Savegame *sav)
     utils::copyDirectory(sav->directory(), destination, true);
 
     // Fix the files or we will break the savegames if renamed
-    if(new_id != id())
-    {
-        destination.rename(id(), new_id);
-        destination.rename(id() + "_old", new_id + "_old");
-    }
+    renameSavegame(destination, id(), new_id);
 
     m_savegameManager->reloadSavegames();
 
@@ -257,16 +253,79 @@ bool BackupSavegame::copyTo(Profile *p, QString as)
     {
         getLogger().log(Logger::INFO, "backup-savegame", "clone", "copy", "Copy savegame ...");
         utils::copyDirectory(m_mainSavegame->directory(), destination_savegame, true);
+        renameSavegame(destination_savegame, id(), as);
     }
 
     getLogger().log(Logger::INFO, "backup-savegame", "clone", "copy", "Copy savegame backups ...");
     utils::copyDirectory(backupDir(), destination_backupsavegame, true);
+
+    for(QString bid : destination_backupsavegame.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+    {
+        renameSavegame(destination_backupsavegame.absoluteFilePath(bid), id(), as);
+    }
 
     p->getSavegameManager()->reloadSavegames();
 
     getLogger().log(Logger::INFO, "backup-savegame", "clone", "clone", "Operation finished.");
 
     return true;
+}
+
+bool BackupSavegame::backupUseful()
+{
+    if(m_mainSavegame != nullptr)
+    {
+        for(Savegame * sav : m_BackupSavegames)
+        {
+            if(sav->contentEquals(sav))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+void BackupSavegame::pruneBackups()
+{
+    getLogger().log(Logger::INFO, "backup-savegame", "prune", "prune", "Starting to prune backups");
+
+    QSet<Savegame*> todelete;
+    QList<Savegame*> backups = getBackupSavegames();
+
+    for(int i = 0; i < backups.size(); ++i)
+    {
+        Savegame * here = backups[i];
+
+        if(!todelete.contains(here))
+        {
+            if(m_mainSavegame != nullptr && here->contentEquals(m_mainSavegame))
+            {
+                getLogger().log(Logger::INFO, "backup-savegame", "prune", "find", here->directory().absolutePath() + " is equal to current savegame. Will be deleted.");
+                todelete << here;
+                continue;
+            }
+
+            for(int j = i + 1; j < backups.size(); ++j)
+            {
+                Savegame * there = backups[j];
+
+                if(there->contentEquals(here))
+                {
+                    getLogger().log(Logger::INFO, "backup-savegame", "prune", "find", there->directory().absolutePath() + " is equal to " + here->directory().absolutePath() +  ". Will be deleted.");
+                    todelete << there;
+                }
+            }
+        }
+    }
+
+    for(Savegame * sav : todelete)
+    {
+        deleteSavegame(sav);
+    }
+
+    getLogger().log(Logger::INFO, "backup-savegame", "prune", "prune", "Pruning finished");
 }
 
 QString BackupSavegame::findNewIdFor(BackupSavegame *sav, const QStringList &ids)
@@ -296,6 +355,15 @@ QString BackupSavegame::findNewIdFor(BackupSavegame *sav, const QStringList &ids
     }
 
     return new_id;
+}
+
+void BackupSavegame::renameSavegame(QDir dir, const QString &old_id, const QString &new_id)
+{
+    if(old_id != new_id)
+    {
+        dir.rename(old_id, new_id);
+        dir.rename(old_id + "_old", new_id + "_old");
+    }
 }
 
 void BackupSavegame::initialize()

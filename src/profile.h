@@ -62,6 +62,30 @@ public:
 
     void setStardewValleyTechnology(Platform::GameTechnology tech);
 
+    /**
+     * @brief If enabled, a backup of all savegames is created on start
+     * @return
+     */
+    bool enableBackupOnStart();
+
+    void setEnableBackupOnStart(bool enabled);
+
+    /**
+     * @brief If enabled, backups should be checked if they are useful (only created if something changed)
+     * @return
+     */
+    bool checkForExistingBackups();
+
+    void setCheckForExistingBackups(bool enabled);
+
+    /**
+     * @brief Backup interval in seconds. 0 if disabled.
+     * @return
+     */
+    int backupInterval();
+
+    void setBackupInterval(int interval);
+
     bool exists();
 
     void setLauncher(const QString & id);
@@ -92,6 +116,10 @@ private:
 
     Logger m_logger;
 
+    bool m_updateBatch;
+
+    void setting_changed();
+
 signals:
 
     void updated();
@@ -121,6 +149,14 @@ public:
     Logger & getLogger();
 
     SavegameManager *getSavegameManager() const;
+
+    bool getUpdateBatch() const;
+
+    /**
+     * @brief Set to true to disable update() event for batched storage. If set to false, the actions will be executed.
+     * @param updateBatch
+     */
+    void setUpdateBatch(bool updateBatch);
 };
 
 #endif // PROFILE_H

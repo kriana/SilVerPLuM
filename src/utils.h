@@ -14,6 +14,7 @@
 #include <sundown/src/markdown.h>
 #include <sundown/html/html.h>
 #include <sundown/src/buffer.h>
+#include <QCryptographicHash>
 
 namespace utils
 {
@@ -242,6 +243,55 @@ inline void clearDirectory(const QDir & dir)
 inline bool directoryEmpty(const QDir & dir)
 {
     return dir.entryList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs).empty();
+}
+
+inline bool fileEqual(const QString & file1, const QString & file2)
+{
+    QFile f1(file1);
+    QFile f2(file2);
+
+    if(!f1.open(QFile::ReadOnly))
+    {
+        return false;
+    }
+    if(!f2.open(QFile::ReadOnly))
+    {
+        return false;
+    }
+
+    /*int s1 = f1.size();
+    int s2 = f2.size();
+
+    if(s1 != s2)
+        return false;
+
+    return f1.readAll() == f2.readAll();*/
+
+    QByteArray h1 = QCryptographicHash::hash(f1.readAll(), QCryptographicHash::Sha1);
+    QByteArray h2 = QCryptographicHash::hash(f2.readAll(), QCryptographicHash::Sha1);
+
+    return h1 == h2;
+}
+
+inline bool folderEqual(const QDir & dir1, const QDir & dir2)
+{
+    QStringList dir1_files = findAllFiles(dir1);
+    QStringList dir2_files = findAllFiles(dir2);
+
+    if(dir1_files.size() != dir2_files.size())
+    {
+        return false;
+    }
+
+    for(QString path : dir1_files)
+    {
+        QString path2 = dir2.absolutePath() + "/" + path.mid(dir1.absolutePath().size());
+
+        if(!fileEqual(path, path2))
+            return false;
+    }
+
+    return true;
 }
 
 }

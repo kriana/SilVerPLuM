@@ -14,7 +14,7 @@ SavegameManagerWidgetItem::SavegameManagerWidgetItem(QWidget *parent) :
     ui->setupUi(this);
 
     QMenu *backup_menu = new QMenu(ui->btnBackup);
-    backup_menu->addActions(QList<QAction*>() << ui->actionCopyTo << ui->actionSingleOut << ui->actionDeleteMainSavegame << ui->actionDelete);
+    backup_menu->addActions(QList<QAction*>() << ui->actionCopyTo << ui->actionSingleOut << ui->actionPrune << ui->actionDeleteMainSavegame << ui->actionDelete);
     ui->btnBackup->setMenu(backup_menu);
 
     connect(ui->btnBackup, &QToolButton::clicked, this, &SavegameManagerWidgetItem::savegameBackup);
@@ -22,6 +22,7 @@ SavegameManagerWidgetItem::SavegameManagerWidgetItem(QWidget *parent) :
     connect(ui->actionDeleteMainSavegame, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameDeleteMain);
     connect(ui->actionCopyTo, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameCopyTo);
     connect(ui->actionSingleOut, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameSingle);
+    connect(ui->actionPrune, &QAction::triggered, this, &SavegameManagerWidgetItem::savegamePrune);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
     ui->expandWidget->hide();
@@ -129,6 +130,19 @@ void SavegameManagerWidgetItem::savegameBackup()
     {
         QMessageBox::information(this, "Backup", "Cannot create a backup of a deleted savegame!", QMessageBox::Ok);
         return;
+    }
+
+    if(m_savegame->savegameManager()->profile()->checkForExistingBackups())
+    {
+        if(!m_savegame->backupUseful())
+        {
+            if(QMessageBox::question(this,
+                                     "Backup",
+                                     "It seems that there's already a backup with the exact same files. Backup anyways?") == QMessageBox::No)
+            {
+                return;
+            }
+        }
     }
 
     if(!m_savegame->backup())
@@ -249,4 +263,17 @@ void SavegameManagerWidgetItem::savegameSingle()
     }
 
     m_savegame->single(m_savegame->getMainSavegame());
+}
+
+void SavegameManagerWidgetItem::savegamePrune()
+{
+    if(QMessageBox::question(this, "Delete duplicate backups", "Do you really want to delete all backups determined as duplicate?") == QMessageBox::Yes)
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        m_savegame->pruneBackups();
+
+        QApplication::restoreOverrideCursor();
+    }
 }

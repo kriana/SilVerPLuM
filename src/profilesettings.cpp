@@ -20,6 +20,9 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     connect(ui->sdvVersion, SIGNAL(currentTextChanged(QString)), ui->buttonBox, SLOT(show()));
     connect(ui->sdvTechXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->sdvTechMonoGame, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+    connect(ui->backupBeforeStart, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+    connect(ui->backupInterval, SIGNAL(valueChanged(int)), ui->buttonBox, SLOT(show()));
+    connect(ui->backupCheckExisting, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
 
     // Change some widget settings
     ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);    
@@ -80,34 +83,29 @@ void ProfileSettings::discart()
     if(saving)
         return;
 
-    bool enabled = m_CurrentProfile != nullptr;
+    setEnabled(m_CurrentProfile != nullptr);
 
-    ui->buttonBox->setEnabled(enabled);
-    ui->profileName->setEnabled(enabled);
-    ui->profileDescription->setEnabled(enabled);
-    ui->profileDirectory->setEnabled(enabled);
-    ui->sdvApplicationDirectory->setEnabled(enabled);
-    ui->sdvSavegameDirectory->setEnabled(enabled);
-    ui->sdvVersion->setEnabled(enabled);
-    ui->sdvTechXNA->setEnabled(enabled);
-    ui->sdvTechMonoGame->setEnabled(enabled);
-
-
-    ui->profileName->setText(enabled ? m_CurrentProfile->name() : "");
-    ui->profileDescription->document()->setPlainText(enabled ? m_CurrentProfile->description() : "");
-    ui->profileDirectory->setCurrentPath(enabled ? m_CurrentProfile->profileBaseDir().absolutePath() : "");
-    ui->sdvApplicationDirectory->setCurrentPath(enabled ? m_CurrentProfile->StardewValleyDir().absolutePath() : "");
-    ui->sdvSavegameDirectory->setCurrentPath(m_CurrentProfile->StardewValleySavegameDir().absolutePath());
-    ui->sdvVersion->setCurrentText(m_CurrentProfile->StardewValleyVersion().toString());
-
-    switch(m_CurrentProfile->StardewValleyTechnology())
+    if(m_CurrentProfile != nullptr)
     {
-    case Platform::GameTechnologyXNA:
-        ui->sdvTechXNA->setChecked(true);
-        break;
-    case Platform::GameTechnologyMonoGame:
-        ui->sdvTechMonoGame->setChecked(true);
-        break;
+        ui->profileName->setText(m_CurrentProfile->name());
+        ui->profileDescription->document()->setPlainText(m_CurrentProfile->description());
+        ui->profileDirectory->setCurrentPath(m_CurrentProfile->profileBaseDir().absolutePath());
+        ui->sdvApplicationDirectory->setCurrentPath(m_CurrentProfile->StardewValleyDir().absolutePath());
+        ui->sdvSavegameDirectory->setCurrentPath(m_CurrentProfile->StardewValleySavegameDir().absolutePath());
+        ui->sdvVersion->setCurrentText(m_CurrentProfile->StardewValleyVersion().toString());
+        ui->backupBeforeStart->setChecked(m_CurrentProfile->enableBackupOnStart());
+        ui->backupInterval->setValue(m_CurrentProfile->backupInterval());
+        ui->backupCheckExisting->setChecked(m_CurrentProfile->checkForExistingBackups());
+
+        switch(m_CurrentProfile->StardewValleyTechnology())
+        {
+        case Platform::GameTechnologyXNA:
+            ui->sdvTechXNA->setChecked(true);
+            break;
+        case Platform::GameTechnologyMonoGame:
+            ui->sdvTechMonoGame->setChecked(true);
+            break;
+        }
     }
 
     // Launchers
@@ -146,12 +144,16 @@ void ProfileSettings::save()
     QApplication::processEvents();
 
     saving = true;
+    m_CurrentProfile->setUpdateBatch(true);
 
     m_CurrentProfile->setName(ui->profileName->text().trimmed());
     m_CurrentProfile->setDescription(ui->profileDescription->document()->toPlainText());
     m_CurrentProfile->setStardewValleyDir(ui->sdvApplicationDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleySavegameDir(ui->sdvSavegameDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleyVersion(QVersionNumber::fromString(ui->sdvVersion->currentText()));
+    m_CurrentProfile->setEnableBackupOnStart(ui->backupBeforeStart->isChecked());
+    m_CurrentProfile->setBackupInterval(ui->backupInterval->value());
+    m_CurrentProfile->setCheckForExistingBackups(ui->backupCheckExisting->isChecked());
 
     if(ui->sdvTechXNA->isChecked())
         m_CurrentProfile->setStardewValleyTechnology(Platform::GameTechnologyXNA);
@@ -166,6 +168,7 @@ void ProfileSettings::save()
         }
     }
 
+    m_CurrentProfile->setUpdateBatch(false);
     saving = false;
 
     discart(); // Reload to be sure
