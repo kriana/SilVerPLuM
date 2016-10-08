@@ -13,6 +13,7 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     connect(ui->modsRedirectXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modsForceUnsupported, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modsEnableFileGuard, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+    connect(ui->modDisablePrimeCache, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modEnableDepCheck, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modDepCheckPriorityAware, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->runningBackupSDVSavegames, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
@@ -34,6 +35,7 @@ void GlobalSettingsDialog::discart()
     ui->programsNuget->setCurrentPath(GlobalSettings::instance()->getProgramNuget());
     ui->modsRedirectXNA->setChecked(GlobalSettings::instance()->getDLLRedirectXNA());
     ui->modsForceUnsupported->setChecked(GlobalSettings::instance()->getForceUnsupported());
+    ui->modDisablePrimeCache->setChecked(!GlobalSettings::instance()->getEnablePrimeCache());
     ui->modsEnableFileGuard->setChecked(GlobalSettings::instance()->getEnableFileGuard());
     ui->modEnableDepCheck->setChecked(GlobalSettings::instance()->getEnableDepencencyCheck());
     ui->modDepCheckPriorityAware->setChecked(GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness());
@@ -49,6 +51,7 @@ void GlobalSettingsDialog::save()
     GlobalSettings::instance()->setProgramNuget(ui->programsNuget->getCurrentPath());
     GlobalSettings::instance()->setDLLRedirectXNA(ui->modsRedirectXNA->isChecked());
     GlobalSettings::instance()->setForceUnsupported(ui->modsForceUnsupported->isChecked());
+    GlobalSettings::instance()->setEnablePrimeCache(!ui->modDisablePrimeCache->isChecked());
     GlobalSettings::instance()->setEnableFileGuard(ui->modsEnableFileGuard->isChecked());
     GlobalSettings::instance()->setEnableDependencyCheck(ui->modEnableDepCheck->isChecked());
     GlobalSettings::instance()->setEnableDepencyCheckPriorityAwareness(ui->modDepCheckPriorityAware->isChecked());

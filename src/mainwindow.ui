@@ -28,7 +28,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabPlay">
        <property name="autoFillBackground">
@@ -319,6 +319,13 @@
                <item>
                 <widget class="QWidget" name="widget_2" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>You will find more information in the 'Profile log'</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item>
                    <spacer name="horizontalSpacer_4">
                     <property name="orientation">

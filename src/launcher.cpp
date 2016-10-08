@@ -27,6 +27,7 @@ void Launcher::start()
     QString path = m_profile->getModManager()->resolveModUrl(executable.executable());
     QString workdir = m_profile->getModManager()->resolveModUrl(executable.workdir());
 
+
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Executable url: " + executable.executable());
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute executable path: " + path);
 
@@ -39,7 +40,15 @@ void Launcher::start()
         return;
     }
 
-    if(workdir.isEmpty() || !QFileInfo(workdir).exists() || !QFileInfo(workdir).isFile())
+    if(workdir.isEmpty())
+    {
+        getProfile()->getLogger().log(Logger::WARNING, "launcher", id(), "start", "Workdir is empty. Set it to executable directory.");
+        workdir = QFileInfo(path).absoluteDir().absolutePath();
+    }
+
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute workdir path: " + workdir);
+
+    if(workdir.isEmpty() || !QFileInfo(workdir).exists() || !QFileInfo(workdir).isDir())
     {
         getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Workdir is no directory or doesn't exist!");
 

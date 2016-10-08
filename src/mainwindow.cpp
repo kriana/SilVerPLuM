@@ -50,7 +50,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::playClicked()
+void MainWindow::play(Launcher *l)
 {
     ui->playLogLog->clear();
     qRegisterMetaType<Logger::Entry>();
@@ -61,8 +61,13 @@ void MainWindow::playClicked()
             Qt::QueuedConnection);
     QApplication::processEvents();
 
-    Game::instance()->setLauncher(ProfileManager::instance()->getSelectedProfile()->getLauncher());
+    Game::instance()->setLauncher(l);
     Game::instance()->prepareAndRun();
+}
+
+void MainWindow::playClicked()
+{
+    play(ProfileManager::instance()->getSelectedProfile()->getLauncher());
 }
 
 void MainWindow::playSubActionTriggered()
@@ -76,8 +81,7 @@ void MainWindow::playSubActionTriggered()
 
             if(l != nullptr)
             {
-                Game::instance()->setLauncher(l);
-                Game::instance()->prepareAndRun();
+                play(l);
             }
         }
     }
@@ -85,7 +89,7 @@ void MainWindow::playSubActionTriggered()
 
 void MainWindow::cmbSelectedProfile(int index)
 {
-    if(index != -1)
+    if(index != -1 && !m_profilesLoading)
     {
         Profile * p = ProfileManager::instance()->getProfiles()[index];
         ProfileManager::instance()->selectProfile(p);
@@ -133,12 +137,16 @@ void MainWindow::profileSelected(Profile *p)
 
 void MainWindow::profilesUpdated()
 {
+    m_profilesLoading = true;
+
     ui->cmbProfile->clear();
 
     for(Profile * p : ProfileManager::instance()->getProfiles())
     {
         ui->cmbProfile->addItem(p->name());
     }
+
+    m_profilesLoading = false;
 }
 
 void MainWindow::updateLauncherInfo()
@@ -156,7 +164,7 @@ void MainWindow::gameRunning(bool running)
 
     if(running)
     {
-
+        ui->playLogLog->clear();
         ui->mainTabWidget->setCurrentWidget(ui->tabPlay);
         ui->playStackedWidget->setCurrentWidget(ui->playLogPage);
     }

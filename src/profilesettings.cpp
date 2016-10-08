@@ -18,6 +18,8 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     connect(ui->profileDescription, SIGNAL(textChanged()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvApplicationDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvVersion, SIGNAL(currentTextChanged(QString)), ui->buttonBox, SLOT(show()));
+    connect(ui->sdvTechXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+    connect(ui->sdvTechMonoGame, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
 
     // Change some widget settings
     ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);    
@@ -31,6 +33,9 @@ ProfileSettings::~ProfileSettings()
 
 void ProfileSettings::setCurrentProfile(Profile *profile)
 {
+    if(saving)
+        return;
+
     if(profile != m_CurrentProfile)
     {
         if(m_CurrentProfile != nullptr)
@@ -84,6 +89,8 @@ void ProfileSettings::discart()
     ui->sdvApplicationDirectory->setEnabled(enabled);
     ui->sdvSavegameDirectory->setEnabled(enabled);
     ui->sdvVersion->setEnabled(enabled);
+    ui->sdvTechXNA->setEnabled(enabled);
+    ui->sdvTechMonoGame->setEnabled(enabled);
 
 
     ui->profileName->setText(enabled ? m_CurrentProfile->name() : "");
@@ -92,6 +99,16 @@ void ProfileSettings::discart()
     ui->sdvApplicationDirectory->setCurrentPath(enabled ? m_CurrentProfile->StardewValleyDir().absolutePath() : "");
     ui->sdvSavegameDirectory->setCurrentPath(m_CurrentProfile->StardewValleySavegameDir().absolutePath());
     ui->sdvVersion->setCurrentText(m_CurrentProfile->StardewValleyVersion().toString());
+
+    switch(m_CurrentProfile->StardewValleyTechnology())
+    {
+    case Platform::GameTechnologyXNA:
+        ui->sdvTechXNA->setChecked(true);
+        break;
+    case Platform::GameTechnologyMonoGame:
+        ui->sdvTechMonoGame->setChecked(true);
+        break;
+    }
 
     // Launchers
 
@@ -136,6 +153,11 @@ void ProfileSettings::save()
     m_CurrentProfile->setStardewValleySavegameDir(ui->sdvSavegameDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleyVersion(QVersionNumber::fromString(ui->sdvVersion->currentText()));
 
+    if(ui->sdvTechXNA->isChecked())
+        m_CurrentProfile->setStardewValleyTechnology(Platform::GameTechnologyXNA);
+    else if(ui->sdvTechMonoGame->isChecked())
+        m_CurrentProfile->setStardewValleyTechnology(Platform::GameTechnologyMonoGame);
+
     for(QRadioButton * btn : ui->launchersLauncherList->findChildren<QRadioButton*>())
     {
         if(btn->isChecked())
@@ -157,4 +179,14 @@ void ProfileSettings::autodetectSDV()
     ui->sdvApplicationDirectory->setCurrentPath(Profile::DefaultStardewValleyDir().absolutePath());
     ui->sdvSavegameDirectory->setCurrentPath(Profile::DefaultStardewValleySavegameDir().absolutePath());
     ui->sdvVersion->setCurrentText("0");
+
+    switch(Profile::DefaultStardewValleyTechnology())
+    {
+    case Platform::GameTechnologyXNA:
+        ui->sdvTechXNA->setChecked(true);
+        break;
+    case Platform::GameTechnologyMonoGame:
+        ui->sdvTechMonoGame->setChecked(true);
+        break;
+    }
 }

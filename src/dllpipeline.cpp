@@ -73,7 +73,8 @@ int DllPipeline::prime()
     }
 
     // Look for *.csproj files and fix the dependencies
-    for(QString file : utils::findAllFiles(pipelineBaseDir()))
+    QStringList projectfiles = utils::findAllFiles(pipelineBaseDir());
+    for(QString file : projectfiles)
     {
         if(QFileInfo(file).isFile() && file.endsWith(".csproj"))
         {
@@ -92,6 +93,20 @@ int DllPipeline::prime()
         else
         {
             getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild was successful");
+        }
+    }
+
+    // Restore the original *.csproj files
+    {
+        for(QString file : projectfiles)
+        {
+            if(QFileInfo(file).isFile() && file.endsWith(".csproj"))
+            {
+                QFile(file + ".reffix").remove();
+                QFile::copy(file, file + ".reffix");
+                QFile(file).remove();
+                QFile::copy(file + ".bak", file);
+            }
         }
     }
 
@@ -131,17 +146,23 @@ void DllPipeline::setReferenceMapping(const QString &reference, const QString &l
 
 bool DllPipeline::alreadyPrimed()
 {
+    if(!GlobalSettings::instance()->getEnablePrimeCache())
+        return false;
+
     QFile lockfile(pipelineBaseDir().absoluteFilePath("PRIME"));
 
     if (!lockfile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
 
     QTextStream stream(&lockfile);
-    return stream.readAll() == Platform::getPlatformString();
+    return stream.readAll() == Platform::getPlatformString() + "_" + QString::number(mod()->getModManager()->profile()->StardewValleyTechnology());
 }
 
 void DllPipeline::writePrimeFile()
 {
+    if(!GlobalSettings::instance()->getEnablePrimeCache())
+        return;
+
     QFile lockfile(pipelineBaseDir().absoluteFilePath("PRIME"));
 
     getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "PRIME info file will be written into " + pipelineBaseDir().absoluteFilePath("PRIME"));
@@ -150,7 +171,7 @@ void DllPipeline::writePrimeFile()
         return;
 
     QTextStream stream(&lockfile);
-    stream << Platform::getPlatformString();
+    stream << Platform::getPlatformString() << "_" << QString::number(mod()->getModManager()->profile()->StardewValleyTechnology());
 }
 
 int DllPipeline::runNuget()
@@ -161,9 +182,18 @@ int DllPipeline::runNuget()
     process.setProgram(GlobalSettings::instance()->getProgramNuget());
     process.setArguments(QStringList() << "restore");
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
+    process.setProcessChannelMode(QProcess::MergedChannels);
+
 
     process.start();
     process.waitForFinished(-1);
+
+    QString stdout(process.readAllStandardOutput());
+
+    for(QString line : stdout.split("\n"))
+    {
+        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget-nuget", line);
+    }
 
     return process.exitCode();
 }
@@ -176,9 +206,17 @@ int DllPipeline::runMSBUILD()
     process.setProgram(GlobalSettings::instance()->getProgramMSBUILD());
     process.setArguments(QStringList());
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
+    process.setProcessChannelMode(QProcess::MergedChannels);
 
     process.start();
     process.waitForFinished(-1);
+
+    QString stdout(process.readAllStandardOutput());
+
+    for(QString line : stdout.split("\n"))
+    {
+        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild-msbuild", line);
+    }
 
     return process.exitCode();
 }
@@ -187,6 +225,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
 {
     getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Fixing references in " + projectFile);
 
+    QFile(projectFile + ".bak").remove();
     QFile::copy(projectFile, projectFile + ".bak");
 
     QDomDocument doc;
@@ -220,12 +259,56 @@ void DllPipeline::fixReferences(const QString &projectFile)
             }
 
             // For XNA -> MonoGame override
-            if(current_include.startsWith("Microsoft.Xna.Framework") && GlobalSettings::instance()->getDLLRedirectXNA())
+            if(GlobalSettings::instance()->getDLLRedirectXNA())
             {
-                getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Redirecting " + raw_include + " to MonoGame");
+                if(mod()->getModManager()->profile()->StardewValleyTechnology() == Platform::GameTechnologyMonoGame)
+                {
+                    // Translate XNA to MonoGame by issuing a re-map
 
-                current_include = "MonoGame.Framework";
+                    if(current_include.startsWith("Microsoft.Xna.Framework"))
+                    {
+                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Redirecting " + raw_include + " to MonoGame");
+
+                        current_include = "MonoGame.Framework";
+                    }
+                }
+                else if(mod()->getModManager()->profile()->StardewValleyTechnology() == Platform::GameTechnologyXNA)
+                {
+                    // We cannot apply translation procedure here. The entry will be deleted and XNA will be added
+
+                    if(current_include.startsWith("MonoGame.Framework"))
+                    {
+                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Detected MonoGame in XNA mode");
+
+                        QDomNode reflist = nd.parentNode();
+                        reflist.removeChild(nd);
+
+                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Now adding XNA dependencies");
+
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                    }
+                }
             }
+
 
             if(m_referenceMap.contains(current_include))
             {
@@ -263,4 +346,28 @@ void DllPipeline::fixReferences(const QString &projectFile)
     doc.save(stream, 4);
 
     getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Finished");
+}
+
+void DllPipeline::addReferenceNode(QDomDocument & doc, QDomNode &parent, const QString &reference, const QString &hintpath, bool isprivate, bool specificversion)
+{
+    QDomElement ref_element = doc.createElement("Reference");
+    ref_element.setAttribute("Include", reference);
+
+    if(!hintpath.isEmpty())
+    {
+        QDomElement hintpath_element = doc.createElement("HintPath");
+        hintpath_element.appendChild(doc.createTextNode(hintpath));
+
+        ref_element.appendChild(hintpath_element);
+    }
+
+    QDomElement private_element = doc.createElement("Private");
+    private_element.appendChild(doc.createTextNode(isprivate ? "True" : "False"));
+    ref_element.appendChild(private_element);
+
+    QDomElement sversion_element = doc.createElement("SpecificVersion");
+    sversion_element.appendChild(doc.createTextNode(specificversion ? "True" : "False"));
+    ref_element.appendChild(sversion_element);
+
+    parent.appendChild(ref_element);
 }

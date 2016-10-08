@@ -34,7 +34,7 @@
         <x>0</x>
         <y>0</y>
         <width>543</width>
-        <height>382</height>
+        <height>410</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -115,7 +115,7 @@
           <item row="0" column="1">
            <widget class="QCheckBox" name="modsRedirectXNA">
             <property name="text">
-             <string>Redirect XNA to MonoGame</string>
+             <string>Redirect XNA to MonoGame and vice versa</string>
             </property>
            </widget>
           </item>
@@ -139,7 +139,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_6">
             <property name="minimumSize">
              <size>
@@ -152,7 +152,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QCheckBox" name="modsEnableFileGuard">
             <property name="toolTip">
              <string>Enables checking for paths that may break out of the game or profile directories. Also protects all game files except in Content and modded directories.</string>
@@ -162,7 +162,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_7">
             <property name="minimumSize">
              <size>
@@ -175,17 +175,24 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QCheckBox" name="modEnableDepCheck">
             <property name="text">
              <string>Enable dependency check</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QCheckBox" name="modDepCheckPriorityAware">
             <property name="text">
              <string>Check based on priority</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="modDisablePrimeCache">
+            <property name="text">
+             <string>Always rebuild mods on activation</string>
             </property>
            </widget>
           </item>

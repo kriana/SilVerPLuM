@@ -44,6 +44,10 @@ public:
 
     void duplicateProfile(Profile * p, const QString & name);
 
+    void exportProfile(Profile * p, const QString & path);
+
+    void importProfile(const QString & path, const QString &name);
+
     bool idExists(const QString & id);
 
     static QDir ProfilesDir();

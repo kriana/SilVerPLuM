@@ -30,8 +30,14 @@ private slots:
 
     void removeProfileClicked();
 
+    void exportProfileClicked();
+
+    void importProfileClicked();
+
 private:
     Ui::ProfileManagerWidget *ui;
+
+    bool m_loading = false;
 };
 
 #endif // PROFILEMANAGERWIDGET_H

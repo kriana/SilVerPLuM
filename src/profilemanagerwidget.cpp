@@ -2,6 +2,8 @@
 #include "ui_profilemanagerwidget.h"
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QMenu>
+#include <QFileDialog>
 
 ProfileManagerWidget::ProfileManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -15,6 +17,12 @@ ProfileManagerWidget::ProfileManagerWidget(QWidget *parent) :
     connect(ui->profileAdd, &QToolButton::clicked, this, &ProfileManagerWidget::addProfileClicked);
     connect(ui->profileClone, &QToolButton::clicked, this, &ProfileManagerWidget::duplicateProfileClicked);
     connect(ui->profileDelete, &QToolButton::clicked, this, &ProfileManagerWidget::removeProfileClicked);
+    connect(ui->actionImport, &QAction::triggered, this, &ProfileManagerWidget::importProfileClicked);
+    connect(ui->btnExport, &QToolButton::clicked, this, &ProfileManagerWidget::exportProfileClicked);
+
+    QMenu * menu = new QMenu(ui->profileAdd);
+    menu->addAction(ui->actionImport);
+    ui->profileAdd->setMenu(menu);
 
     profilesUpdated();
 }
@@ -26,7 +34,7 @@ ProfileManagerWidget::~ProfileManagerWidget()
 
 void ProfileManagerWidget::selectedProfile(int index)
 {
-    if(index >= 0)
+    if(index >= 0 && !m_loading)
     {
         Profile * p = ProfileManager::instance()->getProfiles()[index];
         ProfileManager::instance()->selectProfile(p);
@@ -40,12 +48,18 @@ void ProfileManagerWidget::profileSelected(Profile *p)
 
 void ProfileManagerWidget::profilesUpdated()
 {
+    m_loading = true;
+
     ui->configProfileList->clear();
 
-    for(Profile * p : ProfileManager::instance()->getProfiles())
+    for(int i = 0; i < ProfileManager::instance()->getProfiles().size(); ++i)
     {
-        ui->configProfileList->addItem(p->name());
+        Profile * p = ProfileManager::instance()->getProfiles()[i];
+
+        ui->configProfileList->addItem(p->name().isEmpty() ? p->id() : p->name());
     }
+
+    m_loading = false;
 
     profileSelected(ProfileManager::instance()->getSelectedProfile());
 }
@@ -56,6 +70,9 @@ void ProfileManagerWidget::addProfileClicked()
 
     if(!name.isEmpty())
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         try
         {
             ProfileManager::instance()->createOrLoadProfile(name);
@@ -64,6 +81,8 @@ void ProfileManagerWidget::addProfileClicked()
         {
             QMessageBox::critical(this, "New profile", "Could not create profile! The name must be a valid folder name and the profile don't have to already exist!");
         }
+
+        QApplication::restoreOverrideCursor();
 
     }
 }
@@ -75,6 +94,9 @@ void ProfileManagerWidget::duplicateProfileClicked()
 
     if(!name.isEmpty())
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         try
         {
             ProfileManager::instance()->duplicateProfile(p, name);
@@ -83,6 +105,8 @@ void ProfileManagerWidget::duplicateProfileClicked()
         {
             QMessageBox::critical(this, "Duplicate profile", "Could not copy profile! The name must be a valid folder name and the profile don't have to already exist!");
         }
+
+        QApplication::restoreOverrideCursor();
 
     }
 }
@@ -107,5 +131,81 @@ void ProfileManagerWidget::removeProfileClicked()
         {
             QMessageBox::critical(this, "Delete profile", "Could not delete profile! The default profile cannot be deleted.");
         }
+    }
+}
+
+void ProfileManagerWidget::exportProfileClicked()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::AnyFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+    dlg.setAcceptMode(QFileDialog::AcceptSave);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QString file = dlg.selectedFiles().first();
+
+        if(QFileInfo(file).exists())
+        {
+            if(QMessageBox::question(this,
+                                     "Export profile",
+                                     "Do you want to overwrite " + file + "?") != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        try
+        {
+           Profile * p = ProfileManager::instance()->getSelectedProfile();
+           ProfileManager::instance()->exportProfile(p, file);
+        }
+        catch(...)
+        {
+            QMessageBox::critical(this,
+                                  "Export profile",
+                                  "Error while exporting!");
+        }
+
+        QApplication::restoreOverrideCursor();
+    }
+}
+
+void ProfileManagerWidget::importProfileClicked()
+{
+    QString name = QInputDialog::getText(this, "Import profile", "Set the name of the imported profile:");
+
+    if(name.isEmpty())
+    {
+       return;
+    }
+
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::ExistingFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+    dlg.setAcceptMode(QFileDialog::AcceptOpen);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QString file = dlg.selectedFiles().first();
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        try
+        {
+           ProfileManager::instance()->importProfile(file, name);
+        }
+        catch(...)
+        {
+            QMessageBox::critical(this,
+                                  "Import profile",
+                                  "Error while importing! Open the profile log for more information.");
+        }
+
+        QApplication::restoreOverrideCursor();
     }
 }

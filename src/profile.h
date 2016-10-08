@@ -58,6 +58,10 @@ public:
 
     void setStardewValleyVersion(const QVersionNumber & version);
 
+    Platform::GameTechnology StardewValleyTechnology();
+
+    void setStardewValleyTechnology(Platform::GameTechnology tech);
+
     bool exists();
 
     void setLauncher(const QString & id);
@@ -93,6 +97,12 @@ signals:
     void updated();
 
 public:
+
+    /**
+     * @brief Platform-specific technology
+     * @return
+     */
+    static Platform::GameTechnology DefaultStardewValleyTechnology();
 
     /**
      * @brief Platform-specific locations for Stardew Valley savegames

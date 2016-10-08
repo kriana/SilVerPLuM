@@ -120,6 +120,29 @@ void Profile::setStardewValleyVersion(const QVersionNumber &version)
     emit updated();
 }
 
+Platform::GameTechnology Profile::StardewValleyTechnology()
+{
+    int v = m_Settings->value("StardewValley/GameTechnology", DefaultStardewValleyTechnology()).toInt();
+
+    switch(v)
+    {
+    case Platform::GameTechnologyXNA:
+        return Platform::GameTechnologyXNA;
+    case Platform::GameTechnologyMonoGame:
+        return Platform::GameTechnologyMonoGame;
+    default:
+        return Platform::GameTechnologyXNA;
+    }
+}
+
+void Profile::setStardewValleyTechnology(Platform::GameTechnology tech)
+{
+    m_Settings->setValue("StardewValley/GameTechnology", tech);
+    m_Settings->sync();
+
+    emit updated();
+}
+
 bool Profile::exists()
 {
     return profileBaseDir().exists();
@@ -187,6 +210,8 @@ void Profile::repairDirectories()
     profileSavegameDir().mkpath(".");
     profileSavegameBackupDir().mkpath(".");
 }
+
+
 
 SavegameManager *Profile::getSavegameManager() const
 {
@@ -257,6 +282,21 @@ void Profile::initialize()
 
     // Build launchers
     m_Launchers.append(new VanillaLauncher(this));
+}
+
+Platform::GameTechnology Profile::DefaultStardewValleyTechnology()
+{
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        return Platform::GameTechnologyXNA;
+    case Platform::Linux:
+        return Platform::GameTechnologyMonoGame;
+    case Platform::Mac:
+        return Platform::GameTechnologyMonoGame;
+    default:
+        throw std::runtime_error("Unsupported platform!");
+    }
 }
 
 QDir Profile::DefaultStardewValleySavegameDir()

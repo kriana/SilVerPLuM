@@ -26,6 +26,10 @@ public:
 
     void setDLLRedirectXNA(bool enabled);
 
+    bool getEnablePrimeCache();
+
+    void setEnablePrimeCache(bool enabled);
+
     bool getForceUnsupported();
 
     void setForceUnsupported(bool enabled);

@@ -18,26 +18,6 @@
 namespace utils
 {
 
-inline QString extractXMLTextNodeContent(const QDomDocument &doc, const QString & tag)
-{
-    QDomNodeList list = doc.elementsByTagName(tag);
-
-    for(int i = 0; i < list.count(); ++i)
-    {
-        QDomNode elem = list.at(i);
-
-        if(elem.isElement())
-        {
-            if(elem.hasChildNodes() && elem.firstChildElement().isText())
-            {
-                return elem.firstChildElement().nodeValue();
-            }
-        }
-    }
-
-    return "";
-}
-
 inline QString readAllTextFrom(const QString & path)
 {
     QFile file(path);

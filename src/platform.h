@@ -4,6 +4,13 @@
 class Platform
 {
 public:
+
+    enum GameTechnology
+    {
+        GameTechnologyXNA,
+        GameTechnologyMonoGame
+    };
+
     enum Type
     {
         Windows,

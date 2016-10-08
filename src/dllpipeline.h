@@ -2,6 +2,7 @@
 #define DLLPIPELINE_H
 
 #include "pipeline.h"
+#include <QtXml>
 
 
 class DllPipeline : public Pipeline
@@ -44,7 +45,9 @@ private:
 
     int runMSBUILD();
 
-    void fixReferences(const QString &projectFile);
+    void fixReferences(const QString &projectFile);       
+
+    void addReferenceNode(QDomDocument &doc, QDomNode & parent, const QString & reference, const QString & hintpath, bool isprivate, bool specificversion);
 };
 
 #endif // DLLPIPELINE_H

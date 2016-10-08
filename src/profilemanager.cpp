@@ -3,6 +3,7 @@
 #include <QStandardPaths>
 #include "utils.h"
 #include "globalsettings.h"
+#include <JlCompress.h>
 
 ProfileManager * ProfileManager::m_pInstance = nullptr;
 
@@ -159,6 +160,40 @@ void ProfileManager::duplicateProfile(Profile *p, const QString &name)
     {
         np->setName(name);
     }
+}
+
+void ProfileManager::exportProfile(Profile *p, const QString &path)
+{
+    getLogger().log(Logger::WARNING, "profiles", "manager", "export", "Exporting " + p->id() + " to " + path);
+
+    QFile(path).remove();
+    if(!JlCompress::compressDir(path, p->profileBaseDir().absolutePath(), true))
+    {
+        throw std::runtime_error("Error while compressing!");
+    }
+}
+
+void ProfileManager::importProfile(const QString &path, const QString & name)
+{
+    QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
+
+    if(idExists(id))
+    {
+        getLogger().log(Logger::WARNING, "profiles", "manager", "import", "ID alread exists: " + id);
+        throw std::invalid_argument("Profile with same id already exists!");
+    }
+
+    // Create the directory
+    QDir basedir = ProfilesDir().absoluteFilePath(id);
+    basedir.mkpath(".");
+
+    // Extract
+    getLogger().log(Logger::WARNING, "profiles", "manager", "import", "Extracting " + path + " into " + basedir.absolutePath());
+
+    JlCompress::extractDir(path, basedir.absolutePath());
+
+    Profile * p = createOrLoadProfile(id, name);
+    p->setName(name);
 }
 
 bool ProfileManager::idExists(const QString &id)

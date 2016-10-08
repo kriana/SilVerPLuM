@@ -72,6 +72,17 @@ void GlobalSettings::setDLLRedirectXNA(bool enabled)
     m_Settings->sync();
 }
 
+bool GlobalSettings::getEnablePrimeCache()
+{
+    return m_Settings->value("Mods/EnablePrimeCache", true).toBool();
+}
+
+void GlobalSettings::setEnablePrimeCache(bool enabled)
+{
+    m_Settings->setValue("Mods/EnablePrimeCache", enabled);
+    m_Settings->sync();
+}
+
 bool GlobalSettings::getForceUnsupported()
 {
     return m_Settings->value("Mods/ForceUnsupportedMods", false).toBool();

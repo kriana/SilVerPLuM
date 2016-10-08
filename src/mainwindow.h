@@ -21,6 +21,10 @@ public:
 private:
     Ui::MainWindow *ui;
 
+    bool m_profilesLoading = false;
+
+    void play(Launcher * l);
+
 private slots:
 
     void playClicked();
