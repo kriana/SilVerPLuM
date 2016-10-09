@@ -1,8 +1,0 @@
-/home/ruman/git/SMAPI/src/StardewModdingAPI/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/Newtonsoft.Json.dll
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/MonoGame.Framework.dll
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/StardewValley.exe
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/xTile.dll
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/Steamworks.NET.dll
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/GalaxyCSharp.dll
-/home/ruman/git/SMAPI/src/StardewModdingAPI/bin/Debug/Lidgren.Network.dll
