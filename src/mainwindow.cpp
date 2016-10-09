@@ -216,7 +216,7 @@ void MainWindow::openApplicationSettings()
     dlg.exec();
 
     // Trigger update of mod list
-    ui->modManager->reloadModList();
+    ui->modManager->refreshList();
 }
 
 void MainWindow::openProfileLog()

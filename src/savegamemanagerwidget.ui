@@ -29,6 +29,9 @@
          <iconset theme="view-refresh">
           <normaloff>.</normaloff>.</iconset>
         </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
@@ -114,6 +117,18 @@
     </widget>
    </item>
   </layout>
+  <action name="actionReloadSavegames">
+   <property name="icon">
+    <iconset theme="view-refresh">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Reload all savegames</string>
+   </property>
+   <property name="toolTip">
+    <string>Reloadss all savegames from the savegame directory.</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

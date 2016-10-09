@@ -24,6 +24,9 @@ void Launcher::start()
         return;
     }
 
+    // First fix crazyness
+    m_profile->fixCrazyness();
+
     QString path = m_profile->getModManager()->resolveModUrl(executable.executable());
     QString workdir = m_profile->getModManager()->resolveModUrl(executable.workdir());
 
@@ -84,6 +87,7 @@ void Launcher::start()
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
 
     m_process->setWorkingDirectory(m_profile->StardewValleyDir().absolutePath());
+    m_process->setProcessChannelMode(QProcess::MergedChannels);
 
     connect(m_process, SIGNAL(finished(int)), this, SLOT(processFinished(int)));
     connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
@@ -172,6 +176,7 @@ Profile *Launcher::getProfile() const
 
 void Launcher::processFinished(int retcode)
 {
+    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished", "Process finished with exit code " + QString::number(retcode));
 
     emit finished(retcode);
@@ -179,6 +184,7 @@ void Launcher::processFinished(int retcode)
 
 void Launcher::processError(QProcess::ProcessError error)
 {
+     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
     getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "finished", "Process finished with error QProcess::ProcessError::" + QString::number(error));
 
     emit finished(-1);

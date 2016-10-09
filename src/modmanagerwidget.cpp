@@ -4,6 +4,7 @@
 #include "modmanager.h"
 #include "modmanagerwidgetitem.h"
 #include <QFileDialog>
+#include <QMenu>
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -12,8 +13,13 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(search(QString)));
-    connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(reloadModList()));
+    connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(refreshList()));
     connect(ui->btnInstallMod, &QToolButton::clicked, this, &ModManagerWidget::installModClicked);
+    connect(ui->actionReloadMods, &QAction::triggered, this, &ModManagerWidget::reloadAllMods);
+
+    QMenu * refresh_menu = new QMenu(ui->btnRefresh);
+    refresh_menu->addAction(ui->actionReloadMods);
+    ui->btnRefresh->setMenu(refresh_menu);
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -30,26 +36,26 @@ void ModManagerWidget::setModManager(ModManager *currentMM)
 {
     if(m_currentMM != nullptr)
     {
-        disconnect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(reloadModList()));
-        disconnect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(reloadModList()));
+        disconnect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(refreshList()));
+        disconnect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(refreshList()));
     }
 
     m_currentMM = currentMM;
 
     if(m_currentMM != nullptr)
     {
-        connect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(reloadModList()));
-        connect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(reloadModList()));
+        connect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(refreshList()));
+        connect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(refreshList()));
     }
 
     ui->dependencyWarning->setModManager(currentMM);
 
-    reloadModList();
+    refreshList();
 
     ui->searchBar->setText("");
 }
 
-void ModManagerWidget::reloadModList()
+void ModManagerWidget::refreshList()
 {
     int scrollh =ui->scrollArea->horizontalScrollBar()->value();
     int scrollv = ui->scrollArea->verticalScrollBar()->value();
@@ -75,6 +81,17 @@ void ModManagerWidget::reloadModList()
     search(ui->searchBar->text());
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+}
+
+void ModManagerWidget::reloadAllMods()
+{
+    if(m_currentMM != nullptr)
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+        m_currentMM->reloadMods();
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 void ModManagerWidget::installModClicked()

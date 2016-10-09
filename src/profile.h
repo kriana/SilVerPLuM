@@ -62,6 +62,8 @@ public:
 
     void setStardewValleyTechnology(Platform::GameTechnology tech);
 
+    QString StardewValleyTechnologyString();
+
     /**
      * @brief If enabled, a backup of all savegames is created on start
      * @return
@@ -97,6 +99,11 @@ public:
     QList<Launcher*> getLaunchers();
 
     void initialize();
+
+    /**
+     * @brief Fixes some crazy things that are annoying AF
+     */
+    void fixCrazyness();
 
 public slots:
 

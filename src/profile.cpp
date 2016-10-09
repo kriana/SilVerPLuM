@@ -12,6 +12,9 @@ Profile::Profile(const QString &id) : m_Id(id)
 {
     m_modManager = new ModManager(this);
     m_savegameManager = new SavegameManager(this);
+
+    connect(m_modManager, SIGNAL(modListUpdated()), this, SIGNAL(updated()));
+    connect(m_modManager, SIGNAL(modEnabledDisabled(QString,QString,bool)), this, SIGNAL(updated()));
 }
 
 Profile::~Profile()
@@ -115,6 +118,8 @@ void Profile::setStardewValleyVersion(const QVersionNumber &version)
     setting_changed();
 }
 
+
+
 Platform::GameTechnology Profile::StardewValleyTechnology()
 {
     int v = m_Settings->value("StardewValley/GameTechnology", DefaultStardewValleyTechnology()).toInt();
@@ -135,6 +140,19 @@ void Profile::setStardewValleyTechnology(Platform::GameTechnology tech)
     m_Settings->setValue("StardewValley/GameTechnology", tech);
 
     setting_changed();
+}
+
+QString Profile::StardewValleyTechnologyString()
+{
+    switch(StardewValleyTechnology())
+    {
+    case Platform::GameTechnologyXNA:
+        return "xna";
+    case Platform::GameTechnologyMonoGame:
+        return "monogame";
+    default:
+        return "xna";
+    }
 }
 
 bool Profile::enableBackupOnStart()
@@ -328,6 +346,9 @@ void Profile::initialize()
         repairDirectories();
     }
 
+    // Fix some crazy stuff
+    fixCrazyness();
+
     // Initialize all mod-related stuff
     m_modManager->initialize();
 
@@ -336,6 +357,19 @@ void Profile::initialize()
 
     // Build launchers
     m_Launchers.append(new VanillaLauncher(this));
+}
+
+void Profile::fixCrazyness()
+{
+    // Fix different executable names between Windows <-> Linux. Thank you.
+    if(QFileInfo(StardewValleyDir().absoluteFilePath("Stardew Valley.exe")).exists())
+    {
+        getLogger().log(Logger::INFO, "profile", "fix-crazyness", "inconsistent-executables", "Why is the executable on Windows called 'Stardew Valley.exe' and on other platforms 'StardewValley.exe'? I'll copy it.");
+
+        QFile(StardewValleyDir().absoluteFilePath("StardewValley.exe")).remove();
+        QFile::copy(StardewValleyDir().absoluteFilePath("Stardew Valley.exe"),
+                    StardewValleyDir().absoluteFilePath("StardewValley.exe"));
+    }
 }
 
 Platform::GameTechnology Profile::DefaultStardewValleyTechnology()

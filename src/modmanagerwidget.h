@@ -23,7 +23,9 @@ public slots:
 
     void setModManager(ModManager *currentMM);
 
-    void reloadModList();
+    void refreshList();
+
+    void reloadAllMods();
 
 private:
     Ui::ModManagerWidget *ui;

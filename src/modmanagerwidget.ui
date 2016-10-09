@@ -35,6 +35,9 @@
          <iconset theme="view-refresh">
           <normaloff>.</normaloff>.</iconset>
         </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
@@ -138,6 +141,17 @@
     </widget>
    </item>
   </layout>
+  <action name="actionReloadMods">
+   <property name="icon">
+    <iconset theme="view-refresh"/>
+   </property>
+   <property name="text">
+    <string>Reload all mods</string>
+   </property>
+   <property name="toolTip">
+    <string>Reloadss all mods from the mod directory.</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

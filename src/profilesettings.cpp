@@ -43,8 +43,8 @@ void ProfileSettings::setCurrentProfile(Profile *profile)
     {
         if(m_CurrentProfile != nullptr)
         {
-            disconnect(m_CurrentProfile->getModManager(),
-                       SIGNAL(modEnabledDisabled(QString,QString,bool)),
+            disconnect(m_CurrentProfile,
+                       SIGNAL(updated()),
                        this,
                        SLOT(discart()));
         }
@@ -53,8 +53,8 @@ void ProfileSettings::setCurrentProfile(Profile *profile)
 
         if(m_CurrentProfile != nullptr)
         {
-            connect(m_CurrentProfile->getModManager(),
-                       SIGNAL(modEnabledDisabled(QString,QString,bool)),
+            connect(m_CurrentProfile,
+                       SIGNAL(updated()),
                        this,
                        SLOT(discart()));
         }

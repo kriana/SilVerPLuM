@@ -47,6 +47,7 @@ signals:
 public slots:
 
     void reloadSavegames();
+
 };
 
 #endif // SAVEGAMEMANAGER_H

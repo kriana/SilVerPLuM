@@ -26,6 +26,8 @@ public slots:
 
     void reloadList();
 
+    void reloadAllSavegames();
+
 private:
     Ui::SavegameManagerWidget *ui;
 

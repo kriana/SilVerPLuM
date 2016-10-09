@@ -66,6 +66,8 @@ public:
 
 public slots:
 
+    void reloadMods();
+
     void issueDependencyCheck();
 
 private:
@@ -92,8 +94,6 @@ private:
     void writePriorities();
 
     void loadMod(const QDir & directory);
-
-    void loadMods();
 
     void sortMods();
 

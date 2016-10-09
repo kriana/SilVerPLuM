@@ -18,7 +18,8 @@ DllPipeline::DllPipeline(Modification *mod, const QString &id) : Pipeline(mod, i
 {
     // Default reference mappings
     setReferenceMapping("MonoGame.Framework", "stardewvalley://MonoGame.Framework.dll");
-    setReferenceMapping("Stardew Valley", "stardewvalley://StardewValley.exe");
+    setReferenceMapping("StardewValley", "stardewvalley://StardewValley.exe");
+    setReferenceMapping("Stardew Valley", "stardewvalley://StardewValley.exe"); // See fixCrazyness!
     setReferenceMapping("xTile", "stardewvalley://xTile.dll");
 }
 
@@ -71,6 +72,9 @@ int DllPipeline::prime()
             getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget", "Nuget operation was successful");
         }
     }
+
+    // First fix crazyness
+    mod()->getModManager()->profile()->fixCrazyness();
 
     // Look for *.csproj files and fix the dependencies
     QStringList projectfiles = utils::findAllFiles(pipelineBaseDir());
@@ -155,7 +159,7 @@ bool DllPipeline::alreadyPrimed()
         return false;
 
     QTextStream stream(&lockfile);
-    return stream.readAll() == Platform::getPlatformString() + "_" + QString::number(mod()->getModManager()->profile()->StardewValleyTechnology());
+    return stream.readAll() == Platform::getPlatformString() + "_" + (mod()->getModManager()->profile()->StardewValleyTechnologyString());
 }
 
 void DllPipeline::writePrimeFile()
@@ -171,7 +175,7 @@ void DllPipeline::writePrimeFile()
         return;
 
     QTextStream stream(&lockfile);
-    stream << Platform::getPlatformString() << "_" << QString::number(mod()->getModManager()->profile()->StardewValleyTechnology());
+    stream << Platform::getPlatformString() << "_" << (mod()->getModManager()->profile()->StardewValleyTechnologyString());
 }
 
 int DllPipeline::runNuget()

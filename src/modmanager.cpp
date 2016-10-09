@@ -33,7 +33,7 @@ Profile *ModManager::profile() const
 
 void ModManager::initialize()
 {
-    loadMods();
+    reloadMods();
 }
 
 QList<Modification *> ModManager::getModifications()
@@ -454,8 +454,15 @@ void ModManager::loadMod(const QDir &directory)
     }
 }
 
-void ModManager::loadMods()
+void ModManager::reloadMods()
 {
+    for(Modification * mod : m_mods)
+    {
+        delete mod;
+    }
+    m_mods.clear();
+    m_modId.clear();
+
     for(QString entry : m_profile->profileModDir().entryList(QDir::Dirs | QDir::NoDotAndDotDot))
     {
         QDir moddir = m_profile->profileModDir().absoluteFilePath(entry);

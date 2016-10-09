@@ -2,6 +2,7 @@
 #include "ui_savegamemanagerwidget.h"
 #include "utils.h"
 #include "savegamemanagerwidgetitem.h"
+#include <QMenu>
 
 SavegameManagerWidget::SavegameManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,6 +12,11 @@ SavegameManagerWidget::SavegameManagerWidget(QWidget *parent) :
 
     connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(reloadList()));
     connect(ui->btnImport, SIGNAL(clicked(bool)), this, SLOT(importSavegame()));
+    connect(ui->actionReloadSavegames, &QAction::triggered, this, &SavegameManagerWidget::reloadAllSavegames);
+
+    QMenu * refresh_menu = new QMenu(ui->btnRefresh);
+    refresh_menu->addAction(ui->actionReloadSavegames);
+    ui->btnRefresh->setMenu(refresh_menu);
 }
 
 SavegameManagerWidget::~SavegameManagerWidget()
@@ -69,6 +75,17 @@ void SavegameManagerWidget::reloadList()
 
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+}
+
+void SavegameManagerWidget::reloadAllSavegames()
+{
+    if(m_savegameManager != nullptr)
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+        m_savegameManager->reloadSavegames();
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 void SavegameManagerWidget::importSavegame()
