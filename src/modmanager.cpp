@@ -215,7 +215,7 @@ Logger &ModManager::getLogger()
     return m_logger;
 }
 
-void ModManager::addMod(const QString &filename)
+bool ModManager::addMod(const QString &filename)
 {
     getLogger().log(Logger::Info, "modmanager", "modmanager", "add-mod", "Trying to add mod " + filename);
 
@@ -228,7 +228,7 @@ void ModManager::addMod(const QString &filename)
         if(extractedfiles.isEmpty())
         {
             getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Extraction failed!");
-            throw std::runtime_error("Extraction failed!");
+            return false;
         }
 
         // Check files by loading the config as Modification
@@ -239,7 +239,7 @@ void ModManager::addMod(const QString &filename)
         {
             getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
 
-            return;
+            return false;
         }
 
         QJsonParseError error;
@@ -248,7 +248,7 @@ void ModManager::addMod(const QString &filename)
         if(error.error != QJsonParseError::NoError)
         {
             getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading JSON failed!");
-            throw std::runtime_error("Loading JSON failed!");
+            return false;
         }
 
         Modification * mod = Modification::loadFromJson(this, temp.path(), json.object());
@@ -256,7 +256,7 @@ void ModManager::addMod(const QString &filename)
         if(mod == nullptr)
         {
             getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading mod failed!");
-            throw std::runtime_error("Loading mod failed!");
+            return false;
         }
 
         QString mod_id = mod->id();
@@ -268,7 +268,8 @@ void ModManager::addMod(const QString &filename)
         if(destination.exists())
         {
             getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Cannot copy: Folder already existing!");
-            throw std::runtime_error("Folder already existing!");
+
+            return false;
         }
 
         utils::copyDirectoryProgress(temp.path(), destination.absolutePath(), true);
@@ -276,11 +277,13 @@ void ModManager::addMod(const QString &filename)
         // Now load mod from destination
         loadMod(destination);
         sortMods();
+
+        return true;
     }
     else
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Could not create temp. dir");
-        throw std::runtime_error("Could not create temp. dir");
+        return false;
     }
 }
 
@@ -380,7 +383,7 @@ QString ModManager::resolveModUrl(const QString &url)
     }
 }
 
-void ModManager::loadMod(const QDir &directory)
+bool ModManager::loadMod(const QDir &directory)
 {
     getLogger().log(Logger::Info, "modmanager", "modmanager", "load-mod", "Trying to load mod in " + directory.absolutePath());
 
@@ -390,7 +393,7 @@ void ModManager::loadMod(const QDir &directory)
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot find mod.json! Skipping");
 
-        return;
+        return false;
     }
 
     QFile mod_file(mod_config_path);
@@ -399,7 +402,7 @@ void ModManager::loadMod(const QDir &directory)
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
 
-        return;
+        return false;
     }
 
     QJsonParseError error;
@@ -410,25 +413,16 @@ void ModManager::loadMod(const QDir &directory)
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Error while parsing JSON! Skipping!");
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "json error: " + error.errorString());
 
-        return;
+        return false;
     }
 
     if(json.isEmpty())
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "JSON is empty! Skipping!");
-        return;
+        return false;
     }
 
-    Modification * mod = nullptr;
-
-    try
-    {
-        mod = Modification::loadFromJson(this, directory, json.object());
-    }
-    catch(...)
-    {
-
-    }
+    Modification * mod = Modification::loadFromJson(this, directory, json.object());
 
     if(mod != nullptr)
     {
@@ -447,10 +441,13 @@ void ModManager::loadMod(const QDir &directory)
         m_mods.append(mod);
         m_modId.insert(mod->id());
         emit updatedModList();
+
+        return true;
     }
     else
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Could not load mod from JSON!");
+        return false;
     }
 }
 
@@ -467,14 +464,10 @@ void ModManager::reloadMods()
     {
         QDir moddir = m_profile->profileModDir().absoluteFilePath(entry);
 
-        try
-        {
-            loadMod(moddir);
-        }
-        catch(...)
-        {
-            getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Loading mod from " + moddir.absolutePath() + " failed!");
-        }
+       if(!loadMod(moddir))
+       {
+           getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Loading mod from " + moddir.absolutePath() + " failed!");
+       }
     }
 
     sortMods();

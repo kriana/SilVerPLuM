@@ -66,7 +66,7 @@ protected:
 
     Pipeline(Modification * mod, const QString & id);
 
-    static void loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
+    static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
 
     virtual QMap<QString, QString> resolveInstallables();
 

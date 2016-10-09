@@ -14,6 +14,14 @@ class Game : public QObject
 
 private:
 
+    enum Status
+    {
+        StatusNotRunning,
+        StatusPrepare,
+        StatusRun,
+        StatusPost
+    };
+
     static Game * m_pInstance;
 
 public:
@@ -42,7 +50,7 @@ private:
 
     QTimer * m_backupTimer;
 
-    bool m_Running = false;
+    Status m_Status = StatusNotRunning;
 
     QFutureWatcher<void> m_prepareWatcher;
 

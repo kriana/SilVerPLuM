@@ -42,13 +42,13 @@ public:
 
     Profile *createOrLoadProfile(const QString & id, const QString & name);
 
-    void deleteProfile(Profile * p);
+    bool deleteProfile(Profile * p);
 
-    void duplicateProfile(Profile * p, const QString & name);
+    bool duplicateProfile(Profile * p, const QString & name);
 
-    void exportProfile(Profile * p, const QString & path);
+    bool exportProfile(Profile * p, const QString & path);
 
-    void importProfile(const QString & path, const QString &name);
+    bool importProfile(const QString & path, const QString &name);
 
     bool idExists(const QString & id);
 

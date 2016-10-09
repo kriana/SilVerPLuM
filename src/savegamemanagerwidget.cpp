@@ -98,11 +98,7 @@ void SavegameManagerWidget::importSavegame()
     {
         for(QString file : dlg.selectedFiles())
         {
-            try
-            {
-                m_savegameManager->import(file);
-            }
-            catch(...)
+            if(!m_savegameManager->import(file))
             {
                 if(QMessageBox::critical(this,
                                       "Import savegame",

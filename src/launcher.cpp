@@ -2,6 +2,7 @@
 #include "profile.h"
 #include "pipeline.h"
 #include "game.h"
+#include "utils.h"
 
 Launcher::Launcher(Profile *p, Pipeline *pip) : m_profile(p), m_pipeline(pip)
 {
@@ -67,6 +68,10 @@ void Launcher::start()
 
     m_process = new QProcess(this);
 
+    /*QFile launcherfile(m_profile->StardewValleyDir().absoluteFilePath("SilVerPLuM.launcher.unix.sh"));
+    if(launcherfile.exists())
+        launcherfile.remove();*/
+
     if(Platform::getCurrentPlatform() == Platform::Windows)
     {
         m_process->setProgram(executable.executable());
@@ -76,12 +81,39 @@ void Launcher::start()
     {
         // OSX and Linux: Wrap around bash, so it will run everything
         m_process->setProgram("/bin/bash");
-        QString bash_argument = (path + " " + executable.arguments().join(" ")).trimmed();
 
-        // Fix the formatting for bash
-        bash_argument = bash_argument.replace(" ", "\\ ");
+        /*
+         * Problem: If I close bash, the children will be still there
+         * Problem: I need to use bash, otherwise nothing will start
+         * Solution: Create a script that is placed somewhere that runs everything
+         */
 
-        m_process->setArguments( QStringList() << "-c" << bash_argument);
+        // FUCK didn't work
+        /*if(launcherfile.open(QFile::WriteOnly))
+        {
+            QString template_script = utils::readAllTextFrom(":/resources/unix_launcher.sh");
+            QString command = (path + " " + executable.arguments().join(" ")).trimmed();
+            command = command.replace(" ", "\\ "); // Escape spaces
+            command = command.replace("\"", "\\\""); // Escape quotes
+
+            template_script = template_script.replace("{}", command);
+            QTextStream stream(&launcherfile);
+            stream << template_script;
+            launcherfile.close();
+
+            m_process->setArguments( QStringList() << launcherfile.fileName());
+        }
+        else*/
+        {
+            // Use old solution (which also doesn't work, but isn't as complex)
+            QString bash_argument = "";
+            bash_argument += (path + " " + executable.arguments().join(" ")).trimmed();
+
+            bash_argument = bash_argument.replace("\"", "\\\""); // Escape quotes
+            bash_argument = "\"" + bash_argument + "\"";
+
+            m_process->setArguments( QStringList() << "-c" << bash_argument);
+        }
     }
 
     getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
@@ -98,7 +130,18 @@ void Launcher::stop()
 {
     if(m_process != nullptr && m_process->isOpen())
     {
-        m_process->kill();
+        switch(Platform::getCurrentPlatform())
+        {
+        case Platform::Windows:
+            m_process->kill();
+            break;
+        case Platform::Linux:
+            m_process->terminate();
+            break;
+        case Platform::Mac:
+            m_process->terminate();
+            break;
+        }
     }
 }
 

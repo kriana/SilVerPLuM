@@ -92,12 +92,12 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
     if(id_ != id)
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "create-or-load", "Invalid ID " + id);
-        throw std::invalid_argument("Invalid ID!");
+        return nullptr;
     }
     if(idExists(id))
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "create-or-load", "ID alread exists: " + id);
-        throw std::invalid_argument("Profile with same id already exists!");
+        return nullptr;
     }
 
     Profile * p = new Profile(id);
@@ -120,17 +120,17 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
     return p;
 }
 
-void ProfileManager::deleteProfile(Profile *p)
+bool ProfileManager::deleteProfile(Profile *p)
 {
     if(p == nullptr || !m_Profiles.contains(p))
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "delete", "Unknown profile");
-        throw std::invalid_argument("Profile is unknown!");
+        return false;
     }
     if(p->id() == Profile::DEFAULT_PROFILE_ID)
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "delete", "Cannot delete default profile");
-        throw std::invalid_argument("Cannot remove default profile!");
+        return false;
     }
 
     if(m_SelectedProfile == p)
@@ -144,16 +144,18 @@ void ProfileManager::deleteProfile(Profile *p)
     delete p;
     emit updated();
     emit updatedProfileList();
+
+    return true;
 }
 
-void ProfileManager::duplicateProfile(Profile *p, const QString &name)
+bool ProfileManager::duplicateProfile(Profile *p, const QString &name)
 {
     QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
 
     if(idExists(id))
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "duplicate", "ID alread exists: " + id);
-        throw std::invalid_argument("ID already exists!");
+        return false;
     }
 
     utils::copyDirectoryProgress(p->profileBaseDir(), ProfilesDir().absoluteFilePath(id), true);
@@ -162,31 +164,35 @@ void ProfileManager::duplicateProfile(Profile *p, const QString &name)
     // Change the profile's name
     Profile * np = getProfile(id);
 
-    if(np!=nullptr)
+    if(np != nullptr)
     {
         np->setName(name);
     }
+
+    return true;
 }
 
-void ProfileManager::exportProfile(Profile *p, const QString &path)
+bool ProfileManager::exportProfile(Profile *p, const QString &path)
 {
     getLogger().log(Logger::Warning, "profiles", "manager", "export", "Exporting " + p->id() + " to " + path);
 
     QFile(path).remove();
     if(!JlCompress::compressDir(path, p->profileBaseDir().absolutePath(), true))
     {
-        throw std::runtime_error("Error while compressing!");
+        return false;
     }
+
+    return true;
 }
 
-void ProfileManager::importProfile(const QString &path, const QString & name)
+bool ProfileManager::importProfile(const QString &path, const QString & name)
 {
     QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
 
     if(idExists(id))
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "import", "ID alread exists: " + id);
-        throw std::invalid_argument("Profile with same id already exists!");
+        return false;
     }
 
     // Create the directory
@@ -200,6 +206,8 @@ void ProfileManager::importProfile(const QString &path, const QString & name)
 
     Profile * p = createOrLoadProfile(id, name);
     p->setName(name);
+
+    return true;
 }
 
 bool ProfileManager::idExists(const QString &id)

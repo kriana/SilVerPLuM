@@ -34,6 +34,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Restore state
     GlobalSettings::instance()->getWindowState(this);
+
+    // Force stop doesn't work and breaks the flow as child processes retain
+    ui->playLogStop->hide(); // Disable it until a solution is found
 }
 
 MainWindow::~MainWindow()

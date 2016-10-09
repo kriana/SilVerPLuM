@@ -15,7 +15,7 @@ Pipeline::Pipeline(Modification *mod, const QString &id) : m_mod(mod), m_id(id)
             SLOT(modEnabledDisabled(QString,QString,bool)));
 }
 
-void Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
+bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
 {
     pip->setName(json["name"].toString());
     pip->setDescription(json["description"].toString());
@@ -53,6 +53,8 @@ void Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
                                                      launcher_map[id].toObject());
         pip->setLauncher(id, launcher);
     }
+
+    return true;
 }
 
 QMap<QString, QString> Pipeline::resolveInstallables()

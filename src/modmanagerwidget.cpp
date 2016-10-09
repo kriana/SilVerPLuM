@@ -104,11 +104,7 @@ void ModManagerWidget::installModClicked()
     {
         for(QString file : dlg.selectedFiles())
         {
-            try
-            {
-                m_currentMM->addMod(file);
-            }
-            catch(...)
+            if(!m_currentMM->addMod(file))
             {
                 if(QMessageBox::critical(this,
                                       "Add modification",
@@ -118,7 +114,7 @@ void ModManagerWidget::installModClicked()
                 {
                     break;
                 }
-            }
+            }           
         }
     }
 }

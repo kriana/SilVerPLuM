@@ -55,7 +55,7 @@ void SavegameManager::initialize()
     reloadSavegames();
 }
 
-void SavegameManager::import(const QString &path)
+bool SavegameManager::import(const QString &path)
 {
     profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Importing savegame in " + path);
 
@@ -83,7 +83,7 @@ void SavegameManager::import(const QString &path)
         if(sav == nullptr)
         {
             profile()->getLogger().log(Logger::Error, "savegames", "manager", "import", "Not able to load savegame. Cancelling.");
-            throw std::runtime_error("Unable to load savegame");
+            return false;
         }
 
         delete sav;
@@ -107,11 +107,13 @@ void SavegameManager::import(const QString &path)
 
         reloadSavegames();
 
+        return true;
+
     }
     else
     {
         profile()->getLogger().log(Logger::Error, "savegames", "manager", "import", "Unable to create temp. dir");
-        throw std::runtime_error("Cannot create temp dir");
+        return false;
     }
 }
 

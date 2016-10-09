@@ -23,7 +23,11 @@ FilePipeline * FilePipeline::loadFromJson(Modification *mod, const QString &id, 
 {
     FilePipeline * pip = new FilePipeline(mod, id);
 
-    loadGenericFromJson(json, pip);
+    if(!loadGenericFromJson(json, pip))
+    {
+        delete pip;
+        return nullptr;
+    }
 
     return pip;
 }

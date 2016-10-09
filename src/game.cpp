@@ -40,7 +40,7 @@ Game::~Game()
 
 bool Game::running()
 {
-    return m_Running;
+    return m_Status != StatusNotRunning;
 }
 
 void Game::setLauncher(Launcher *l)
@@ -55,13 +55,13 @@ void Game::setLauncher(Launcher *l)
 
 void Game::prepareAndRun()
 {
-    if(m_Running)
+    if(m_Status != StatusNotRunning)
         throw std::runtime_error("Game already running!");
 
     getLogger().log(Logger::Info, "launcher", "launcher", "", "Start launching of launcher " + m_Launcher->id());
 
-    m_Running = true;
-    emit running(m_Running);
+    m_Status = StatusPrepare;
+    emit running(true);
 
     m_prepareWatcher.setFuture(QtConcurrent::run(this, &Game::prepare));
 }
@@ -176,6 +176,11 @@ void Game::prepare()
 
 void Game::run()
 {
+    if(m_Status != StatusPrepare)
+        throw std::runtime_error("Running without being prepared!");
+
+    m_Status = StatusRun;
+
     getLogger().log(Logger::Info, "launcher", "run", "run", "Running launcher");
     progress(false, 0, 0, 0);
     m_Launcher->start();
@@ -270,17 +275,22 @@ void Game::post()
 
 void Game::finish()
 {
+    if(m_Status != StatusPost)
+        throw std::runtime_error("Finalizing without post!");
+
+
+
     getLogger().log(Logger::Info, "launcher", "post", "finish", "Launcher finished operation with exit code " + QString::number(m_exitCode));
 
     m_Launcher->getProfile()->getSavegameManager()->reloadSavegames(); // May have added savegames
 
-    m_Running = false;
-    emit running(m_Running);
+     m_Status = StatusNotRunning;
+    emit running(false);
 }
 
 void Game::issueFullBackup()
 {
-    if(!m_Running)
+    if(m_Status != StatusRun)
         return;
 
     getLogger().log(Logger::Info, "launcher", "post", "auto-backup", "Issuing full-backup");
@@ -296,7 +306,7 @@ void Game::issueFullBackup()
 
 void Game::issueBackupPrune()
 {
-    if(!m_Running)
+    if(m_Status != StatusPost)
         return;
 
     getLogger().log(Logger::Info, "launcher", "post", "auto-backup", "Issuing prune-backup");
@@ -308,6 +318,11 @@ void Game::issueBackupPrune()
 
 void Game::gameFinished(int retcode)
 {
+    if(m_Status != StatusRun)
+        return; // Can actually be triggered multiple times
+
+    m_Status = StatusPost;
+
     if(retcode != 0)
     {
         if(Platform::getCurrentPlatform() != Platform::Windows)

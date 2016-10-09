@@ -53,7 +53,7 @@
            <item row="0" column="0">
             <widget class="QStackedWidget" name="playStackedWidget">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="playLauncherPage">
               <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -79,7 +79,7 @@
                     <string>Profile log</string>
                    </property>
                    <property name="icon">
-                    <iconset theme="text">
+                    <iconset theme="view-list-text">
                      <normaloff>.</normaloff>.</iconset>
                    </property>
                    <property name="flat">
@@ -125,8 +125,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>578</width>
-                    <height>181</height>
+                    <width>558</width>
+                    <height>171</height>
                    </rect>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_5">
@@ -345,7 +345,8 @@
                      <string>Force stop</string>
                     </property>
                     <property name="icon">
-                     <iconset theme="dialog-cancel"/>
+                     <iconset theme="dialog-cancel">
+                      <normaloff>.</normaloff>.</iconset>
                     </property>
                    </widget>
                   </item>

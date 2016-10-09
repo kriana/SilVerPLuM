@@ -10,5 +10,6 @@
         <file>resources/icons/application-128.png</file>
         <file>resources/icons/application-40.png</file>
         <file>resources/markdown/default.md</file>
+        <file>resources/unix_launcher.sh</file>
     </qresource>
 </RCC>

@@ -32,7 +32,7 @@ public:
 
     void initialize();
 
-    void import(const QString & path);
+    bool import(const QString & path);
 
 private:
 

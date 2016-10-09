@@ -58,7 +58,7 @@ public:
 
     Logger & getLogger();
 
-    void addMod(const QString & filename);
+    bool addMod(const QString & filename);
 
     void deleteMod(const QString & modid);
 
@@ -93,7 +93,7 @@ private:
 
     void writePriorities();
 
-    void loadMod(const QDir & directory);
+    bool loadMod(const QDir & directory);
 
     void sortMods();
 

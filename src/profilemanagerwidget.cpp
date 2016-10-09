@@ -74,11 +74,7 @@ void ProfileManagerWidget::addProfileClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        try
-        {
-            ProfileManager::instance()->createOrLoadProfile(name);
-        }
-        catch(...)
+        if(ProfileManager::instance()->createOrLoadProfile(name) == nullptr)
         {
             QMessageBox::critical(this, "New profile", "Could not create profile! The name must be a valid folder name and the profile don't have to already exist!");
         }
@@ -98,14 +94,10 @@ void ProfileManagerWidget::duplicateProfileClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        try
+        if(!ProfileManager::instance()->duplicateProfile(p, name))
         {
-            ProfileManager::instance()->duplicateProfile(p, name);
-        }
-        catch(...)
-        {
-            QMessageBox::critical(this, "Duplicate profile", "Could not copy profile! The name must be a valid folder name and the profile don't have to already exist!");
-        }
+             QMessageBox::critical(this, "Duplicate profile", "Could not copy profile! The name must be a valid folder name and the profile don't have to already exist!");
+        }        
 
         QApplication::restoreOverrideCursor();
 
@@ -124,11 +116,7 @@ void ProfileManagerWidget::removeProfileClicked()
 
     if(dlg.exec() == QMessageBox::Yes)
     {
-        try
-        {
-            ProfileManager::instance()->deleteProfile(p);
-        }
-        catch(...)
+        if(!ProfileManager::instance()->deleteProfile(p))
         {
             QMessageBox::critical(this, "Delete profile", "Could not delete profile! The default profile cannot be deleted.");
         }
@@ -159,12 +147,8 @@ void ProfileManagerWidget::exportProfileClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        try
-        {
-           Profile * p = ProfileManager::instance()->getSelectedProfile();
-           ProfileManager::instance()->exportProfile(p, file);
-        }
-        catch(...)
+        Profile * p = ProfileManager::instance()->getSelectedProfile();
+        if(!ProfileManager::instance()->exportProfile(p, file))
         {
             QMessageBox::critical(this,
                                   "Export profile",
@@ -196,11 +180,7 @@ void ProfileManagerWidget::importProfileClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        try
-        {
-           ProfileManager::instance()->importProfile(file, name);
-        }
-        catch(...)
+        if(!ProfileManager::instance()->importProfile(file, name))
         {
             QMessageBox::critical(this,
                                   "Import profile",

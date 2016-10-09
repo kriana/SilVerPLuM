@@ -173,31 +173,31 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
     if(id == "stardewvalley")
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mods with id 'stardewvalley' are forbidden. Skipping mod in " + basepath.absolutePath());
-        throw std::invalid_argument("Illegal mod ID");
+        return nullptr;
     }
     if(id.toLower() != id)
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs must be lowercase! Skipping mod in " + basepath.absolutePath());
 
-        throw std::invalid_argument("Illegal mod ID");
+        return nullptr;
     }
     if(id.replace(QRegExp("[^a-z0-9_.\\-]+"), "") != id)
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs must be alphanumeric with additional chars '.', '-' and '_'. Skipping mod in " + basepath.absolutePath());
 
-        throw std::invalid_argument("Illegal mod ID");
+        return nullptr;
     }
     if(id.contains(".."))
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs are not allowed to contain '..' due to prevention of container breakout. Skipping mod in " + basepath.absolutePath());
 
-        throw std::invalid_argument("Illegal mod ID");
+        return nullptr;
     }
 
     if(id.isEmpty())
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Modification ID is empty. Skipping mod in " + basepath.absolutePath());
-        throw std::invalid_argument("Modification ID is empty!");
+        return nullptr;
     }
 
     Modification * mod = new Modification(modmgr, id);
@@ -226,25 +226,11 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
 
         if(content_json["pipeline"] == "file")
         {
-            try
-            {
-                pipeline = FilePipeline::loadFromJson(mod, key, content_json);
-            }
-            catch(...)
-            {
-
-            }
+            pipeline = FilePipeline::loadFromJson(mod, key, content_json);
         }
         else if(content_json["pipeline"] == "compile-dll")
         {
-            try
-            {
-                pipeline = DllPipeline::loadFromJson(mod, key, content_json);
-            }
-            catch(...)
-            {
-
-            }
+            pipeline = DllPipeline::loadFromJson(mod, key, content_json);
         }
         else
         {

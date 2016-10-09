@@ -32,7 +32,11 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
 {
     DllPipeline * pip = new DllPipeline(mod, id);
 
-    loadGenericFromJson(json, pip);
+    if(!loadGenericFromJson(json, pip))
+    {
+        delete pip;
+        return nullptr;
+    }
 
     pip->setEnableNugetRestore(json["nuget-restore"].toBool());
 
