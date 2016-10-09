@@ -5,6 +5,7 @@
 #include <QRegExp>
 #include "filepipeline.h"
 #include "dllpipeline.h"
+#include "globalsettings.h"
 
 QDir Modification::modBasePath() const
 {
@@ -136,12 +137,25 @@ void Modification::uninstall()
     }
 }
 
-void Modification::rePrime()
+int Modification::prime(bool force)
 {
+    int err = 0;
+
     for(Pipeline * p : getEnabledPipelines())
     {
-        p->prime(true);
+        if(p->isEnabled())
+        {
+            if(!p->unsupported() || GlobalSettings::instance()->getForceUnsupported())
+            {
+                int e = p->prime(force);
+
+                if(e != 0)
+                    err = e;
+            }
+        }
     }
+
+    return err;
 }
 
 void Modification::modEnabledDisabled(const QString &modid, const QString &contentid, bool enabled)

@@ -94,6 +94,14 @@ void Launcher::start()
     m_process->start();
 }
 
+void Launcher::stop()
+{
+    if(m_process != nullptr && m_process->isOpen())
+    {
+        m_process->kill();
+    }
+}
+
 QString Launcher::id() const
 {
     return m_id;

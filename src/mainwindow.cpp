@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect events   
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::playClicked);    
     connect(ui->playLogClose, &QPushButton::clicked, this, &MainWindow::closeLogClicked);
+    connect(ui->playLogStop, &QPushButton::clicked, this, &MainWindow::stopGameClicked);
     connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
     connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);   
 
@@ -192,6 +193,11 @@ void MainWindow::gameProgress(bool enabled, int _min, int _max, int _value)
     ui->playLogProgress->setMaximum(_min);
     ui->playLogProgress->setMaximum(_max);
     ui->playLogProgress->setValue(_value);
+}
+
+void MainWindow::stopGameClicked()
+{
+    Game::instance()->stop();
 }
 
 void MainWindow::closeLogClicked()

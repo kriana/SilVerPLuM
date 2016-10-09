@@ -66,6 +66,14 @@ void Game::prepareAndRun()
     m_prepareWatcher.setFuture(QtConcurrent::run(this, &Game::prepare));
 }
 
+void Game::stop()
+{
+    if(m_Launcher != nullptr)
+    {
+        m_Launcher->stop();
+    }
+}
+
 Logger &Game::getLogger()
 {
     return m_Launcher->getProfile()->getLogger();
@@ -136,17 +144,7 @@ void Game::prepareInstallMods()
 
     for(Modification * mod : m_Launcher->getProfile()->getModManager()->getModifications())
     {
-        for(Pipeline * p : mod->getPipelines())
-        {
-            if(p->isEnabled())
-            {
-                int err = p->prime(false);
-                if(err != 0)
-                {
-                    getLogger().log(Logger::WARNING, "launcher", "prepare", "install-mods-prime", "Priming " + p->id() + " in " + mod->id() + " returned errorcode " + QString::number(err));
-                }
-            }
-        }
+        mod->prime(false);
     }
 
     m_Launcher->getProfile()->getModManager()->install();

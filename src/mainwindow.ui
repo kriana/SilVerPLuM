@@ -53,7 +53,7 @@
            <item row="0" column="0">
             <widget class="QStackedWidget" name="playStackedWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="playLauncherPage">
               <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -338,6 +338,16 @@
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="playLogStop">
+                    <property name="text">
+                     <string>Force stop</string>
+                    </property>
+                    <property name="icon">
+                     <iconset theme="dialog-cancel"/>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="playLogClose">

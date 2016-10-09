@@ -28,6 +28,8 @@ public:
 
     void prepareAndRun();
 
+    void stop();
+
     int exitCode() const;
 
     Logger & getLogger();

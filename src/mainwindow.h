@@ -47,6 +47,8 @@ private slots:
 
     void gameProgress(bool enabled, int _min, int _max, int _value);
 
+    void stopGameClicked();
+
     void closeLogClicked();
 
     void openApplicationSettings();

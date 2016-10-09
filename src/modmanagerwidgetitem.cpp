@@ -221,9 +221,14 @@ void ModManagerWidgetItem::reprimeClicked()
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QApplication::processEvents();
 
-    m_currentModification->rePrime();
+    int err = m_currentModification->prime(true);
 
     QApplication::restoreOverrideCursor();
+
+    if(err != 0)
+    {
+        QMessageBox::information(this, "Reactivate", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+    }
 }
 
 void ModManagerWidgetItem::updateData()

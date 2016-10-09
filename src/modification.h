@@ -85,7 +85,7 @@ public:
 
     void uninstall();
 
-    void rePrime();
+    int prime(bool force);
 
     QDir modBasePath() const;
 

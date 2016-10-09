@@ -28,6 +28,7 @@ public:
 
     virtual void start();
 
+    virtual void stop();
 
     QString id() const;
     void setId(const QString &id);
