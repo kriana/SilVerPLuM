@@ -74,6 +74,15 @@
     <string>Single out</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="icon">
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Export savegame</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

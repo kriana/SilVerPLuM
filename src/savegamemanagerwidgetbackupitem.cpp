@@ -9,12 +9,13 @@ SavegameManagerWidgetBackupItem::SavegameManagerWidgetBackupItem(QWidget *parent
     ui->setupUi(this);
 
     QMenu *backup_menu = new QMenu(ui->btnRestore);
-    backup_menu->addActions(QList<QAction*>() << ui->actionCopyTo << ui->actionSingleOut << ui->actionDelete);
+    backup_menu->addActions(QList<QAction*>() << ui->actionExport << ui->actionCopyTo << ui->actionSingleOut << ui->actionDelete);
     ui->btnRestore->setMenu(backup_menu);
 
     connect(ui->btnRestore, &QToolButton::clicked, this, &SavegameManagerWidgetBackupItem::savegameRestore);
     connect(ui->actionDelete, &QAction::triggered, this, &SavegameManagerWidgetBackupItem::savegameDelete);
     connect(ui->actionSingleOut, &QAction::triggered, this, &SavegameManagerWidgetBackupItem::savegameSingle);
+    connect(ui->actionExport, &QAction::triggered, this, &SavegameManagerWidgetBackupItem::savegameExport);
 }
 
 SavegameManagerWidgetBackupItem::~SavegameManagerWidgetBackupItem()
@@ -58,5 +59,40 @@ void SavegameManagerWidgetBackupItem::savegameDelete()
 void SavegameManagerWidgetBackupItem::savegameSingle()
 {
     m_parentSavegame->single(m_savegame);
+}
+
+void SavegameManagerWidgetBackupItem::savegameExport()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::AnyFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+    dlg.setAcceptMode(QFileDialog::AcceptSave);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QString file = dlg.selectedFiles().first();
+
+        if(QFileInfo(file).exists())
+        {
+            if(QMessageBox::question(this,
+                                     "Export savegame",
+                                     "Do you want to overwrite " + file + "?") != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        if(!m_savegame->exportToZip(file))
+        {
+            QMessageBox::critical(this,
+                                  "Export profile",
+                                  "Error while exporting!");
+        }
+
+        QApplication::restoreOverrideCursor();
+    }
 }
 

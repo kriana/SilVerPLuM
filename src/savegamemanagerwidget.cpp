@@ -8,6 +8,9 @@ SavegameManagerWidget::SavegameManagerWidget(QWidget *parent) :
     ui(new Ui::SavegameManagerWidget)
 {
     ui->setupUi(this);
+
+    connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(reloadList()));
+    connect(ui->btnImport, SIGNAL(clicked(bool)), this, SLOT(importSavegame()));
 }
 
 SavegameManagerWidget::~SavegameManagerWidget()
@@ -66,4 +69,33 @@ void SavegameManagerWidget::reloadList()
 
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+}
+
+void SavegameManagerWidget::importSavegame()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::ExistingFiles);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        for(QString file : dlg.selectedFiles())
+        {
+            try
+            {
+                m_savegameManager->import(file);
+            }
+            catch(...)
+            {
+                if(QMessageBox::critical(this,
+                                      "Import savegame",
+                                      "Could not import " + file,
+                                      QMessageBox::Ok,
+                                      QMessageBox::Cancel) == QMessageBox::Cancel)
+                {
+                    break;
+                }
+            }
+        }
+    }
 }

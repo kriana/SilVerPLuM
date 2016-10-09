@@ -27,6 +27,8 @@ private slots:
 
     void savegameSingle();
 
+    void savegameExport();
+
 private:
     Ui::SavegameManagerWidgetBackupItem *ui;
 

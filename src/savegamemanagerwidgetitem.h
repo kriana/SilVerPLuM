@@ -46,6 +46,8 @@ private slots:
     void savegameSingle();
 
     void savegamePrune();
+
+    void savegameExport();
 };
 
 #endif // SAVEGAMEMANAGERWIDGETITEM_H

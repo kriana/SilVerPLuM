@@ -219,10 +219,19 @@
   </action>
   <action name="actionPrune">
    <property name="icon">
-    <iconset theme="edit-cut"/>
+    <iconset theme="edit-cut">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Remove duplicate backups</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="icon">
+    <iconset theme="document-save"/>
+   </property>
+   <property name="text">
+    <string>Export savegame</string>
    </property>
   </action>
  </widget>

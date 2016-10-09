@@ -84,7 +84,8 @@ public:
     /**
      * @brief Removes all backups that have duplicates
      */
-    void pruneBackups();
+    void pruneBackups();    
+
 
     /**
      * @brief Finds a new valid ID

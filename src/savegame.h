@@ -54,6 +54,14 @@ public:
      */
     bool contentEquals(Savegame * other) const;
 
+    /**
+     * @brief Exports this savegame to a *.zip file
+     * @param path
+     */
+    bool exportToZip(const QString & path);
+
+    static QString findNewIdFor(const QString & old_id, const QStringList &ids);
+
 protected:
 
     Savegame(const QDir & directory, Profile * p);

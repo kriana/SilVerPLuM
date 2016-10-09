@@ -4,6 +4,8 @@
 #include "logger.h"
 #include "profile.h"
 #include "utils.h"
+#include <JlCompress.h>
+#include <random>
 
 Savegame::Savegame(const QDir &directory, Profile *p) : m_directory(directory), m_profile(p)
 {
@@ -150,3 +152,38 @@ bool Savegame::contentEquals(Savegame *other) const
     return utils::folderEqual(directory(), other->directory(), QStringList() << "SilVerPLuM-info.ini");
 }
 
+bool Savegame::exportToZip(const QString &path)
+{
+    QFile(path).remove();
+
+    return JlCompress::compressDir(path, directory().absolutePath(), true);
+}
+
+QString Savegame::findNewIdFor(const QString & old_id, const QStringList &ids)
+{
+    QString prefix;
+
+    // If somebody tinkered with the folder names, use a different naming schema
+    if(old_id.contains("_"))
+    {
+        prefix = old_id.split("_").first();
+    }
+    else
+    {
+        prefix = "save";
+    }
+
+    // Use STL random
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(100000000, 999999999);
+
+    QString new_id;
+
+    while(new_id.isEmpty() || ids.contains(new_id))
+    {
+        new_id = prefix + "_" + QString::number(dis(gen));
+    }
+
+    return new_id;
+}

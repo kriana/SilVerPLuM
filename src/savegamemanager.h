@@ -32,6 +32,8 @@ public:
 
     void initialize();
 
+    void import(const QString & path);
+
 private:
 
     Profile * m_profile;

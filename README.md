@@ -26,7 +26,7 @@ You may need to set the correct paths of these programs in SilVerPLuM's applicat
 ## Building
 SilVerPLuM is written in Qt5 with qmake building system and has following dependencies:
 
-* Qt5 (core gui concurrent xml)
+* Qt5 (core gui network concurrent xml)
 * Quazip5
 * zlib
 
@@ -77,6 +77,10 @@ If you click on the arrow next to a savegame or a backup, you can do some additi
 * Single out - Create a new savegame out of a backup or another savegame
 
 This tab has a profile manager that allows you to create, duplicate and remove profiles.
+
+## Tipps
+
+###
 
 # For mod developers
 

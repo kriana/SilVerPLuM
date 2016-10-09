@@ -14,7 +14,7 @@ SavegameManagerWidgetItem::SavegameManagerWidgetItem(QWidget *parent) :
     ui->setupUi(this);
 
     QMenu *backup_menu = new QMenu(ui->btnBackup);
-    backup_menu->addActions(QList<QAction*>() << ui->actionCopyTo << ui->actionSingleOut << ui->actionPrune << ui->actionDeleteMainSavegame << ui->actionDelete);
+    backup_menu->addActions(QList<QAction*>() << ui->actionExport << ui->actionCopyTo << ui->actionSingleOut << ui->actionPrune << ui->actionDeleteMainSavegame << ui->actionDelete);
     ui->btnBackup->setMenu(backup_menu);
 
     connect(ui->btnBackup, &QToolButton::clicked, this, &SavegameManagerWidgetItem::savegameBackup);
@@ -23,6 +23,7 @@ SavegameManagerWidgetItem::SavegameManagerWidgetItem(QWidget *parent) :
     connect(ui->actionCopyTo, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameCopyTo);
     connect(ui->actionSingleOut, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameSingle);
     connect(ui->actionPrune, &QAction::triggered, this, &SavegameManagerWidgetItem::savegamePrune);
+    connect(ui->actionExport, &QAction::triggered, this, &SavegameManagerWidgetItem::savegameExport);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
     ui->expandWidget->hide();
@@ -273,6 +274,47 @@ void SavegameManagerWidgetItem::savegamePrune()
         QApplication::processEvents();
 
         m_savegame->pruneBackups();
+
+        QApplication::restoreOverrideCursor();
+    }
+}
+
+void SavegameManagerWidgetItem::savegameExport()
+{
+    if(m_savegame->getMainSavegame() == nullptr)
+    {
+        QMessageBox::information(this, "Single out", "Cannot export a deleted savegame!", QMessageBox::Ok);
+        return;
+    }
+
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::AnyFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+    dlg.setAcceptMode(QFileDialog::AcceptSave);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QString file = dlg.selectedFiles().first();
+
+        if(QFileInfo(file).exists())
+        {
+            if(QMessageBox::question(this,
+                                     "Export savegame",
+                                     "Do you want to overwrite " + file + "?") != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        if(!m_savegame->getMainSavegame()->exportToZip(file))
+        {
+            QMessageBox::critical(this,
+                                  "Export profile",
+                                  "Error while exporting!");
+        }
 
         QApplication::restoreOverrideCursor();
     }

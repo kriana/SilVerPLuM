@@ -30,6 +30,10 @@ private:
     Ui::SavegameManagerWidget *ui;
 
     SavegameManager * m_savegameManager = nullptr;
+
+private slots:
+
+    void importSavegame();
 };
 
 #endif // SAVEGAMEMANAGERWIDGET_H
