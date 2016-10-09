@@ -14,7 +14,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     ui->setupUi(this);
 
     QMenu *action_menu = new QMenu(ui->btnDelete);
-    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile);
+    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile << ui->actionReinitialize);
     ui->btnDelete->setMenu(action_menu);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
@@ -24,6 +24,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     connect(ui->btnSortDown, &QToolButton::clicked, this, &ModManagerWidgetItem::moveDownClicked);
     connect(ui->btnDelete, &QPushButton::clicked, this, &ModManagerWidgetItem::deleteClicked);
     connect(ui->actionCopyToProfile, &QAction::triggered, this, &ModManagerWidgetItem::copyToProfileClicked);
+    connect(ui->actionReinitialize, &QAction::triggered, this, &ModManagerWidgetItem::reprimeClicked);
 
     ui->expandWidget->hide();
 }
@@ -213,6 +214,16 @@ void ModManagerWidgetItem::copyToProfileClicked()
 
         QApplication::restoreOverrideCursor();
     }
+}
+
+void ModManagerWidgetItem::reprimeClicked()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
+    m_currentModification->rePrime();
+
+    QApplication::restoreOverrideCursor();
 }
 
 void ModManagerWidgetItem::updateData()

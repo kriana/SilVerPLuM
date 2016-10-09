@@ -140,7 +140,7 @@ void Game::prepareInstallMods()
         {
             if(p->isEnabled())
             {
-                int err = p->prime();
+                int err = p->prime(false);
                 if(err != 0)
                 {
                     getLogger().log(Logger::WARNING, "launcher", "prepare", "install-mods-prime", "Priming " + p->id() + " in " + mod->id() + " returned errorcode " + QString::number(err));

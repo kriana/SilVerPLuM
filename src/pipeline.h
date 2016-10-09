@@ -35,7 +35,7 @@ public:
     /**
      * @brief This function is called to create missing files for installation
      */
-    virtual int prime() = 0;
+    virtual int prime(bool force) = 0;
 
     bool isdefault() const;
     void setDefault(bool isdefault);

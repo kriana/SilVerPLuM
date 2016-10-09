@@ -22,14 +22,14 @@ void DependencyCheckerWidget::setModManager(ModManager *currentMM)
 {
     if(m_currentMM != nullptr)
     {
-        disconnect(m_currentMM, SIGNAL(dependencyCheckFinished()), this, SLOT(updateData()));
+        disconnect(m_currentMM, SIGNAL(updatedDependencyCheck()), this, SLOT(updateData()));
     }
 
     m_currentMM = currentMM;
 
     if(m_currentMM != nullptr)
     {
-        connect(m_currentMM, SIGNAL(dependencyCheckFinished()), this, SLOT(updateData()));
+        connect(m_currentMM, SIGNAL(updatedDependencyCheck()), this, SLOT(updateData()));
     }
 
     updateData();

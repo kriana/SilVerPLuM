@@ -14,7 +14,7 @@ public:
 
     static DllPipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    int prime();
+    int prime(bool force);
 
     bool enableNugetRestore() const;
 
@@ -29,11 +29,20 @@ public:
      */
     void setReferenceMapping(const QString & reference, const QString & locationurl);
 
+    /**
+     * @brief Sets parameters for msbuild/xbuild
+     * @param platform
+     * @param args
+     */
+    void setBuildParameters(const QString & platform, const QStringList & args);
+
 private:
 
     bool m_enableNugetRestore;
 
     QMap<QString, QString> m_referenceMap;
+
+    QMap<QString, QStringList> m_buildArguments;
 
     DllPipeline(Modification * mod, const QString &id);
 

@@ -12,8 +12,6 @@ ProfileManager *ProfileManager::instance()
     if(m_pInstance == nullptr)
     {
         m_pInstance = new ProfileManager();
-
-        m_pInstance->initialize();
     }
 
     return m_pInstance;
@@ -38,6 +36,9 @@ ProfileManager::~ProfileManager()
 
 void ProfileManager::initialize()
 {
+    if(m_initialized)
+        throw std::runtime_error("Profile manager is already initialized!");
+
     // Look for existing profiles
     if(ProfilesDir().exists())
     {
@@ -52,6 +53,8 @@ void ProfileManager::initialize()
         createOrLoadProfile(Profile::DEFAULT_PROFILE_ID, Profile::DEFAULT_PROFILE_NAME);
 
     Profile * current_by_setting = getProfile(GlobalSettings::instance()->getCurrentProfile());
+
+    m_initialized = true;
 
     if(current_by_setting == nullptr)
         selectProfile(m_Profiles.first());
@@ -110,7 +113,9 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
     }
 
     connect(p, &Profile::updated, this, &ProfileManager::updated);
+    connect(p, SIGNAL(updatedSettings()), this, SIGNAL(updatedProfileSetting()));
     emit updated();
+    emit updatedProfileList();
 
     return p;
 }
@@ -138,6 +143,7 @@ void ProfileManager::deleteProfile(Profile *p)
 
     delete p;
     emit updated();
+    emit updatedProfileList();
 }
 
 void ProfileManager::duplicateProfile(Profile *p, const QString &name)
@@ -227,5 +233,5 @@ void ProfileManager::selectProfile(Profile *p)
 
     m_SelectedProfile = p;
     GlobalSettings::instance()->setCurrentProfile(p->id());
-    emit selected(p);
+    emit updatedSelection(p);
 }

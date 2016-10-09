@@ -23,6 +23,8 @@ private:
 
     bool m_profilesLoading = false;
 
+    bool m_initialized = false;
+
     void play(Launcher * l);
 
 private slots:
@@ -51,9 +53,13 @@ private slots:
 
     void openProfileLog();
 
+    void profilesInitialized();
+
 protected:
 
     void closeEvent(QCloseEvent * event);
+
+    void showEvent(QShowEvent * event);
 };
 
 #endif // MAINWINDOW_H

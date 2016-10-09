@@ -42,7 +42,7 @@ private:
 
 signals:
 
-    void reloaded();
+    void updatedSavegames();
 
 public slots:
 

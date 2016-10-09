@@ -2,6 +2,7 @@
 #include "qtsingleapplication/src/QtSingleApplication"
 #include "profilemanager.h"
 #include "globalsettings.h"
+#include <QtConcurrent>
 
 int main(int argc, char *argv[])
 {

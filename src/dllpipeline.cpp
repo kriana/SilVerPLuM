@@ -43,12 +43,26 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
         pip->setReferenceMapping(ref, reference_map[ref].toString());
     }
 
+    QJsonObject msbuild_args_map = json["build-parameters"].toObject();
+
+    for(QString platform : msbuild_args_map.keys())
+    {
+        QStringList args;
+
+        for(QJsonValue v : msbuild_args_map[platform].toArray())
+        {
+            args << v.toString();
+        }
+
+        pip->setBuildParameters(platform, args);
+    }
+
     return pip;
 }
 
-int DllPipeline::prime()
+int DllPipeline::prime(bool force)
 {
-    if(alreadyPrimed())
+    if(!force && alreadyPrimed())
     {
         getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
         return 0;
@@ -148,6 +162,11 @@ void DllPipeline::setReferenceMapping(const QString &reference, const QString &l
     m_referenceMap[reference] = locationurl;
 }
 
+void DllPipeline::setBuildParameters(const QString &platform, const QStringList &args)
+{
+    m_buildArguments[platform] = args;
+}
+
 bool DllPipeline::alreadyPrimed()
 {
     if(!GlobalSettings::instance()->getEnablePrimeCache())
@@ -193,11 +212,7 @@ int DllPipeline::runNuget()
     process.waitForFinished(-1);
 
     QString stdout(process.readAllStandardOutput());
-
-    for(QString line : stdout.split("\n"))
-    {
-        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget-nuget", line);
-    }
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget-nuget", stdout);
 
     return process.exitCode();
 }
@@ -206,9 +221,13 @@ int DllPipeline::runMSBUILD()
 {
     getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
 
+    QStringList args = m_buildArguments[Platform::getPlatformString()];
+
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBUILD() + " " + args.join(" "));
+
     QProcess process;
     process.setProgram(GlobalSettings::instance()->getProgramMSBUILD());
-    process.setArguments(QStringList());
+    process.setArguments(args);
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
@@ -216,11 +235,8 @@ int DllPipeline::runMSBUILD()
     process.waitForFinished(-1);
 
     QString stdout(process.readAllStandardOutput());
+    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild-msbuild", stdout);
 
-    for(QString line : stdout.split("\n"))
-    {
-        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild-msbuild", line);
-    }
 
     return process.exitCode();
 }

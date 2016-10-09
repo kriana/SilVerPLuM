@@ -16,15 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Connect events
-    connect(ProfileManager::instance(), &ProfileManager::updated, this, &MainWindow::profilesUpdated);
-    connect(ProfileManager::instance(), &ProfileManager::selected, this, &MainWindow::profileSelected);
+    // Connect events   
     connect(ui->btnPlay, &QPushButton::clicked, this, &MainWindow::playClicked);    
     connect(ui->playLogClose, &QPushButton::clicked, this, &MainWindow::closeLogClicked);
     connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
-    connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);
-    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
-    connect(Game::instance(), SIGNAL(progressed(bool,int,int,int)), this, SLOT(gameProgress(bool,int,int,int)));
+    connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);   
 
     // Update splitter
     ui->splitter->setSizes(QList<int>() << 100 << 500);
@@ -37,12 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Restore state
     GlobalSettings::instance()->getWindowState(this);
-
-    profilesUpdated();
-    profileSelected(ProfileManager::instance()->getSelectedProfile());
-
-    // Moved to here as it otherwise would reset the profile to default
-    connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
 }
 
 MainWindow::~MainWindow()
@@ -224,14 +214,51 @@ void MainWindow::openProfileLog()
     LogViewer::execForProfile(ProfileManager::instance()->getSelectedProfile());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::profilesInitialized()
 {
+    connect(ProfileManager::instance(), &ProfileManager::updatedProfileList, this, &MainWindow::profilesUpdated);
+    connect(ProfileManager::instance(), &ProfileManager::updatedProfileSetting, this, &MainWindow::profilesUpdated);
+    connect(ProfileManager::instance(), &ProfileManager::updatedSelection, this, &MainWindow::profileSelected);
+    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
+    connect(Game::instance(), SIGNAL(progressed(bool,int,int,int)), this, SLOT(gameProgress(bool,int,int,int)));
+
+    profilesUpdated();
+    profileSelected(ProfileManager::instance()->getSelectedProfile());
+
+    // Moved to here as it otherwise would reset the profile to default
+    connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
+
+    setEnabled(true);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{    
+
     if(Game::instance()->running())
     {
         event->ignore();
     }
 
     GlobalSettings::instance()->setWindowState(this);
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{    
+    QMainWindow::showEvent(event);
+
+    if(!m_initialized)
+    {
+        setEnabled(false);
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        ProfileManager::instance()->initialize();
+        profilesInitialized();
+
+        m_initialized = true;
+        QApplication::restoreOverrideCursor();
+    }
+
 }
 
 

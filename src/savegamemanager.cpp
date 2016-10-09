@@ -132,5 +132,5 @@ void SavegameManager::reloadSavegames()
             delete sav;
     }
 
-    emit reloaded();
+    emit updatedSavegames();
 }

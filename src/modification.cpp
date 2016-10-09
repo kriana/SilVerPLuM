@@ -23,7 +23,7 @@ Logger &Modification::getLogger()
 
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
-    connect(modmgr, SIGNAL(modEnabledDisabled(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));
+    connect(modmgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));
 }
 
 Modification::~Modification()
@@ -133,6 +133,14 @@ void Modification::uninstall()
     for(Pipeline * p : getEnabledPipelines())
     {
         p->uninstall();
+    }
+}
+
+void Modification::rePrime()
+{
+    for(Pipeline * p : getEnabledPipelines())
+    {
+        p->prime(true);
     }
 }
 

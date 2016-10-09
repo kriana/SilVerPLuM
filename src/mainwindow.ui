@@ -139,7 +139,7 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>TextLabel</string>
+                      <string/>
                      </property>
                      <property name="textFormat">
                       <enum>Qt::RichText</enum>

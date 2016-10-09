@@ -131,6 +131,12 @@ signals:
 
     void updated();
 
+    void updatedSettings();
+
+    void updatedMods();
+
+    void updatedSavegames();
+
 public:
 
     /**

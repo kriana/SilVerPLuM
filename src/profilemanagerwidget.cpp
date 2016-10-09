@@ -11,8 +11,9 @@ ProfileManagerWidget::ProfileManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ProfileManager::instance(), &ProfileManager::updated, this, &ProfileManagerWidget::profilesUpdated);
-    connect(ProfileManager::instance(), &ProfileManager::selected, this, &ProfileManagerWidget::profileSelected);
+    connect(ProfileManager::instance(), &ProfileManager::updatedProfileList, this, &ProfileManagerWidget::profilesUpdated);
+    connect(ProfileManager::instance(), &ProfileManager::updatedProfileSetting, this, &ProfileManagerWidget::profilesUpdated);
+    connect(ProfileManager::instance(), &ProfileManager::updatedSelection, this, &ProfileManagerWidget::profileSelected);
     connect(ui->configProfileList, &QListWidget::currentRowChanged, this, &ProfileManagerWidget::selectedProfile);
     connect(ui->profileAdd, &QToolButton::clicked, this, &ProfileManagerWidget::addProfileClicked);
     connect(ui->profileClone, &QToolButton::clicked, this, &ProfileManagerWidget::duplicateProfileClicked);

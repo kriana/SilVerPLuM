@@ -13,7 +13,7 @@ ModManager::ModManager(Profile *profile) : m_profile(profile)
     m_config = new QSettings(profile->profileBaseDir().absoluteFilePath("mod-config.ini"), QSettings::IniFormat);
 
     // Issue dependency check if a profile settings changes
-    connect(profile, SIGNAL(updated()), this, SLOT(issueDependencyCheck()));
+    connect(profile, SIGNAL(updatedSettings()), this, SLOT(issueDependencyCheck()));
 }
 
 ModManager::~ModManager()
@@ -72,10 +72,10 @@ int ModManager::setEnabled(const QString &mod, const QString &content, bool enab
 
     if(enabled)
     {
-        err = getPipeline(mod, content)->prime();
+        err = getPipeline(mod, content)->prime(false);
     }
 
-    emit modEnabledDisabled(mod, content, enabled);
+    emit updatedModStatus(mod, content, enabled);
     issueDependencyCheck();
 
     return err;
@@ -116,7 +116,7 @@ bool ModManager::priotizeUp(const QString &mod)
 
         writePriorities();
 
-        emit modListUpdated();
+        emit updatedModList();
         issueDependencyCheck();
         return true;
     }
@@ -137,7 +137,7 @@ bool ModManager::priotizeDown(const QString &mod)
 
         writePriorities();
 
-        emit modListUpdated();
+        emit updatedModList();
         issueDependencyCheck();
         return true;
     }
@@ -207,7 +207,7 @@ void ModManager::issueDependencyCheck()
         }
     }
 
-    emit dependencyCheckFinished();
+    emit updatedDependencyCheck();
 }
 
 Logger &ModManager::getLogger()
@@ -446,7 +446,7 @@ void ModManager::loadMod(const QDir &directory)
 
         m_mods.append(mod);
         m_modId.insert(mod->id());
-        emit modListUpdated();
+        emit updatedModList();
     }
     else
     {
@@ -485,7 +485,7 @@ void ModManager::sortMods()
     std::sort(m_mods.begin(), m_mods.end(), [&](Modification * a, Modification * b) {
         return getSortPriority(a->id()) < getSortPriority(b->id());
     });
-    emit modListUpdated();
+    emit updatedModList();
 
     issueDependencyCheck();
 }

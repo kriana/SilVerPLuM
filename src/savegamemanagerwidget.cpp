@@ -34,7 +34,7 @@ void SavegameManagerWidget::setSavegameManager(SavegameManager *savegameManager)
     if(m_savegameManager != nullptr)
     {
         disconnect(m_savegameManager,
-                   &SavegameManager::reloaded,
+                   &SavegameManager::updatedSavegames,
                    this,
                    &SavegameManagerWidget::reloadList);
     }
@@ -44,7 +44,7 @@ void SavegameManagerWidget::setSavegameManager(SavegameManager *savegameManager)
     if(m_savegameManager != nullptr)
     {
         connect(m_savegameManager,
-                   &SavegameManager::reloaded,
+                   &SavegameManager::updatedSavegames,
                    this,
                    &SavegameManagerWidget::reloadList);
     }

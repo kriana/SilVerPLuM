@@ -62,11 +62,13 @@ void LogViewer::execForProfile(Profile *p)
 
 QString LogViewer::formatEntry(const Logger::Entry &entry)
 {
+    QString msg = entry.message;
+
     return QString("<tr><td>%1</td><td>%2</td><td>%3</td><td>%4</td><td>%5</td><td>%6</td></tr>")
             .arg(entry.levelToString())
             .arg(entry.timestamp.toString())
             .arg(entry.component)
             .arg(entry.subcomponent)
             .arg(entry.operation)
-            .arg(entry.message);
+            .arg(msg.replace("\n", "<br/>"));
 }

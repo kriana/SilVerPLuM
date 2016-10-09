@@ -381,10 +381,22 @@
   </layout>
   <action name="actionCopyToProfile">
    <property name="icon">
-    <iconset theme="edit-copy"/>
+    <iconset theme="edit-copy">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Copy to another profile</string>
+   </property>
+  </action>
+  <action name="actionReinitialize">
+   <property name="icon">
+    <iconset theme="run-build"/>
+   </property>
+   <property name="text">
+    <string>Reinitialize modification</string>
+   </property>
+   <property name="toolTip">
+    <string>Reinitializes this mod for development and debugging purposes</string>
    </property>
   </action>
  </widget>

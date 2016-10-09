@@ -10,7 +10,7 @@
 Pipeline::Pipeline(Modification *mod, const QString &id) : m_mod(mod), m_id(id)
 {
     connect(mod->getModManager(),
-            SIGNAL(modEnabledDisabled(QString,QString,bool)),
+            SIGNAL(updatedModStatus(QString,QString,bool)),
             this,
             SLOT(modEnabledDisabled(QString,QString,bool)));
 }

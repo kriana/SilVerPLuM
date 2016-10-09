@@ -28,9 +28,11 @@ private:
 
     Logger m_logger;
 
-    void initialize();
+    bool m_initialized = false;
 
 public:
+
+    void initialize();
 
     QList<Profile *> getProfiles();
 
@@ -62,7 +64,11 @@ signals:
 
     void updated();
 
-    void selected(Profile * p);
+    void updatedProfileSetting();
+
+    void updatedProfileList();
+
+    void updatedSelection(Profile * p);
 
 };
 

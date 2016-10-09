@@ -99,11 +99,11 @@ private:
 
 signals:
 
-    void modListUpdated();
+    void updatedModList();
 
-    void modEnabledDisabled(const QString & modid, const QString & contentid, bool enabled);
+    void updatedModStatus(const QString & modid, const QString & contentid, bool enabled);
 
-    void dependencyCheckFinished();
+    void updatedDependencyCheck();
 
 };
 

@@ -36,16 +36,16 @@ void ModManagerWidget::setModManager(ModManager *currentMM)
 {
     if(m_currentMM != nullptr)
     {
-        disconnect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(refreshList()));
-        disconnect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(refreshList()));
+        disconnect(m_currentMM, SIGNAL(updatedModList()), this, SLOT(refreshList()));
+        disconnect(m_currentMM->profile(), SIGNAL(updatedSettings()), this, SLOT(refreshList()));
     }
 
     m_currentMM = currentMM;
 
     if(m_currentMM != nullptr)
     {
-        connect(m_currentMM, SIGNAL(modListUpdated()), this, SLOT(refreshList()));
-        connect(m_currentMM->profile(), SIGNAL(updated()), this, SLOT(refreshList()));
+        connect(m_currentMM, SIGNAL(updatedModList()), this, SLOT(refreshList()));
+        connect(m_currentMM->profile(), SIGNAL(updatedSettings()), this, SLOT(refreshList()));
     }
 
     ui->dependencyWarning->setModManager(currentMM);

@@ -2,7 +2,7 @@
 #include "platform.h"
 #include <QJsonArray>
 
-int FilePipeline::prime()
+int FilePipeline::prime(bool force)
 {
     // File mods don't have anything to prime
 

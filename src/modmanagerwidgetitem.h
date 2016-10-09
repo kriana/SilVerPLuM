@@ -40,6 +40,8 @@ private slots:
 
     void copyToProfileClicked();
 
+    void reprimeClicked();
+
 private:
     Ui::ModManagerWidgetItem *ui;
 

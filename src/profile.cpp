@@ -13,8 +13,15 @@ Profile::Profile(const QString &id) : m_Id(id)
     m_modManager = new ModManager(this);
     m_savegameManager = new SavegameManager(this);
 
-    connect(m_modManager, SIGNAL(modListUpdated()), this, SIGNAL(updated()));
-    connect(m_modManager, SIGNAL(modEnabledDisabled(QString,QString,bool)), this, SIGNAL(updated()));
+    connect(m_modManager, SIGNAL(updatedModList()), this, SIGNAL(updated()));
+    connect(m_modManager, SIGNAL(updatedModStatus(QString,QString,bool)), this, SIGNAL(updated()));
+    connect(m_modManager, SIGNAL(updatedDependencyCheck()), this, SIGNAL(updated()));
+    connect(m_modManager, SIGNAL(updatedModList()), this, SIGNAL(updatedMods()));
+    connect(m_modManager, SIGNAL(updatedModStatus(QString,QString,bool)), this, SIGNAL(updatedMods()));
+    connect(m_modManager, SIGNAL(updatedDependencyCheck()), this, SIGNAL(updatedMods()));
+
+    connect(m_savegameManager, SIGNAL(updatedSavegames()), this, SIGNAL(updated()));
+    connect(m_savegameManager, SIGNAL(updatedSavegames()), this, SIGNAL(updatedSavegames()));
 }
 
 Profile::~Profile()
@@ -267,6 +274,7 @@ void Profile::setting_changed()
     {
         m_Settings->sync();
         emit updated();
+        emit updatedSettings();
     }
 }
 

@@ -85,7 +85,10 @@ public:
 
     void uninstall();
 
+    void rePrime();
+
     QDir modBasePath() const;
+
     void setModBasePath(const QDir &modBasePath);
 
     Logger & getLogger();
