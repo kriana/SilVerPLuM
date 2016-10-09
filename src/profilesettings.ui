@@ -421,6 +421,9 @@
             <property name="toolTip">
              <string>Set this to 0 to disable ato-backup</string>
             </property>
+            <property name="specialValueText">
+             <string>No timed backup</string>
+            </property>
             <property name="suffix">
              <string> min</string>
             </property>
@@ -429,6 +432,9 @@
             </property>
             <property name="maximum">
              <number>999</number>
+            </property>
+            <property name="value">
+             <number>0</number>
             </property>
            </widget>
           </item>

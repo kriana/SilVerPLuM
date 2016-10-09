@@ -300,12 +300,12 @@ void BackupSavegame::pruneBackups()
 
         if(!todelete.contains(here))
         {
-            if(m_mainSavegame != nullptr && here->contentEquals(m_mainSavegame))
+            /*if(m_mainSavegame != nullptr && here->contentEquals(m_mainSavegame))
             {
                 getLogger().log(Logger::INFO, "backup-savegame", "prune", "find", here->directory().absolutePath() + " is equal to current savegame. Will be deleted.");
                 todelete << here;
                 continue;
-            }
+            }*/
 
             for(int j = i + 1; j < backups.size(); ++j)
             {
