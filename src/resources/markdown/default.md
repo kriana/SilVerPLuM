@@ -14,4 +14,4 @@ There may also be ready-to-use SilVerPLuM profiles with included mods.
 
 ## Manage
 
-SilVerPLuM allows you to easily create backups of your savegames
+SilVerPLuM allows you to easily create backups of your savegames, as well as importing and exporting them. There also is an integrated auto-backup that can be activated in the 'Configuration' tab. The profile management encapsulates savegames and mods into their own profiles, so you can experiment with new mods without breaking something.

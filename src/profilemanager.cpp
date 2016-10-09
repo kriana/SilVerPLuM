@@ -48,7 +48,7 @@ void ProfileManager::initialize()
         }
     }
 
-    if(m_Profiles.empty())
+    if(m_Profiles.empty() || getProfile(Profile::DEFAULT_PROFILE_ID) == nullptr)
         createOrLoadProfile(Profile::DEFAULT_PROFILE_ID, Profile::DEFAULT_PROFILE_NAME);
 
     Profile * current_by_setting = getProfile(GlobalSettings::instance()->getCurrentProfile());

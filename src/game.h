@@ -76,6 +76,8 @@ private slots:
 
     void issueFullBackup();
 
+    void issueBackupPrune();
+
 signals:
 
     void running(bool running);

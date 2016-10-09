@@ -315,6 +315,9 @@ void Profile::initialize()
 
                 utils::copyDirectory(savegamedir.absoluteFilePath(savegame), profilesavegamedir.absoluteFilePath(savegame), true);
             }
+
+            // Set default description
+            setDescription(utils::readAllTextFrom(":/resources/markdown/default.md"));
         }
 
         setName(m_Id);

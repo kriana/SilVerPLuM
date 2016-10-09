@@ -261,6 +261,13 @@ void Game::post()
     postUninstallMods();
 
     postRestoreContent();
+
+    if(m_Launcher->getProfile()->checkForExistingBackups())
+    {
+        getLogger().log(Logger::INFO, "launcher", "prepare", "autobackup-pos-prune", "Clearing away unnecessary backups");
+
+        issueBackupPrune();
+    }
 }
 
 void Game::finish()
@@ -286,6 +293,18 @@ void Game::issueFullBackup()
         {
             sav->backup();
         }
+    }
+}
+
+void Game::issueBackupPrune()
+{
+    if(!m_Running)
+        return;
+
+    getLogger().log(Logger::INFO, "launcher", "post", "auto-backup", "Issuing prune-backup");
+    for(BackupSavegame * sav : m_Launcher->getProfile()->getSavegameManager()->getSavegames().values())
+    {
+        sav->pruneBackups();
     }
 }
 

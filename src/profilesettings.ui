@@ -281,7 +281,8 @@
              <string>Try to auto-detect</string>
             </property>
             <property name="icon">
-             <iconset theme="edit-find"/>
+             <iconset theme="edit-find">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -411,7 +412,7 @@
           <item row="2" column="1">
            <widget class="QCheckBox" name="backupCheckExisting">
             <property name="text">
-             <string>Don't allow duplicate backups</string>
+             <string>Avoid unnecessary backups</string>
             </property>
            </widget>
           </item>
