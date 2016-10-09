@@ -25,14 +25,14 @@ Savegame::~Savegame()
 
 Savegame *Savegame::loadFromDirectory(const QDir &dir, Profile *profile)
 {
-    profile->getLogger().log(Logger::INFO, "savegame", "load", "load", "Loading savegame info in " + dir.absolutePath());
+    profile->getLogger().log(Logger::Info, "savegame", "load", "load", "Loading savegame info in " + dir.absolutePath());
 
     QDomDocument doc;
     QFile file(dir.absoluteFilePath("SaveGameInfo"));
 
     if (!file.open(QIODevice::ReadOnly) || !doc.setContent(&file))
     {
-        profile->getLogger().log(Logger::ERROR, "savegame", "load", "load", "Could not parse or load SaveGameInfo file");
+        profile->getLogger().log(Logger::Error, "savegame", "load", "load", "Could not parse or load SaveGameInfo file");
         return nullptr;
     }
 

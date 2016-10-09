@@ -64,13 +64,13 @@ int DllPipeline::prime(bool force)
 {
     if(!force && alreadyPrimed())
     {
-        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
+        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
         return 0;
     }
 
     int this_exit = 0;
 
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Start priming");
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "Start priming");
 
     if(enableNugetRestore())
     {
@@ -79,11 +79,11 @@ int DllPipeline::prime(bool force)
         if(exit != 0)
         {
             this_exit = -1;
-            getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime-nuget", "Nuget returned exit code " + QString::number(exit) + "!");
+            getLogger().log(Logger::Warning, "pipeline-dll-compile", id(), "prime-nuget", "Nuget returned exit code " + QString::number(exit) + "!");
         }
         else
         {
-            getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget", "Nuget operation was successful");
+            getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget", "Nuget operation was successful");
         }
     }
 
@@ -106,11 +106,11 @@ int DllPipeline::prime(bool force)
         if(exit != 0)
         {
             this_exit = -1;
-            getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild returned exit code " + QString::number(exit) + "!");
+            getLogger().log(Logger::Warning, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild returned exit code " + QString::number(exit) + "!");
         }
         else
         {
-            getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild was successful");
+            getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "msbuild/xbuild was successful");
         }
     }
 
@@ -130,12 +130,12 @@ int DllPipeline::prime(bool force)
 
     if(this_exit == 0)
     {
-        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "Priming was successful. Writing PRIME file.");
+        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "Priming was successful. Writing PRIME file.");
         writePrimeFile();
     }
     else
     {
-        getLogger().log(Logger::WARNING, "pipeline-dll-compile", id(), "prime", "Priming was NOT successful!");
+        getLogger().log(Logger::Warning, "pipeline-dll-compile", id(), "prime", "Priming was NOT successful!");
         QFile(pipelineBaseDir().absoluteFilePath("PRIME")).remove(); // Remove PRIME
     }
 
@@ -188,7 +188,7 @@ void DllPipeline::writePrimeFile()
 
     QFile lockfile(pipelineBaseDir().absoluteFilePath("PRIME"));
 
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime", "PRIME info file will be written into " + pipelineBaseDir().absoluteFilePath("PRIME"));
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "PRIME info file will be written into " + pipelineBaseDir().absoluteFilePath("PRIME"));
 
     if (!lockfile.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
@@ -199,7 +199,7 @@ void DllPipeline::writePrimeFile()
 
 int DllPipeline::runNuget()
 {
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget", "Running nuget restore in " + pipelineBaseDir().absolutePath());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget", "Running nuget restore in " + pipelineBaseDir().absolutePath());
 
     QProcess process;
     process.setProgram(GlobalSettings::instance()->getProgramNuget());
@@ -211,19 +211,19 @@ int DllPipeline::runNuget()
     process.start();
     process.waitForFinished(-1);
 
-    QString stdout(process.readAllStandardOutput());
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-nuget-nuget", stdout);
+    QString output(process.readAllStandardOutput());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget-nuget", output);
 
     return process.exitCode();
 }
 
 int DllPipeline::runMSBUILD()
 {
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
 
     QStringList args = m_buildArguments[Platform::getPlatformString()];
 
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBUILD() + " " + args.join(" "));
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBUILD() + " " + args.join(" "));
 
     QProcess process;
     process.setProgram(GlobalSettings::instance()->getProgramMSBUILD());
@@ -234,8 +234,8 @@ int DllPipeline::runMSBUILD()
     process.start();
     process.waitForFinished(-1);
 
-    QString stdout(process.readAllStandardOutput());
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-msbuild-msbuild", stdout);
+    QString output(process.readAllStandardOutput());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild-msbuild", output);
 
 
     return process.exitCode();
@@ -243,7 +243,7 @@ int DllPipeline::runMSBUILD()
 
 void DllPipeline::fixReferences(const QString &projectFile)
 {
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Fixing references in " + projectFile);
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Fixing references in " + projectFile);
 
     QFile(projectFile + ".bak").remove();
     QFile::copy(projectFile, projectFile + ".bak");
@@ -252,7 +252,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
     QFile file(projectFile);
     if (!file.open(QIODevice::ReadWrite) || !doc.setContent(&file))
     {
-        getLogger().log(Logger::ERROR, "pipeline-dll-compile", id(), "prime-reffix", "Cannot read or parse project file!");
+        getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-reffix", "Cannot read or parse project file!");
         return;
     }
 
@@ -265,7 +265,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
         if(nd.attributes().contains("Include"))
         {
             QString raw_include = nd.attributes().namedItem("Include").toAttr().value();
-            getLogger().log(Logger::DEBUG, "pipeline-dll-compile", id(), "prime-reffix", "Visiting " + raw_include);
+            getLogger().log(Logger::Debug, "pipeline-dll-compile", id(), "prime-reffix", "Visiting " + raw_include);
 
             QString current_include;
 
@@ -287,7 +287,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
 
                     if(current_include.startsWith("Microsoft.Xna.Framework"))
                     {
-                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Redirecting " + raw_include + " to MonoGame");
+                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Redirecting " + raw_include + " to MonoGame");
 
                         current_include = "MonoGame.Framework";
                     }
@@ -298,12 +298,12 @@ void DllPipeline::fixReferences(const QString &projectFile)
 
                     if(current_include.startsWith("MonoGame.Framework"))
                     {
-                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Detected MonoGame in XNA mode");
+                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Detected MonoGame in XNA mode");
 
                         QDomNode reflist = nd.parentNode();
                         reflist.removeChild(nd);
 
-                        getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Now adding XNA dependencies");
+                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Now adding XNA dependencies");
 
                         addReferenceNode(doc, reflist,
                                          "Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
@@ -333,7 +333,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
             if(m_referenceMap.contains(current_include))
             {
                 QString hint = mod()->getModManager()->resolveModUrl(m_referenceMap[current_include]);
-                getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Include " + raw_include + " was detected as " + current_include + " and will be hinted to " + hint);
+                getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Include " + raw_include + " was detected as " + current_include + " and will be hinted to " + hint);
 
 
                 // Change the reference and add the hint path
@@ -365,7 +365,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
     QTextStream stream(&file);
     doc.save(stream, 4);
 
-    getLogger().log(Logger::INFO, "pipeline-dll-compile", id(), "prime-reffix", "Finished");
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Finished");
 }
 
 void DllPipeline::addReferenceNode(QDomDocument & doc, QDomNode &parent, const QString &reference, const QString &hintpath, bool isprivate, bool specificversion)

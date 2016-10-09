@@ -58,7 +58,7 @@ void Game::prepareAndRun()
     if(m_Running)
         throw std::runtime_error("Game already running!");
 
-    getLogger().log(Logger::INFO, "launcher", "launcher", "", "Start launching of launcher " + m_Launcher->id());
+    getLogger().log(Logger::Info, "launcher", "launcher", "", "Start launching of launcher " + m_Launcher->id());
 
     m_Running = true;
     emit running(m_Running);
@@ -86,24 +86,24 @@ void Game::progress(bool enabled, int _min, int _max, int _val)
 
 void Game::prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup)
 {
-    getLogger().log(Logger::INFO, "launcher", "prepare", "backup-content", "Backing up content directory");
+    getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Backing up content directory");
 
     progress(true, 0, 6, 1);
     if(sdvcontentbackup.exists())
     {
-        getLogger().log(Logger::WARNING, "launcher", "prepare", "backup-content", "Content backup directory already exists. Deleting it now!");
+        getLogger().log(Logger::Warning, "launcher", "prepare", "backup-content", "Content backup directory already exists. Deleting it now!");
         sdvcontentbackup.removeRecursively();
     }
 
     progress(true, 0, 6, 2);
     utils::copyDirectory(sdvcontentdir, sdvcontentbackup , true);
 
-    getLogger().log(Logger::INFO, "launcher", "prepare", "backup-content", "Content folder backup created");
+    getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Content folder backup created");
 }
 
 void Game::prepareCopySavegames(QDir sdvsavegames)
 {
-    getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Copying savegames to savegame folder");
+    getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Copying savegames to savegame folder");
 
     progress(true, 0, 6, 3);
     QTemporaryDir savegamebackups;
@@ -112,7 +112,7 @@ void Game::prepareCopySavegames(QDir sdvsavegames)
     {
         if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
         {
-            getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
+            getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
             progress(true, 0, 6, 4);
             utils::copyDirectory(sdvsavegames, savegamebackups.path(), true);
 
@@ -124,20 +124,20 @@ void Game::prepareCopySavegames(QDir sdvsavegames)
     }
     else
     {
-        getLogger().log(Logger::ERROR, "launcher", "prepare", "restore-profile-savegames", "Could not backup savegames. Refusing to clear directory.");
+        getLogger().log(Logger::Error, "launcher", "prepare", "restore-profile-savegames", "Could not backup savegames. Refusing to clear directory.");
     }
 
     progress(true, 0, 6, 6);
     utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), sdvsavegames, true);
 
-    getLogger().log(Logger::INFO, "launcher", "prepare", "restore-profile-savegames", "Savegames copied");
+    getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Savegames copied");
 }
 
 void Game::prepareInstallMods()
 {
-    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Starting to install mods");
+    getLogger().log(Logger::Info, "launcher", "prepare", "install-mods", "Starting to install mods");
 
-    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods-prime", "Pipelines will be primed for added cross-platform capabilities ...");
+    getLogger().log(Logger::Info, "launcher", "prepare", "install-mods-prime", "Pipelines will be primed for added cross-platform capabilities ...");
 
     // Call prime(), again, which may be necessary if the user switched OSes
     // Still mod manager widget prime() is important as the user gets direct feedback
@@ -148,12 +148,12 @@ void Game::prepareInstallMods()
     }
 
     m_Launcher->getProfile()->getModManager()->install();
-    getLogger().log(Logger::INFO, "launcher", "prepare", "install-mods", "Mods installed");
+    getLogger().log(Logger::Info, "launcher", "prepare", "install-mods", "Mods installed");
 }
 
 void Game::prepare()
 {
-    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
+    getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
 
     QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
@@ -162,7 +162,7 @@ void Game::prepare()
 
     if(m_Launcher->getProfile()->enableBackupOnStart())
     {
-        getLogger().log(Logger::INFO, "launcher", "prepare", "autobackup-start", "Creating a backup for all savegames");
+        getLogger().log(Logger::Info, "launcher", "prepare", "autobackup-start", "Creating a backup for all savegames");
 
         issueFullBackup();
     }
@@ -171,12 +171,12 @@ void Game::prepare()
     prepareCopySavegames(sdvsavegames);
     prepareInstallMods();
 
-    getLogger().log(Logger::INFO, "launcher", "prepare", "prepare", "Preparation ended");
+    getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Preparation ended");
 }
 
 void Game::run()
 {
-    getLogger().log(Logger::INFO, "launcher", "run", "run", "Running launcher");
+    getLogger().log(Logger::Info, "launcher", "run", "run", "Running launcher");
     progress(false, 0, 0, 0);
     m_Launcher->start();
 
@@ -191,7 +191,7 @@ void Game::run()
 
 void Game::postMoveSavegames()
 {
-    getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Moving savegames back to profile directory");
+    getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Moving savegames back to profile directory");
     progress(true, 0, 5, 1);
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
@@ -204,7 +204,7 @@ void Game::postMoveSavegames()
                 !utils::directoryEmpty(m_Launcher->getProfile()->profileSavegameDir()))
         {
             savegamebackups.setAutoRemove(false);
-            getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
+            getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
 
             progress(true, 0, 5, 3);
 
@@ -215,18 +215,18 @@ void Game::postMoveSavegames()
     }
     else
     {
-        getLogger().log(Logger::ERROR, "launcher", "post", "move-savegames", "Could not backup savegames. Refusing to clear directory.");
+        getLogger().log(Logger::Error, "launcher", "post", "move-savegames", "Could not backup savegames. Refusing to clear directory.");
     }
 
     progress(true, 0, 5, 4);
     utils::copyDirectory(sdvsavegames, m_Launcher->getProfile()->profileSavegameDir(), true);
 
-    getLogger().log(Logger::INFO, "launcher", "post", "move-savegames", "Savegames moved");
+    getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Savegames moved");
 }
 
 void Game::postRestoreContent()
 {
-    getLogger().log(Logger::INFO, "launcher", "post", "restore-content", "Starting to restore content directory");
+    getLogger().log(Logger::Info, "launcher", "post", "restore-content", "Starting to restore content directory");
     QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
@@ -239,20 +239,20 @@ void Game::postRestoreContent()
     }
     else
     {
-        getLogger().log(Logger::ERROR, "launcher", "post", "restore-content", "Backup does not exist! Please do not interfere with those processes or you'll lose data!");
+        getLogger().log(Logger::Error, "launcher", "post", "restore-content", "Backup does not exist! Please do not interfere with those processes or you'll lose data!");
     }
 }
 
 void Game::postUninstallMods()
 {
-    getLogger().log(Logger::INFO, "launcher", "post", "uninstall-mods", "Beginning to uninstall mods");
+    getLogger().log(Logger::Info, "launcher", "post", "uninstall-mods", "Beginning to uninstall mods");
     m_Launcher->getProfile()->getModManager()->uninstall();
-    getLogger().log(Logger::INFO, "launcher", "post", "uninstall-mods", "Mods have been uninstalled");
+    getLogger().log(Logger::Info, "launcher", "post", "uninstall-mods", "Mods have been uninstalled");
 }
 
 void Game::post()
 {
-    getLogger().log(Logger::INFO, "launcher", "post", "post", "Beginning post-launch actions");
+    getLogger().log(Logger::Info, "launcher", "post", "post", "Beginning post-launch actions");
 
     postMoveSavegames();
 
@@ -262,7 +262,7 @@ void Game::post()
 
     if(m_Launcher->getProfile()->checkForExistingBackups())
     {
-        getLogger().log(Logger::INFO, "launcher", "prepare", "autobackup-pos-prune", "Clearing away unnecessary backups");
+        getLogger().log(Logger::Info, "launcher", "prepare", "autobackup-pos-prune", "Clearing away unnecessary backups");
 
         issueBackupPrune();
     }
@@ -270,7 +270,7 @@ void Game::post()
 
 void Game::finish()
 {
-    getLogger().log(Logger::INFO, "launcher", "post", "finish", "Launcher finished operation with exit code " + QString::number(m_exitCode));
+    getLogger().log(Logger::Info, "launcher", "post", "finish", "Launcher finished operation with exit code " + QString::number(m_exitCode));
 
     m_Launcher->getProfile()->getSavegameManager()->reloadSavegames(); // May have added savegames
 
@@ -283,7 +283,7 @@ void Game::issueFullBackup()
     if(!m_Running)
         return;
 
-    getLogger().log(Logger::INFO, "launcher", "post", "auto-backup", "Issuing full-backup");
+    getLogger().log(Logger::Info, "launcher", "post", "auto-backup", "Issuing full-backup");
     for(BackupSavegame * sav : m_Launcher->getProfile()->getSavegameManager()->getSavegames().values())
     {
         // If check disabled or useful
@@ -299,7 +299,7 @@ void Game::issueBackupPrune()
     if(!m_Running)
         return;
 
-    getLogger().log(Logger::INFO, "launcher", "post", "auto-backup", "Issuing prune-backup");
+    getLogger().log(Logger::Info, "launcher", "post", "auto-backup", "Issuing prune-backup");
     for(BackupSavegame * sav : m_Launcher->getProfile()->getSavegameManager()->getSavegames().values())
     {
         sav->pruneBackups();

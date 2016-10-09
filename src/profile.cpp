@@ -310,7 +310,7 @@ void Profile::initialize()
     // Guard
     if(!ProfileManager::instance()->getProfiles().contains(this))
     {
-        getLogger().log(Logger::ERROR, "profiles", "profile", "init", "Cannot create profile outside profile manager!");
+        getLogger().log(Logger::Error, "profiles", "profile", "init", "Cannot create profile outside profile manager!");
         throw std::runtime_error("Cannot create profile outside profile manager!");
     }
 
@@ -319,11 +319,11 @@ void Profile::initialize()
 
     m_Settings = new QSettings(basedir.absoluteFilePath("profile.ini"), QSettings::IniFormat);
 
-    getLogger().log(Logger::INFO, "profiles", "profile", "init", "Initializing profile " + m_Id + " in " + basedir.absolutePath());
+    getLogger().log(Logger::Info, "profiles", "profile", "init", "Initializing profile " + m_Id + " in " + basedir.absolutePath());
 
     if(!basedir.exists())
     {
-        getLogger().log(Logger::INFO, "profiles", "profile", "init", "Initializing profile directory the first time for " + m_Id);
+        getLogger().log(Logger::Info, "profiles", "profile", "init", "Initializing profile directory the first time for " + m_Id);
 
         // Initialize directory
         repairDirectories();
@@ -331,7 +331,7 @@ void Profile::initialize()
         // If its a default profile, copy savegames to this profile
         if(m_Id == DEFAULT_PROFILE_ID)
         {
-            getLogger().log(Logger::INFO, "profiles", "profile", "init", "Profile is default profile. Copying savegames.");
+            getLogger().log(Logger::Info, "profiles", "profile", "init", "Profile is default profile. Copying savegames.");
 
             QDir savegamedir = StardewValleySavegameDir();
 
@@ -372,7 +372,7 @@ void Profile::fixCrazyness()
     // Fix different executable names between Windows <-> Linux. Thank you.
     if(QFileInfo(StardewValleyDir().absoluteFilePath("Stardew Valley.exe")).exists())
     {
-        getLogger().log(Logger::INFO, "profile", "fix-crazyness", "inconsistent-executables", "Why is the executable on Windows called 'Stardew Valley.exe' and on other platforms 'StardewValley.exe'? I'll copy it.");
+        getLogger().log(Logger::Info, "profile", "fix-crazyness", "inconsistent-executables", "Why is the executable on Windows called 'Stardew Valley.exe' and on other platforms 'StardewValley.exe'? I'll copy it.");
 
         QFile(StardewValleyDir().absoluteFilePath("StardewValley.exe")).remove();
         QFile::copy(StardewValleyDir().absoluteFilePath("Stardew Valley.exe"),

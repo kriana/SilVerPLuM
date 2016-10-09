@@ -133,8 +133,21 @@ macx: RESOURCES += icons/icontheme.qrc
 
 
 # We need zlib and quazip for extracting/installing new mods
-unix: LIBS += -lquazip5 -lz
-unix: INCLUDEPATH += /usr/include/quazip5/
+unix {
+    LIBS += -lquazip5 -lz
+    INCLUDEPATH += /usr/include/quazip5/
+}
+
+win32 {
+    INCLUDEPATH += $$PWD/../quazip-0.7.2/quazip
+    DEPENDPATH += $$PWD/../build-quazip-Desktop_Qt_5_7_0_MinGW_32bit-Release/quazip/release
+    LIBS += -L$$PWD/../build-quazip-Desktop_Qt_5_7_0_MinGW_32bit-Release/quazip/release/ -lquazip
+
+    INCLUDEPATH += C:/GnuWin32/include/
+    LIBS += -LC:/GnuWin32/bin/ -lz
+}
 
 # Make the windows executable have an icon
 RC_FILE = SilVerPLuM.rc
+
+

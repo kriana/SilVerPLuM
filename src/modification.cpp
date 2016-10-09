@@ -172,31 +172,31 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
 
     if(id == "stardewvalley")
     {
-        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mods with id 'stardewvalley' are forbidden. Skipping mod in " + basepath.absolutePath());
+        modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mods with id 'stardewvalley' are forbidden. Skipping mod in " + basepath.absolutePath());
         throw std::invalid_argument("Illegal mod ID");
     }
     if(id.toLower() != id)
     {
-        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs must be lowercase! Skipping mod in " + basepath.absolutePath());
+        modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs must be lowercase! Skipping mod in " + basepath.absolutePath());
 
         throw std::invalid_argument("Illegal mod ID");
     }
     if(id.replace(QRegExp("[^a-z0-9_.\\-]+"), "") != id)
     {
-        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs must be alphanumeric with additional chars '.', '-' and '_'. Skipping mod in " + basepath.absolutePath());
+        modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs must be alphanumeric with additional chars '.', '-' and '_'. Skipping mod in " + basepath.absolutePath());
 
         throw std::invalid_argument("Illegal mod ID");
     }
     if(id.contains(".."))
     {
-        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Mod IDs are not allowed to contain '..' due to prevention of container breakout. Skipping mod in " + basepath.absolutePath());
+        modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mod IDs are not allowed to contain '..' due to prevention of container breakout. Skipping mod in " + basepath.absolutePath());
 
         throw std::invalid_argument("Illegal mod ID");
     }
 
     if(id.isEmpty())
     {
-        modmgr->getLogger().log(Logger::ERROR, "modification", id, "load", "Modification ID is empty. Skipping mod in " + basepath.absolutePath());
+        modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Modification ID is empty. Skipping mod in " + basepath.absolutePath());
         throw std::invalid_argument("Modification ID is empty!");
     }
 
@@ -248,7 +248,7 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
         }
         else
         {
-            mod->getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", "Cannot identify pipeline " + content_json["pipeline"].toString());
+            mod->getLogger().log(Logger::Error, "modification", id, "load-pipeline", "Cannot identify pipeline " + content_json["pipeline"].toString());
         }
 
         if(pipeline != nullptr)
@@ -256,11 +256,11 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
             if(pipeline != nullptr)
             {
                 mod->addPipeline(key, pipeline);
-                mod->getLogger().log(Logger::INFO, "modification", id, "load-pipeline", "Loaded pipeline " + key);
+                mod->getLogger().log(Logger::Info, "modification", id, "load-pipeline", "Loaded pipeline " + key);
             }
             else
             {
-                mod->getLogger().log(Logger::WARNING, "modification", id, "load-pipeline", "Could not load pipeline " + key);
+                mod->getLogger().log(Logger::Warning, "modification", id, "load-pipeline", "Could not load pipeline " + key);
             }
         }
     }
@@ -312,32 +312,32 @@ void Modification::addPipeline(const QString &id, Pipeline *p)
 {
     if(id == "stardewvalley")
     {
-        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content with id 'stardewvalley' is forbidden.");
+        getLogger().log(Logger::Error, "modification", id, "load-pipeline", id + ": " + "Content with id 'stardewvalley' is forbidden.");
 
         throw std::invalid_argument("Illegal content ID");
     }
     if(id.toLower() != id)
     {
-        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs must be lowercase!");
+        getLogger().log(Logger::Error, "modification", id, "load-pipeline", id + ": " + "Content IDs must be lowercase!");
 
         throw std::invalid_argument("Illegal content ID");
     }
     if(QString(id).replace(QRegExp("[^a-z0-9_.\\-]+"), "") != id)
     {
-        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs be alphanumeric with additional chars '.', '-' and '_'!");
+        getLogger().log(Logger::Error, "modification", id, "load-pipeline", id + ": " + "Content IDs be alphanumeric with additional chars '.', '-' and '_'!");
 
         throw std::invalid_argument("Illegal content ID");
     }
     if(id.contains(".."))
     {
-        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content IDs are not allowed to contain '..' due to prevention of container breakout");
+        getLogger().log(Logger::Error, "modification", id, "load-pipeline", id + ": " + "Content IDs are not allowed to contain '..' due to prevention of container breakout");
 
         throw std::invalid_argument("Illegal content ID");
     }
 
     if(id.isEmpty())
     {
-        getLogger().log(Logger::ERROR, "modification", id, "load-pipeline", id + ": " + "Content ID is empty!");
+        getLogger().log(Logger::Error, "modification", id, "load-pipeline", id + ": " + "Content ID is empty!");
         throw std::invalid_argument("Content ID is empty!");
     }
 

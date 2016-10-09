@@ -66,7 +66,7 @@ bool BackupSavegame::restore(Savegame *sav)
 {
     if(!m_BackupSavegames.contains(sav))
     {
-        getLogger().log(Logger::ERROR, "backup-savegame", "restore", "restore", "Prevented restore of " + sav->directory().absolutePath() + ": not a backup!");
+        getLogger().log(Logger::Error, "backup-savegame", "restore", "restore", "Prevented restore of " + sav->directory().absolutePath() + ": not a backup!");
         return false;
     }
 
@@ -74,7 +74,7 @@ bool BackupSavegame::restore(Savegame *sav)
 
     if(destination.exists())
     {
-        getLogger().log(Logger::ERROR, "backup-savegame", "restore", "delete-existing", "Deleting existing folder");
+        getLogger().log(Logger::Error, "backup-savegame", "restore", "delete-existing", "Deleting existing folder");
         destination.removeRecursively();
     }
 
@@ -88,18 +88,18 @@ bool BackupSavegame::single(Savegame *sav)
 {
     if(sav != m_mainSavegame && ! m_BackupSavegames.contains(sav))
     {
-        getLogger().log(Logger::ERROR, "backup-savegame", "single", "single", "Prevented singe-out of " + sav->directory().absolutePath() + ": not in this entry!");
+        getLogger().log(Logger::Error, "backup-savegame", "single", "single", "Prevented singe-out of " + sav->directory().absolutePath() + ": not in this entry!");
         return false;
     }
 
     QString new_id = findNewIdFor(this, m_savegameManager->getSavegameIds());
 
-    getLogger().log(Logger::INFO, "backup-savegame", "single", "single", "Savegame in " + sav->directory().absolutePath() + " will be singled out into id " + new_id);
+    getLogger().log(Logger::Info, "backup-savegame", "single", "single", "Savegame in " + sav->directory().absolutePath() + " will be singled out into id " + new_id);
     QDir destination = m_savegameManager->profile()->profileSavegameDir().absoluteFilePath(new_id);
 
     if(destination.exists())
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "single", "test-existing", "Directory " + destination.absolutePath() + " exists, but seems to be non-functional. Deleting it.");
+        getLogger().log(Logger::Info, "backup-savegame", "single", "test-existing", "Directory " + destination.absolutePath() + " exists, but seems to be non-functional. Deleting it.");
         destination.removeRecursively();
     }
 
@@ -117,11 +117,11 @@ bool BackupSavegame::deleteSavegame(Savegame *sav)
 {
     if(sav != m_mainSavegame && ! m_BackupSavegames.contains(sav))
     {
-        getLogger().log(Logger::ERROR, "backup-savegame", "delete", "delete", "Prevented deletion of " + sav->directory().absolutePath() + ": not in this entry!");
+        getLogger().log(Logger::Error, "backup-savegame", "delete", "delete", "Prevented deletion of " + sav->directory().absolutePath() + ": not in this entry!");
         return false;
     }
 
-    getLogger().log(Logger::INFO, "backup-savegame", "delete", "delete-dir", "Removing " + sav->directory().absolutePath());
+    getLogger().log(Logger::Info, "backup-savegame", "delete", "delete-dir", "Removing " + sav->directory().absolutePath());
 
     sav->directory().removeRecursively();
 
@@ -145,21 +145,21 @@ bool BackupSavegame::deleteSavegame(Savegame *sav)
 
 bool BackupSavegame::deleteAll()
 {
-    getLogger().log(Logger::INFO, "backup-savegame", "delete-all", "delete-all", "Begin to delete whole savegame " + id());
+    getLogger().log(Logger::Info, "backup-savegame", "delete-all", "delete-all", "Begin to delete whole savegame " + id());
 
     if(m_mainSavegame != nullptr)
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "delete-all", "delete-dir", "Removing " + m_mainSavegame->directory().absolutePath());
+        getLogger().log(Logger::Info, "backup-savegame", "delete-all", "delete-dir", "Removing " + m_mainSavegame->directory().absolutePath());
         m_mainSavegame->directory().removeRecursively();
     }
 
     for(Savegame * sav : m_BackupSavegames)
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "delete-all", "delete-dir", "Removing " + sav->directory().absolutePath());
+        getLogger().log(Logger::Info, "backup-savegame", "delete-all", "delete-dir", "Removing " + sav->directory().absolutePath());
         sav->directory().removeRecursively();
     }
 
-    getLogger().log(Logger::INFO, "backup-savegame", "delete-all", "delete-all", "Ended process. Triggering reload.");
+    getLogger().log(Logger::Info, "backup-savegame", "delete-all", "delete-all", "Ended process. Triggering reload.");
     m_savegameManager->reloadSavegames();
 
     return true;
@@ -169,18 +169,18 @@ bool BackupSavegame::backup()
 {
     if(m_mainSavegame != nullptr)
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "backup", "backup", "Begin to backup savegame " + id());
+        getLogger().log(Logger::Info, "backup-savegame", "backup", "backup", "Begin to backup savegame " + id());
 
         QString bid = QDateTime::currentDateTime().toString("dd-MM-yyyy-HH-mm-ss");
-        getLogger().log(Logger::INFO, "backup-savegame", "backup", "backup", "Backup id is " + bid);
+        getLogger().log(Logger::Info, "backup-savegame", "backup", "backup", "Backup id is " + bid);
 
         QDir destination = backupDir().absoluteFilePath(bid);
 
-        getLogger().log(Logger::INFO, "backup-savegame", "backup", bid, "Backup directory is " + destination.absolutePath());
+        getLogger().log(Logger::Info, "backup-savegame", "backup", bid, "Backup directory is " + destination.absolutePath());
 
         if(destination.exists())
         {
-            getLogger().log(Logger::ERROR, "backup-savegame", "backup", bid, "Backup directory already exists! Cancelling!");
+            getLogger().log(Logger::Error, "backup-savegame", "backup", bid, "Backup directory already exists! Cancelling!");
             return false;
         }
 
@@ -192,14 +192,14 @@ bool BackupSavegame::backup()
 
         QApplication::restoreOverrideCursor();
 
-        getLogger().log(Logger::INFO, "backup-savegame", "backup", bid, "Loading backup into interface");
+        getLogger().log(Logger::Info, "backup-savegame", "backup", bid, "Loading backup into interface");
 
         Savegame * sav = Savegame::loadFromDirectory(destination, savegameManager()->profile());
 
 
         if(sav == nullptr)
         {
-            getLogger().log(Logger::ERROR, "backup-savegame", "backup", bid, "Loading failed!");
+            getLogger().log(Logger::Error, "backup-savegame", "backup", bid, "Loading failed!");
         }
         else
         {
@@ -207,7 +207,7 @@ bool BackupSavegame::backup()
             m_BackupSavegames << sav;
         }
 
-        getLogger().log(Logger::INFO, "backup-savegame", "backup", bid, "Finished backup savegame " + id());
+        getLogger().log(Logger::Info, "backup-savegame", "backup", bid, "Finished backup savegame " + id());
 
         emit backupListChanged();
 
@@ -219,7 +219,7 @@ bool BackupSavegame::backup()
 
 bool BackupSavegame::copyTo(Profile *p, QString as)
 {
-    getLogger().log(Logger::INFO, "backup-savegame", "clone", "clone", "Starting to clone savegame " + id() + " into profile " + p->id());
+    getLogger().log(Logger::Info, "backup-savegame", "clone", "clone", "Starting to clone savegame " + id() + " into profile " + p->id());
 
     if(as.isEmpty())
     {
@@ -227,7 +227,7 @@ bool BackupSavegame::copyTo(Profile *p, QString as)
     }
     else
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "clone", "clone", "Will be renamed to " + as);
+        getLogger().log(Logger::Info, "backup-savegame", "clone", "clone", "Will be renamed to " + as);
     }
 
     if(p->getSavegameManager()->getSavegameIds().contains(as))
@@ -240,23 +240,23 @@ bool BackupSavegame::copyTo(Profile *p, QString as)
 
     if(destination_savegame.exists())
     {
-        getLogger().log(Logger::WARNING, "backup-savegame", "clone", "test-existing", "Deleting non-functional savegame dir");
+        getLogger().log(Logger::Warning, "backup-savegame", "clone", "test-existing", "Deleting non-functional savegame dir");
         destination_savegame.removeRecursively();
     }
     if(destination_backupsavegame.exists())
     {
-        getLogger().log(Logger::WARNING, "backup-savegame", "clone", "test-existing", "Deleting non-functional savegame backup dir");
+        getLogger().log(Logger::Warning, "backup-savegame", "clone", "test-existing", "Deleting non-functional savegame backup dir");
         destination_backupsavegame.removeRecursively();
     }
 
     if(m_mainSavegame != nullptr)
     {
-        getLogger().log(Logger::INFO, "backup-savegame", "clone", "copy", "Copy savegame ...");
+        getLogger().log(Logger::Info, "backup-savegame", "clone", "copy", "Copy savegame ...");
         utils::copyDirectory(m_mainSavegame->directory(), destination_savegame, true);
         renameSavegame(destination_savegame, id(), as);
     }
 
-    getLogger().log(Logger::INFO, "backup-savegame", "clone", "copy", "Copy savegame backups ...");
+    getLogger().log(Logger::Info, "backup-savegame", "clone", "copy", "Copy savegame backups ...");
     utils::copyDirectory(backupDir(), destination_backupsavegame, true);
 
     for(QString bid : destination_backupsavegame.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
@@ -266,7 +266,7 @@ bool BackupSavegame::copyTo(Profile *p, QString as)
 
     p->getSavegameManager()->reloadSavegames();
 
-    getLogger().log(Logger::INFO, "backup-savegame", "clone", "clone", "Operation finished.");
+    getLogger().log(Logger::Info, "backup-savegame", "clone", "clone", "Operation finished.");
 
     return true;
 }
@@ -289,7 +289,7 @@ bool BackupSavegame::backupUseful()
 
 void BackupSavegame::pruneBackups()
 {
-    getLogger().log(Logger::INFO, "backup-savegame", "prune", "prune", "Starting to prune backups");
+    getLogger().log(Logger::Info, "backup-savegame", "prune", "prune", "Starting to prune backups");
 
     QSet<Savegame*> todelete;
     QList<Savegame*> backups = getBackupSavegames();
@@ -313,7 +313,7 @@ void BackupSavegame::pruneBackups()
 
                 if(there->contentEquals(here))
                 {
-                    getLogger().log(Logger::INFO, "backup-savegame", "prune", "find", there->directory().absolutePath() + " is equal to " + here->directory().absolutePath() +  ". Will be deleted.");
+                    getLogger().log(Logger::Info, "backup-savegame", "prune", "find", there->directory().absolutePath() + " is equal to " + here->directory().absolutePath() +  ". Will be deleted.");
                     todelete << there;
                 }
             }
@@ -325,7 +325,7 @@ void BackupSavegame::pruneBackups()
         deleteSavegame(sav);
     }
 
-    getLogger().log(Logger::INFO, "backup-savegame", "prune", "prune", "Pruning finished");
+    getLogger().log(Logger::Info, "backup-savegame", "prune", "prune", "Pruning finished");
 }
 
 QString BackupSavegame::findNewIdFor(BackupSavegame *sav, const QStringList &ids)
@@ -368,7 +368,7 @@ void BackupSavegame::renameSavegame(QDir dir, const QString &old_id, const QStri
 
 void BackupSavegame::initialize()
 {
-    getLogger().log(Logger::INFO, "backup-savegame", "init", "load", "Begin to load savegame with id " + id());
+    getLogger().log(Logger::Info, "backup-savegame", "init", "load", "Begin to load savegame with id " + id());
 
     m_mainSavegame = Savegame::loadFromDirectory(savegameManager()->profile()->profileSavegameDir().absoluteFilePath(id()),
                                                  savegameManager()->profile());
@@ -387,5 +387,5 @@ void BackupSavegame::initialize()
         }
     }
 
-    getLogger().log(Logger::INFO, "backup-savegame", "init", "load", "Ended loading savegame");
+    getLogger().log(Logger::Info, "backup-savegame", "init", "load", "Ended loading savegame");
 }

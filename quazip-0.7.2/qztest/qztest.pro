@@ -47,3 +47,9 @@ else:unix: LIBS += -L$$OUT_PWD/../quazip/ -lquazip
 
 INCLUDEPATH += $$PWD/..
 DEPENDPATH += $$PWD/../quazip
+
+win32
+{
+    INCLUDEPATH += C:/GnuWin32/include/
+    LIBS += -LC:/GnuWin32/bin/zlib1.dll -lz
+}

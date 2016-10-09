@@ -57,7 +57,7 @@ void SavegameManager::initialize()
 
 void SavegameManager::import(const QString &path)
 {
-    profile()->getLogger().log(Logger::INFO, "savegames", "manager", "import", "Importing savegame in " + path);
+    profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Importing savegame in " + path);
 
     QTemporaryDir tmp;
 
@@ -76,13 +76,13 @@ void SavegameManager::import(const QString &path)
             }
         }
 
-        profile()->getLogger().log(Logger::INFO, "savegames", "manager", "import", "ID is " + id);
+        profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "ID is " + id);
 
         Savegame * sav = Savegame::loadFromDirectory(tmp.path(), profile());
 
         if(sav == nullptr)
         {
-            profile()->getLogger().log(Logger::ERROR, "savegames", "manager", "import", "Not able to load savegame. Cancelling.");
+            profile()->getLogger().log(Logger::Error, "savegames", "manager", "import", "Not able to load savegame. Cancelling.");
             throw std::runtime_error("Unable to load savegame");
         }
 
@@ -90,27 +90,27 @@ void SavegameManager::import(const QString &path)
 
         if(getSavegameIds().contains(id))
         {
-            profile()->getLogger().log(Logger::INFO, "savegames", "manager", "import", "ID already exists. Renaming.");
+            profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "ID already exists. Renaming.");
             QString new_id = Savegame::findNewIdFor(id, getSavegameIds());
             BackupSavegame::renameSavegame(tmp.path(), id, new_id);
 
             id = new_id;
         }
 
-        profile()->getLogger().log(Logger::INFO, "savegames", "manager", "import", "Copying ...");
+        profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Copying ...");
         QDir destination = profile()->profileSavegameDir().absoluteFilePath(id);
         destination.removeRecursively();
 
         utils::copyDirectory(tmp.path(), destination, true);
 
-        profile()->getLogger().log(Logger::INFO, "savegames", "manager", "import", "Finished");
+        profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Finished");
 
         reloadSavegames();
 
     }
     else
     {
-        profile()->getLogger().log(Logger::ERROR, "savegames", "manager", "import", "Unable to create temp. dir");
+        profile()->getLogger().log(Logger::Error, "savegames", "manager", "import", "Unable to create temp. dir");
         throw std::runtime_error("Cannot create temp dir");
     }
 }

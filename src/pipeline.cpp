@@ -67,20 +67,20 @@ QMap<QString, QString> Pipeline::resolveInstallables()
         // Prevent breaking out of the directories via ..
         if(src.contains("..") && GlobalSettings::instance()->getEnableFileGuard())
         {
-            getLogger().log(Logger::WARNING, "pipeline", id(), "resolve-installables", "Refuse to resolve source " + src + " by file guard");
+            getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "Refuse to resolve source " + src + " by file guard");
 
             continue;
         }
         if(dst.contains("..") && GlobalSettings::instance()->getEnableFileGuard())
         {
-            getLogger().log(Logger::WARNING, "pipeline", id(), "resolve-installables", "Refuse to resolve source " + src + " by file guard");
+            getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "Refuse to resolve source " + src + " by file guard");
 
             continue;
         }
 
         if(!QFileInfo(src).exists())
         {
-            getLogger().log(Logger::ERROR, "pipeline", id(), "resolve-installables", "Source " + src + " does not exist. Skipping.");
+            getLogger().log(Logger::Error, "pipeline", id(), "resolve-installables", "Source " + src + " does not exist. Skipping.");
 
             continue;
         }
@@ -98,14 +98,14 @@ QMap<QString, QString> Pipeline::resolveInstallables()
 
                 QString rdst = dst + "/" + rsrc.mid(src.length());
 
-                getLogger().log(Logger::INFO, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
+                getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
 
                 result[rsrc] = rdst;
             }
         }
         else
         {
-            getLogger().log(Logger::INFO, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
+            getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 
             result[src] = dst;
         }
@@ -126,7 +126,7 @@ QList<Launcher *> Pipeline::launchers() const
 
 void Pipeline::install()
 {
-    getLogger().log(Logger::INFO, "pipeline", id(), "install", "Started installation");
+    getLogger().log(Logger::Info, "pipeline", id(), "install", "Started installation");
 
     m_fgInstalledFiles.clear();
     QMap<QString, QString> resolved_installables = resolveInstallables();
@@ -150,7 +150,7 @@ void Pipeline::install()
                     dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib64")).absolutePath() ||
                     dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("mono")).absolutePath())
             {
-                getLogger().log(Logger::WARNING, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
+                getLogger().log(Logger::Warning, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
 
                 continue;
             }
@@ -163,21 +163,21 @@ void Pipeline::install()
         {
             if(!QFile(dst).remove())
             {
-                getLogger().log(Logger::WARNING, "pipeline", id(), "install", "Could not replace " + dst);
+                getLogger().log(Logger::Warning, "pipeline", id(), "install", "Could not replace " + dst);
             }
             else
             {
-                getLogger().log(Logger::INFO, "pipeline", id(), "install", "Successfully replaced " + dst);
+                getLogger().log(Logger::Info, "pipeline", id(), "install", "Successfully replaced " + dst);
             }
         }
 
         if(QFile::copy(src, dst))
         {
-            getLogger().log(Logger::INFO, "pipeline", id(), "install", "Successfully installed " + src + " to " + dst);
+            getLogger().log(Logger::Info, "pipeline", id(), "install", "Successfully installed " + src + " to " + dst);
         }
         else
         {
-            getLogger().log(Logger::WARNING, "pipeline", id(), "install", "Could not install " + src + " to " + dst);
+            getLogger().log(Logger::Warning, "pipeline", id(), "install", "Could not install " + src + " to " + dst);
         }
 
         m_fgInstalledFiles.insert(dst); // Mark as installed
@@ -187,17 +187,17 @@ void Pipeline::install()
 
 void Pipeline::uninstall()
 {
-    getLogger().log(Logger::INFO, "pipeline", id(), "uninstall", "Started uninstallation");
+    getLogger().log(Logger::Info, "pipeline", id(), "uninstall", "Started uninstallation");
 
     for(QString dst : m_fgInstalledFiles)
     {
         if(QFile(dst).remove())
         {
-            getLogger().log(Logger::INFO, "pipeline", id(), "uninstall", "Successfully uninstalled " + dst);
+            getLogger().log(Logger::Info, "pipeline", id(), "uninstall", "Successfully uninstalled " + dst);
         }
         else
         {
-            getLogger().log(Logger::WARNING, "pipeline", id(), "uninstall", "Could not uninstall " + dst);
+            getLogger().log(Logger::Warning, "pipeline", id(), "uninstall", "Could not uninstall " + dst);
         }
     }
 

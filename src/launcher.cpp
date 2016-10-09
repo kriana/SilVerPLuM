@@ -18,7 +18,7 @@ void Launcher::start()
 
     if(executable.empty())
     {
-        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! No executable for this platform!");
+        getProfile()->getLogger().log(Logger::Error, "launcher", id(), "start", "Could not run! No executable for this platform!");
 
         emit finished(-1);
         return;
@@ -31,13 +31,13 @@ void Launcher::start()
     QString workdir = m_profile->getModManager()->resolveModUrl(executable.workdir());
 
 
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Executable url: " + executable.executable());
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute executable path: " + path);
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Executable url: " + executable.executable());
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Absolute executable path: " + path);
 
 
     if(!QFileInfo(path).exists() || !QFileInfo(path).isFile())
     {
-        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Executable does not exist!");
+        getProfile()->getLogger().log(Logger::Error, "launcher", id(), "start", "Could not run! Executable does not exist!");
 
         emit finished(-1);
         return;
@@ -45,15 +45,15 @@ void Launcher::start()
 
     if(workdir.isEmpty())
     {
-        getProfile()->getLogger().log(Logger::WARNING, "launcher", id(), "start", "Workdir is empty. Set it to executable directory.");
+        getProfile()->getLogger().log(Logger::Warning, "launcher", id(), "start", "Workdir is empty. Set it to executable directory.");
         workdir = QFileInfo(path).absoluteDir().absolutePath();
     }
 
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Absolute workdir path: " + workdir);
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Absolute workdir path: " + workdir);
 
     if(workdir.isEmpty() || !QFileInfo(workdir).exists() || !QFileInfo(workdir).isDir())
     {
-        getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "start", "Could not run! Workdir is no directory or doesn't exist!");
+        getProfile()->getLogger().log(Logger::Error, "launcher", id(), "start", "Could not run! Workdir is no directory or doesn't exist!");
 
         emit finished(-1);
         return;
@@ -84,7 +84,7 @@ void Launcher::start()
         m_process->setArguments( QStringList() << "-c" << bash_argument);
     }
 
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
 
     m_process->setWorkingDirectory(m_profile->StardewValleyDir().absolutePath());
     m_process->setProcessChannelMode(QProcess::MergedChannels);
@@ -184,16 +184,16 @@ Profile *Launcher::getProfile() const
 
 void Launcher::processFinished(int retcode)
 {
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
-    getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished", "Process finished with exit code " + QString::number(retcode));
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "finished", "Process finished with exit code " + QString::number(retcode));
 
     emit finished(retcode);
 }
 
 void Launcher::processError(QProcess::ProcessError error)
 {
-     getProfile()->getLogger().log(Logger::INFO, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
-    getProfile()->getLogger().log(Logger::ERROR, "launcher", id(), "finished", "Process finished with error QProcess::ProcessError::" + QString::number(error));
+     getProfile()->getLogger().log(Logger::Info, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
+    getProfile()->getLogger().log(Logger::Error, "launcher", id(), "finished", "Process finished with error QProcess::ProcessError::" + QString::number(error));
 
     emit finished(-1);
 }

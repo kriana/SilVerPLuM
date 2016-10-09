@@ -18,10 +18,10 @@ public:
 
     enum Level
     {
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR
+        Debug,
+        Info,
+        Warning,
+        Error
     };
 
     struct Entry
@@ -39,16 +39,16 @@ public:
 
             switch(level)
             {
-            case DEBUG:
+            case Debug:
                 msg += "[DEBUG]";
                 break;
-            case INFO:
+            case Info:
                 msg += "[INFO]";
                 break;
-            case WARNING:
+            case Warning:
                 msg += "[WARNING]";
                 break;
-            case ERROR:
+            case Error:
                 msg += "[ERROR]";
                 break;
             default:
@@ -77,16 +77,16 @@ public:
         {
             switch(level)
             {
-            case DEBUG:
+            case Debug:
                 qDebug().noquote() << toString();
                 break;
-            case INFO:
+            case Info:
                 qInfo().noquote() << toString();
                 break;
-            case WARNING:
+            case Warning:
                 qWarning().noquote() << toString();
                 break;
-            case ERROR:
+            case Error:
                 qCritical().noquote() << toString();
                 break;
             default:
