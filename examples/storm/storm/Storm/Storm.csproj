@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3AE6190C-1CC7-4FA4-B859-5EABC8EC0614}</ProjectGuid>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Storm</RootNamespace>
+    <AssemblyName>StormLoader</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputType>Exe</OutputType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputType>WinExe</OutputType>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Graphics\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Xact\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Xact.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="xTile, Version=2.0.4.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\xTile.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CecilExtensions.cs" />
+    <Compile Include="Collections\ProxyList.cs" />
+    <Compile Include="Collections\WrappedProxyList.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Collections\DualProxyDictionary.cs" />
+    <Compile Include="ExternalEvent\AssemblyMod.cs" />
+    <Compile Include="ExternalEvent\AssemblyModLoader.cs" />
+    <Compile Include="ExternalEvent\DiskResource.cs" />
+    <Compile Include="ExternalEvent\JsonModManifest.cs" />
+    <Compile Include="ExternalEvent\ModAttribute.cs" />
+    <Compile Include="Collections\KeyProxyDictionary.cs" />
+    <Compile Include="ExternalEvent\ReceiverSwitch.cs" />
+    <Compile Include="Manipulation\Cecil\CecilInstanceDetourInjector.cs" />
+    <Compile Include="Manipulation\Cecil\CecilEventCallbackInjector.cs" />
+    <Compile Include="Manipulation\Cecil\CecilFieldAccessorMutatorInjector.cs" />
+    <Compile Include="Manipulation\Cecil\CecilInvokerInjector.cs" />
+    <Compile Include="Manipulation\ConstantReplacerParams.cs" />
+    <Compile Include="Manipulation\ConstructorReplacerParams.cs" />
+    <Compile Include="Manipulation\DetourEvent.cs" />
+    <Compile Include="Manipulation\EventCallbackParams.cs" />
+    <Compile Include="Manipulation\FieldAccessorMutatorParams.cs" />
+    <Compile Include="Manipulation\FieldInfoInjector.cs" />
+    <Compile Include="Manipulation\FieldInfoParams.cs" />
+    <Compile Include="Manipulation\FieldMutatorParams.cs" />
+    <Compile Include="Manipulation\InjectorMetaData.cs" />
+    <Compile Include="Manipulation\InsertionType.cs" />
+    <Compile Include="Manipulation\InvokerParams.cs" />
+    <Compile Include="Manipulation\Json\JsonEventCallbackParams.cs" />
+    <Compile Include="Manipulation\Json\JsonFieldAccessorMutatorParams.cs" />
+    <Compile Include="Manipulation\Json\JsonFieldInfoParams.cs" />
+    <Compile Include="Manipulation\Json\JsonInvokerParams.cs" />
+    <Compile Include="Manipulation\Json\JsonMethodInfoParams.cs" />
+    <Compile Include="Manipulation\MethodInfoInjector.cs" />
+    <Compile Include="Manipulation\MethodInfoParams.cs" />
+    <Compile Include="ExternalEvent\EventBus.cs" />
+    <Compile Include="ExternalEvent\IModLoader.cs" />
+    <Compile Include="ExternalEvent\LoadedMod.cs" />
+    <Compile Include="ExternalEvent\LocalModLoader.cs" />
+    <Compile Include="ExternalEvent\Subscribe.cs" />
+    <Compile Include="StardewValley\StormContentManager.cs" />
+    <Compile Include="StardewValley\WrappedAccessor.cs" />
+    <Compile Include="StardewValley\Wrapper\Buff.cs" />
+    <Compile Include="StardewValley\Wrapper\ChildWrapper.cs" />
+    <Compile Include="StardewValley\Wrapper\CraftingRecipe.cs" />
+    <Compile Include="StardewValley\Wrapper\FarmAnimal.cs" />
+    <Compile Include="StardewValley\Wrapper\HudMessage.cs" />
+    <Compile Include="StardewValley\Wrapper\Horse.cs" />
+    <Compile Include="StardewValley\Wrapper\BuffsDisplay.cs" />
+    <Compile Include="StardewValley\Wrapper\ProgramWrapper.cs" />
+    <Compile Include="StardewValley\Wrapper\StaticContextWrapper.cs" />
+    <Compile Include="Collections\ProxyDictionary.cs" />
+    <Compile Include="Collections\ValueProxyDictionary.cs" />
+    <Compile Include="StardewValley\Event\PreInjectionEvent.cs" />
+    <Compile Include="StardewValley\HookResourceMod.cs" />
+    <Compile Include="StardewValley\StormApi.cs" />
+    <Compile Include="StardewValley\Wrapper\Billboard.cs" />
+    <Compile Include="StardewValley\Wrapper\ChatBox.cs" />
+    <Compile Include="StardewValley\Wrapper\ClickableComponent.cs" />
+    <Compile Include="StardewValley\Wrapper\ClickableMenu.cs" />
+    <Compile Include="StardewValley\Wrapper\ClickableTextureComponent.cs" />
+    <Compile Include="StardewValley\Wrapper\Event.cs" />
+    <Compile Include="StardewValley\Wrapper\Fence.cs" />
+    <Compile Include="StardewValley\Wrapper\FishingRod.cs" />
+    <Compile Include="StardewValley\Wrapper\GameMenu.cs" />
+    <Compile Include="StardewValley\Wrapper\HoeDirt.cs" />
+    <Compile Include="StardewValley\Wrapper\InventoryMenu.cs" />
+    <Compile Include="StardewValley\Wrapper\InventoryPage.cs" />
+    <Compile Include="StardewValley\Event\StaticContextEvent.cs" />
+    <Compile Include="StardewValley\ManagedStardewValleyLauncher.cs" />
+    <Compile Include="StardewValley\StaticGameContext.cs" />
+    <Compile Include="CecilUtils.cs" />
+    <Compile Include="DataFormat.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Manipulation\Cecil\CecilFieldDetourInjector.cs" />
+    <Compile Include="Manipulation\Cecil\CecilInjectorFactory.cs" />
+    <Compile Include="Manipulation\ClassInfoInjector.cs" />
+    <Compile Include="Manipulation\FieldAccessorParams.cs" />
+    <Compile Include="Manipulation\FieldDetourParams.cs" />
+    <Compile Include="Manipulation\InjectionFactoryContext.cs" />
+    <Compile Include="Manipulation\IInjector.cs" />
+    <Compile Include="Manipulation\InjectorFactories.cs" />
+    <Compile Include="Manipulation\InjectorFactory.cs" />
+    <Compile Include="Manipulation\InjectorFactoryType.cs" />
+    <Compile Include="Manipulation\InterfaceParams.cs" />
+    <Compile Include="Manipulation\Json\JsonFieldDetourParams.cs" />
+    <Compile Include="Manipulation\Json\JsonParamContainer.cs" />
+    <Compile Include="Manipulation\Json\JsonClassInfoParams.cs" />
+    <Compile Include="Manipulation\Cecil\CecilRewriteEntryInjector.cs" />
+    <Compile Include="Manipulation\RewriteEntryInjectorParams.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionUtils.cs" />
+    <Compile Include="StardewValley\Wrapper\AnimatedSprite.cs" />
+    <Compile Include="StardewValley\Wrapper\ShopMenu.cs" />
+    <Compile Include="StardewValley\Wrapper\TextBox.cs" />
+    <Compile Include="StardewValley\Wrapper\Wrapper.cs" />
+    <Compile Include="StardewValley\Wrapper\BobberBar.cs" />
+    <Compile Include="StardewValley\Wrapper\Character.cs" />
+    <Compile Include="StardewValley\Wrapper\Chest.cs" />
+    <Compile Include="StardewValley\Wrapper\Crop.cs" />
+    <Compile Include="StardewValley\Wrapper\Farmer.cs" />
+    <Compile Include="StardewValley\Wrapper\Item.cs" />
+    <Compile Include="StardewValley\Wrapper\Monster.cs" />
+    <Compile Include="StardewValley\Wrapper\Npc.cs" />
+    <Compile Include="StardewValley\Wrapper\Object.cs" />
+    <Compile Include="StardewValley\Wrapper\StaticContext.cs" />
+    <Compile Include="StardewValley\Wrapper\GameLocation.cs" />
+    <Compile Include="StardewValley\Wrapper\TerrainFeature.cs" />
+    <Compile Include="StardewValley\Wrapper\Tool.cs" />
+    <Compile Include="TypeCollisionException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
