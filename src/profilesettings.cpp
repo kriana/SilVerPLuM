@@ -26,6 +26,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
 
     // Change some widget settings
     ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);    
+    ui->sdvSavegameDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
     ui->profileDirectory->setReadOnly(true);
 }
 

@@ -21,6 +21,13 @@ cp ../README.md linux
 
 # Package
 
-zip -r package_windows.zip ./windows
-zip -r package_linux.zip ./linux
+rm SilVerPLuM_windows.zip 
+rm SilVerPLuM_linux.zip
+
+cd windows
+zip -r ../SilVerPLuM_windows.zip .
+cd ..
+cd  linux
+zip -r ../SilVerPLuM_linux.zip .
+cd ..
 

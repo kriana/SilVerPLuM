@@ -23,6 +23,13 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
     pip->setPriority(json["priority"].toInt());
     pip->setDefault(json["default"].toBool());
 
+    // Additional way of description
+    QString alternate_descr_file = pip->pipelineBaseDir().absoluteFilePath("mod-description.md");
+    if(QFileInfo(alternate_descr_file).exists())
+    {
+        pip->setDescription(utils::readAllTextFrom(alternate_descr_file));
+    }
+
     QJsonObject installables = json["installables"].toObject();
 
     for(QString src : installables.keys())
@@ -100,6 +107,8 @@ QMap<QString, QString> Pipeline::resolveInstallables()
                  */
 
                 QString rdst = dst + "/" + rsrc.mid(src.length());
+                rsrc = QFileInfo(rsrc).canonicalFilePath();
+                rdst = QFileInfo(rdst).canonicalFilePath();
 
                 getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
 
@@ -108,6 +117,9 @@ QMap<QString, QString> Pipeline::resolveInstallables()
         }
         else
         {
+            src = QFileInfo(src).canonicalFilePath();
+            dst = QFileInfo(dst).canonicalFilePath();
+
             getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 
             result[src] = dst;

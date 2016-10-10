@@ -127,6 +127,15 @@ This tab has a profile manager that allows you to create, duplicate and remove p
 
 # Q.T.M.O - Questions that might occur
 
+## My savegame is broken!
+There's unfortunately no guarantee that everything works. There can be always bugs and some error maybe caused by some other program can lead to this. Always make backups.
+
+## My game won't load
+Should only happen if something crashed. Just verify your installation with Steam or re-install your game. You can also report this incident (plus the contents of 'Profile log') - maybe it's caused by a bug.
+
+## My mod won't load
+You can see the error in 'Profile log'. If it's not caused by you, report this incident.
+
 ## Why not FAQ?
 No questions have been asked so far. They aren't 'frequently asked questions' (;
 

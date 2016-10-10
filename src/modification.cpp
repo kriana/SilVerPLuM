@@ -6,6 +6,7 @@
 #include "filepipeline.h"
 #include "dllpipeline.h"
 #include "globalsettings.h"
+#include "utils.h"
 
 QDir Modification::modBasePath() const
 {
@@ -213,6 +214,12 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
     for(QJsonValue req : json["requires"].toArray())
     {
         mod->addDependency(new Dependency(req.toString()));
+    }
+
+    // Additional way of description
+    if(QFileInfo(basepath.absoluteFilePath("mod-description.md")).exists())
+    {
+        mod->setDescription(utils::readAllTextFrom(basepath.absoluteFilePath("mod-description.md")));
     }
 
     // Load pipelines
