@@ -1,3 +1,5 @@
+![Logo](https://rumangerst.github.io/SilVerPLuM/docs/images/logo.png)
+
 # SilVerPLuM
 **S** tardew **V** alley **P** rofiles, **L** auncher and **M** od-manager
 
@@ -11,6 +13,26 @@ Included is a simple savegame manager that can make backups of your savegames wi
 
 ## Mod manager
 The mod manager supports content replacer mods and DLL mods. It has dependency-checking, so you don't have to fear that you are missing a mod that is needed by another mod. A simple interface offers easy enabling/disabling of mods and optional content of mods with just one click.
+
+![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_play.png)
+
+## All features
+
+* Profile manager for separated savegames, mods and game installations
+* Export/import profiles
+* Savegame backups
+* Remove redundant backups
+* Optional auto-backup before launch and every x minutes
+* Copy savegames and backups across profiles
+* Make a backup to its own savegame
+* Export/import savegames
+* Support for content-replacer mods
+* Modders can define their own launchers for DLL mods and other tools
+* Dependency checking for mods
+* Optional mod content
+* Compilation pipeline for cross-platform DLL mods
+* Copy mods across profiles
+* ...
 
 # Installation
 
@@ -54,9 +76,13 @@ If you start SilVerPLuM, you will see a launcher screen to start Stardew Valley 
 * 'Application Settings' will let you tweak global settings of SilVerPLuM
 * 'Profile log' opens the log of the current profile. It contains information how things are loaded, if errors happened and more.
 
+![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_play.png)
+
 ## 'Configure' tab
 This tab contains the profile settings such as the Stardew Valley directory, which launcher should be the default and more.
 This tab has a profile manager that allows you to create, duplicate and remove profiles.
+
+![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_configure.png)
 
 ## 'Modify' tab
 
@@ -65,6 +91,8 @@ This tab contains the mod manager. You can install mods by clicking the respecti
 If you install more complex mods, you may get a dependency warning that tells you which mod is missing. Alos keep in mind that dependencies must be *above* the requesting mod as SilVerPLuM goes from top to bottom and one by one installs the mods.
 
 This tab has a profile manager that allows you to create, duplicate and remove profiles.
+
+![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_modify.png)
 
 ## 'Manage' tab
 
@@ -78,9 +106,40 @@ If you click on the arrow next to a savegame or a backup, you can do some additi
 
 This tab has a profile manager that allows you to create, duplicate and remove profiles.
 
-## Tipps
+![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_manage.png)
 
-###
+## Tips
+
+### Temporarily 'disable' a savegame
+1. Create a backup
+2. Delete only the current savegame (in the arrow menu)
+
+### See what's done by SilVerPLuM
+1. Click on the arrow next to 'Play'
+2. Select "Debug launcher"
+3. Visit your game director, etc. and look if everything is correct
+
+### Make a mod package
+1. Click on the 'Export profile to file' button next to the duplicate button
+2. Save your profile as \*.zip
+3. Share it online
+
+# Q.T.M.O - Questions that might occur
+
+## Why not FAQ?
+No questions have been asked so far. They aren't 'frequently asked questions' (;
+
+## Wait ... where does the i, l, e, r, and u in SilVerPLuM came from?
+Actually the program's name should be SVPLM. I rotated the remaining letters until something usable came out. Even more loose variant of [making acronyms](http://www.phdcomics.com/comics.php?f=1100).
+
+## This program doesn't want to load my mods
+SilVerPLuM needs a certain structure of mod files. Modders unfortunately have to make mods specific for SilVerPLuM.
+
+## Why can't I download mods
+There *may* be a feature that can download mods, but this must be handled with care or it will go wrong. Already experienced it.
+
+## Why only \*.zip files?
+Because they are widely known and work everywhere. Also there's a nice library that handles this and integrates well.
 
 # For mod developers
 
@@ -195,6 +254,7 @@ This pipeline has additional options in the mod configuration.
 
 * `nuget-restore` - Run `nuget restore` as part of compilation process
 * `references` - Maps .NET references to DLLs. More info below.
+* `build-arguments` - Arguments for msbuild/xbuild. Use this to e.g. force compilation in 'Release' configuration
 
 Here's an example:
 
@@ -217,6 +277,12 @@ Here's an example:
       "pipeline" : "compile-dll",
       "nuget-restore" : true,
       "references" : { },
+      "build-arguments" : {
+        "windows" : ["/p:Configuration=Release"],
+        "linux" : ["/p:Configuration=Release"],
+        "mac" : ["/p:Configuration=Release"]
+      },
+      "build-parameters" : { },
       "location" : "file",
       "installables" : {
 		  "TestLauncher/bin/Debug/TestLauncher.exe" : "TestLauncher.exe",
@@ -239,7 +305,7 @@ Following references are included by SilVerPLuM and don't need to be added manua
 
 * StardewValley.exe
 * xTile.dll
-* XNA/MonoGame (The integrated resolver will interchange them automatically)
+* XNA/MonoGame (The integrated resolver will interchange them automatically depending on profile settings)
 
 Here's an example for a DLL provided by some API mod:
 
@@ -280,6 +346,11 @@ Let's have an example:
       "pipeline" : "compile-dll",
       "nuget-restore" : true,
       "references" : { },
+      "build-arguments" : {
+        "windows" : ["/p:Configuration=Release"],
+        "linux" : ["/p:Configuration=Release"],
+        "mac" : ["/p:Configuration=Release"]
+      },
       "location" : "file",
       "installables" : {
 		  "TestLauncher/bin/Debug/TestLauncher.exe" : "TestLauncher.exe",
@@ -307,3 +378,7 @@ Let's have an example:
 An executable points to some file in a mod or Stardew Valley. You can define arguments and set the workdir. Both executable and workdir have the same 'mod-url' syntax as with references.
 
 Note here that for Linux and Mac you'll need a script that runs `mono TestLauncher.exe` to start the executable. On Windows the exe can be run directly. SilVerPLuM will change file-permissions, so the executables are able to run.
+
+## Examples
+
+You can find some examples in the [examples directory](https://github.com/rumangerst/SilVerPLuM/tree/master/examples) of this repository.
