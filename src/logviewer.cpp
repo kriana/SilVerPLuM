@@ -7,7 +7,7 @@ LogViewer::LogViewer(QWidget *parent) :
     ui(new Ui::LogViewer)
 {
     ui->setupUi(this);
-    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
 
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(close()));
 }

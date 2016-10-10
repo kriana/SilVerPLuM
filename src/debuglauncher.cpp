@@ -4,6 +4,8 @@
 #include "profile.h"
 #include "platform.h"
 #include "game.h"
+#include <QDesktopServices>
+#include <QUrl>
 
 QString DebugLauncher::ID = "debug";
 
@@ -25,15 +27,23 @@ void DebugLauncher::start()
 
         dlg.setText("Debug Launcher");
         dlg.setInformativeText("The profile should new be active. Select one of the options:");
-        dlg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Yes | QMessageBox::Close);
+        dlg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Open | QMessageBox::Save | QMessageBox::Yes | QMessageBox::Close);
         dlg.setButtonText(QMessageBox::Yes, "Show profile log");
         dlg.setButtonText(QMessageBox::Close, "Finish and close log");
         dlg.setButtonText(QMessageBox::Cancel, "Finish and keep log open");
+        dlg.setButtonText(QMessageBox::Open, "Open game dir.");
+        dlg.setButtonText(QMessageBox::Save, "Open savegame dir.");
 
         switch(dlg.exec())
         {
         case QMessageBox::Yes:
             LogViewer::execForProfile(this->getProfile());
+            break;
+        case QMessageBox::Open:
+            QDesktopServices::openUrl(QUrl::fromLocalFile(getProfile()->StardewValleyDir().absolutePath()));
+            break;
+        case QMessageBox::Save:
+            QDesktopServices::openUrl(QUrl::fromLocalFile(getProfile()->StardewValleySavegameDir().absolutePath()));
             break;
         case QMessageBox::Cancel:
             emit finished(-1);

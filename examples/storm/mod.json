@@ -16,15 +16,21 @@
             "pipeline": "compile-dll",
             "nuget-restore": true,
             "references": {},
-            "build-parameters" : {
-                "windows" : ["/p:Configuration=Release"],
-                "linux" : ["/p:Configuration=Release"],
-                "mac" : ["/p:Configuration=Release"]
-                },
+            "build-parameters": {
+                "windows": ["/p:Configuration=Release"],
+                "linux": ["/p:Configuration=Release"],
+                "mac": ["/p:Configuration=Release"]
+            },
             "location": "file",
-            "installables": {                
-				"StormLoader" : "StormLoader",
-				"Storm/bin/Release/StormLoader.exe" : "StormLoader.exe"
+            "installables": {
+                "StormLoader": "StormLoader",
+                "Storm/bin/Release/StormLoader.exe": "StormLoader.exe",
+                "Storm/bin/Release/Castle.Core.dll": "Castle.Core.dll",
+                "Storm/bin/Release/Mono.Cecil.dll": "Mono.Cecil.dll",
+                "Storm/bin/Release/Mono.Cecil.Mdb.dll": "Mono.Cecil.Mdb.dll",
+                "Storm/bin/Release/Mono.Cecil.Pdb.dll": "Mono.Cecil.Pdb.dll",
+                "Storm/bin/Release/Mono.Cecil.Rocks.dll": "Mono.Cecil.Rocks.dll",
+                "Storm/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
             },
             "launchers": {
                 "storm-launcher": {

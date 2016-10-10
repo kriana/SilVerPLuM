@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Force stop doesn't work and breaks the flow as child processes retain
     ui->playLogStop->hide(); // Disable it until a solution is found
+
+    // UI beautify
+    ui->scrollArea->setStyleSheet("QScrollArea { background: transparent; }");
+    ui->scrollArea->viewport()->setStyleSheet(".QWidget { background: transparent; }");
 }
 
 MainWindow::~MainWindow()

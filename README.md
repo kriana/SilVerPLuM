@@ -41,7 +41,7 @@ The mod manager supports content replacer mods and DLL mods. It has dependency-c
 SilVerPLuM will need following programs to be able to compile DLL mods:
 
 * [Nuget CLI](https://dist.nuget.org/win-x86-commandline/latest/nuget.exe)
-* msbuild (Windows; usually preinstalled) or xbuild (Mac, Linux)
+* [MSBuild](https://www.microsoft.com/de-DE/download/details.aspx?id=48159) (Windows) or xbuild (Mac, Linux)
 * Mono (Mac, Linux) or [.NET Framework 4.5 SDK](https://www.microsoft.com/en-US/download/details.aspx?id=42637) (Windows)
 
 You may need to set the correct paths of these programs in SilVerPLuM's application settings. You can download Nuget CLI and put it somewhere. Then set the correct path in the application settings.
