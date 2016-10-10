@@ -36,7 +36,7 @@ The mod manager supports content replacer mods and DLL mods. It has dependency-c
 
 # Installation
 
-<Precompiled>
+You can find precompiled packages here: [Download](https://github.com/rumangerst/SilVerPLuM/releases)
 
 SilVerPLuM will need following programs to be able to compile DLL mods:
 
