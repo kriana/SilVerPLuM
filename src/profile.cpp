@@ -4,6 +4,7 @@
 #include "platform.h"
 #include "utils.h"
 #include "profilemanager.h"
+#include "debuglauncher.h"
 
 QString Profile::DEFAULT_PROFILE_NAME = "Default";
 QString Profile::DEFAULT_PROFILE_ID = "default";
@@ -365,6 +366,7 @@ void Profile::initialize()
 
     // Build launchers
     m_Launchers.append(new VanillaLauncher(this));
+    m_Launchers.append(new DebugLauncher(this));
 }
 
 void Profile::fixCrazyness()

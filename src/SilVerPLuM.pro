@@ -57,7 +57,8 @@ SOURCES += main.cpp\
     savegamemanagerwidget.cpp \
     savegamemanagerwidgetitem.cpp \
     savegamemanagerwidgetbackupitem.cpp \
-    savegameviewerdialog.cpp
+    savegameviewerdialog.cpp \
+    debuglauncher.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -103,7 +104,8 @@ HEADERS  += mainwindow.h \
     savegamemanagerwidget.h \
     savegamemanagerwidgetitem.h \
     savegamemanagerwidgetbackupitem.h \
-    savegameviewerdialog.h
+    savegameviewerdialog.h \
+    debuglauncher.h
 
 
 FORMS    += mainwindow.ui \
