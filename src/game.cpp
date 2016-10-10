@@ -18,6 +18,11 @@ Game::Game()
     connect(m_backupTimer, SIGNAL(timeout()), this, SLOT(issueFullBackup()));
 }
 
+QSet<QString> Game::getUnoverrideableGameFiles() const
+{
+    return QSet<QString>(m_GameFiles);
+}
+
 int Game::exitCode() const
 {
     return m_exitCode;
@@ -82,6 +87,25 @@ Logger &Game::getLogger()
 void Game::progress(bool enabled, int _min, int _max, int _val)
 {
     emit progressed(enabled, _min, _max, _val);
+}
+
+void Game::prepareFindUnoverrideableGameFiles()
+{
+    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
+    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
+
+    getLogger().log(Logger::Info, "launcher", "prepare", "find-gamefiles", "Determining unoverrideable files");
+
+    m_GameFiles.clear();
+
+    for(QString path : utils::findAllFiles(m_Launcher->getProfile()->StardewValleyDir()))
+    {
+        if(path.startsWith(sdvcontentdir.absolutePath()))
+            continue;
+
+        getLogger().log(Logger::Info, "launcher", "prepare", "find-gamefiles", "Unoverrideable: " + path);
+        m_GameFiles << path;
+    }
 }
 
 void Game::prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup)
@@ -167,6 +191,7 @@ void Game::prepare()
         issueFullBackup();
     }
 
+    prepareFindUnoverrideableGameFiles();
     prepareBackupContent(sdvcontentdir, sdvcontentbackup);
     prepareCopySavegames(sdvsavegames);
     prepareInstallMods();

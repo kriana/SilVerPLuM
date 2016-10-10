@@ -6,6 +6,7 @@
 #include "globalsettings.h"
 #include "profile.h"
 #include "utils.h"
+#include "game.h"
 
 Pipeline::Pipeline(Modification *mod, const QString &id) : m_mod(mod), m_id(id)
 {
@@ -146,7 +147,7 @@ void Pipeline::install()
 
             //getLogger().log(Logger::DEBUG, "pipeline", id(), "install", dst_file_dir.absolutePath() + " == " + sdvdir.absolutePath());
 
-            if(dst_file_dir.absolutePath() == sdvdir.absolutePath() ||
+            /*if(dst_file_dir.absolutePath() == sdvdir.absolutePath() ||
                     dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("_MACOSX")).absolutePath() ||
                     dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib")).absolutePath() ||
                     dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib64")).absolutePath() ||
@@ -155,7 +156,15 @@ void Pipeline::install()
                 getLogger().log(Logger::Warning, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
 
                 continue;
+            }*/
+
+            if(Game::instance()->getUnoverrideableGameFiles().contains(dst_file_dir.absolutePath()))
+            {
+                getLogger().log(Logger::Warning, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
+
+                continue;
             }
+
         }
 
         // Install

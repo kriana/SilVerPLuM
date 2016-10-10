@@ -42,6 +42,8 @@ public:
 
     Logger & getLogger();
 
+    QSet<QString> getUnoverrideableGameFiles() const;
+
 private:
 
     Game();
@@ -52,13 +54,17 @@ private:
 
     Status m_Status = StatusNotRunning;
 
+    QSet<QString> m_GameFiles;
+
     QFutureWatcher<void> m_prepareWatcher;
 
     QFutureWatcher<void> m_postWatcher;
 
     int m_exitCode = 0;
 
-    void progress(bool enabled, int _min = 0, int _max = 0, int _val = 0);    
+    void progress(bool enabled, int _min = 0, int _max = 0, int _val = 0);
+
+    void prepareFindUnoverrideableGameFiles();
 
     void prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup);
 
