@@ -102,6 +102,9 @@ void ModManagerWidget::installModClicked()
 
     if(dlg.exec() == QFileDialog::Accepted)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
         for(QString file : dlg.selectedFiles())
         {
             if(!m_currentMM->addMod(file))
@@ -116,6 +119,8 @@ void ModManagerWidget::installModClicked()
                 }
             }           
         }
+
+        QApplication::restoreOverrideCursor();
     }
 }
 

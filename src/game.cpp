@@ -335,7 +335,11 @@ void Game::gameFinished(int retcode)
         }
         else
         {
-            m_exitCode = retcode;
+            // Stardew Valley on Windows for some reason returns -1
+            if(retcode != -1)
+            {
+                m_exitCode = retcode;
+            }
         }
     }
 

@@ -12,12 +12,40 @@
 #include <QTextEdit>
 #include <QtXml>
 #include <sundown/src/markdown.h>
-#include <sundown/html/html.h>
+#include <sundown/src/html.h>
 #include <sundown/src/buffer.h>
 #include <QCryptographicHash>
+#include "platform.h"
 
 namespace utils
 {
+
+inline void wrapMonoExecutable(QProcess * process, const QString & exectuable, const QStringList & arguments)
+{
+    if(Platform::getCurrentPlatform() != Platform::Windows)
+    {
+        if(exectuable.toLower().endsWith(".exe"))
+        {
+            // Wrap around mono
+            process->setProgram("mono");
+
+            QStringList new_args;
+            new_args << exectuable << arguments;
+
+            process->setArguments(new_args);
+        }
+        else
+        {
+            process->setProgram(exectuable);
+            process->setArguments(arguments);
+        }
+    }
+    else
+    {
+        process->setProgram(exectuable);
+        process->setArguments(arguments);
+    }
+}
 
 inline QString readAllTextFrom(const QString & path)
 {

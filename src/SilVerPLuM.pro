@@ -45,10 +45,10 @@ SOURCES += main.cpp\
     sundown/src/buffer.c \
     sundown/src/markdown.c \
     sundown/src/stack.c \
-    sundown/html/houdini_href_e.c \
-    sundown/html/houdini_html_e.c \
-    sundown/html/html.c \
-    sundown/html/html_smartypants.c \
+    sundown/src/houdini_href_e.c \
+    sundown/src/houdini_html_e.c \
+    sundown/src/html.c \
+    sundown/src/html_smartypants.c \
     markdowntexteditor.cpp \
     logviewer.cpp \
     savegame.cpp \
@@ -94,8 +94,8 @@ HEADERS  += mainwindow.h \
     sundown/src/html_blocks.h \
     sundown/src/markdown.h \
     sundown/src/stack.h \
-    sundown/html/houdini.h \
-    sundown/html/html.h \
+    sundown/src/houdini.h \
+    sundown/src/html.h \
     markdowntexteditor.h \
     logviewer.h \
     savegame.h \
@@ -151,6 +151,5 @@ win32 {
 
 # Make the windows executable have an icon
 RC_FILE = SilVerPLuM.rc
-
 
 

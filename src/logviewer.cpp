@@ -7,6 +7,7 @@ LogViewer::LogViewer(QWidget *parent) :
     ui(new Ui::LogViewer)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(close()));
 }
@@ -18,6 +19,9 @@ LogViewer::~LogViewer()
 
 void LogViewer::setLogger(const Logger &logger)
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
     QString html = "<table>";
 
     html += "<tr><th>Type</th><th>Timestamp</th><th>Component</th><th>Subcomponent</th><th>Operation</th><th>Message</th></tr>";
@@ -30,6 +34,9 @@ void LogViewer::setLogger(const Logger &logger)
     html += "</table>";
 
     ui->lblLog->setHtml(utils::makeTextEditHTML(html));
+    ui->lblLog->verticalScrollBar()->setValue(ui->lblLog->verticalScrollBar()->maximum());
+
+    QApplication::restoreOverrideCursor();
 }
 
 void LogViewer::execForProfile(Profile *p)

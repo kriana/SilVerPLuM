@@ -134,6 +134,9 @@
                <property name="popupMode">
                 <enum>QToolButton::MenuButtonPopup</enum>
                </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonTextBesideIcon</enum>
+               </property>
               </widget>
              </item>
              <item>
@@ -228,7 +231,8 @@
   </action>
   <action name="actionExport">
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Export savegame</string>

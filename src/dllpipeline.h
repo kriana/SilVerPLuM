@@ -3,7 +3,10 @@
 
 #include "pipeline.h"
 #include <QtXml>
-
+#include <QByteArray>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 class DllPipeline : public Pipeline
 {
@@ -35,6 +38,8 @@ public:
      * @param args
      */
     void setBuildParameters(const QString & platform, const QStringList & args);
+
+    void downloadNugetIfNotExisting();
 
 private:
 

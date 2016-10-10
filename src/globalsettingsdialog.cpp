@@ -8,6 +8,8 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+
     ui->appName->setText(QApplication::applicationName());
     ui->appVersion->setText(QApplication::applicationVersion());
 

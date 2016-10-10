@@ -333,7 +333,7 @@
               <enum>QToolButton::MenuButtonPopup</enum>
              </property>
              <property name="toolButtonStyle">
-              <enum>Qt::ToolButtonFollowStyle</enum>
+              <enum>Qt::ToolButtonTextBesideIcon</enum>
              </property>
             </widget>
            </item>
@@ -390,7 +390,8 @@
   </action>
   <action name="actionReinitialize">
    <property name="icon">
-    <iconset theme="run-build"/>
+    <iconset theme="run-build">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Reinitialize modification</string>

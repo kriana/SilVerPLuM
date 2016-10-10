@@ -78,6 +78,8 @@ int DllPipeline::prime(bool force)
 
     if(enableNugetRestore())
     {
+        downloadNugetIfNotExisting();
+
         int exit = runNuget();
 
         if(exit != 0)
@@ -171,6 +173,46 @@ void DllPipeline::setBuildParameters(const QString &platform, const QStringList 
     m_buildArguments[platform] = args;
 }
 
+void DllPipeline::downloadNugetIfNotExisting()
+{
+    // Not working.
+
+    /*if(!QFileInfo(GlobalSettings::instance()->getProgramNuget()).exists()
+            || QFileInfo(GlobalSettings::instance()->getProgramNuget()).size() == 0)
+    {
+        mod()->getModManager()->profile()->getLogger().log(Logger::Info, "pipeline-dll-compile", "nuget-restore", "nuget-download", "Nuget doesn't exist. Downloading it now.");
+
+        QNetworkAccessManager netman;
+        QNetworkRequest netRequest(QUrl("https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"));
+
+        QNetworkReply * reply = netman.get(netRequest);
+
+        QEventLoop loop;
+        connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        loop.exec();
+
+        QDir dstdir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+        dstdir.mkpath(".");
+
+        QFile dstfile(dstdir.absoluteFilePath("nuget.exe"));
+        dstfile.remove();
+
+        QByteArray data = reply->readAll();
+         mod()->getModManager()->profile()->getLogger().log(Logger::Info, "pipeline-dll-compile", "nuget-restore", "nuget-download", "Downloaded " + QString::number(data.length()) + " bytes");
+
+        if(dstfile.open(QFile::WriteOnly))
+        {
+            dstfile.write(data);
+            dstfile.flush();
+            dstfile.close();
+
+            GlobalSettings::instance()->setProgramNuget(dstdir.absoluteFilePath("nuget.exe"));
+        }
+
+        reply->deleteLater();
+    }*/
+}
+
 bool DllPipeline::alreadyPrimed()
 {
     if(!GlobalSettings::instance()->getEnablePrimeCache())
@@ -205,9 +247,8 @@ int DllPipeline::runNuget()
 {
     getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget", "Running nuget restore in " + pipelineBaseDir().absolutePath());
 
-    QProcess process;
-    process.setProgram(GlobalSettings::instance()->getProgramNuget());
-    process.setArguments(QStringList() << "restore");
+    QProcess process;    
+    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramNuget(), QStringList() << "restore");
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
@@ -230,8 +271,7 @@ int DllPipeline::runMSBUILD()
     getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBUILD() + " " + args.join(" "));
 
     QProcess process;
-    process.setProgram(GlobalSettings::instance()->getProgramMSBUILD());
-    process.setArguments(args);
+    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBUILD(), args);
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
@@ -260,7 +300,76 @@ void DllPipeline::fixReferences(const QString &projectFile)
         return;
     }
 
+    // At first, MonoGame to XNA
+    // Needs to be separated as it otherwise may skip references
     QDomNodeList reference_list = doc.elementsByTagName("Reference");
+
+    if(GlobalSettings::instance()->getDLLRedirectXNA())
+    {
+        if(mod()->getModManager()->profile()->StardewValleyTechnology() == Platform::GameTechnologyXNA)
+        {
+    for(int i = 0; i < reference_list.size(); ++i)
+    {
+        QDomNode nd = reference_list.at(i);
+
+        if(nd.attributes().contains("Include"))
+        {
+            QString raw_include = nd.attributes().namedItem("Include").toAttr().value();
+            getLogger().log(Logger::Debug, "pipeline-dll-compile", id(), "prime-reffix", "Visiting " + raw_include);
+
+            QString current_include;
+
+            if(raw_include.contains(","))
+            {
+                current_include = raw_include.split(",")[0].trimmed();
+            }
+            else
+            {
+                current_include = raw_include;
+            }
+
+            // For XNA -> MonoGame override
+
+                    // We cannot apply translation procedure here. The entry will be deleted and XNA will be added
+
+                    if(current_include.startsWith("MonoGame.Framework"))
+                    {
+                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Detected MonoGame in XNA mode");
+
+                        QDomNode reflist = nd.parentNode();
+                        reflist.removeChild(nd);
+
+                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Now adding XNA dependencies");
+
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                        addReferenceNode(doc, reflist,
+                                         "Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
+                                         "",
+                                         false,
+                                         true);
+                    }
+                }
+            }
+        }
+    }
+
+    // Then fix hint-paths and do XNA -> MonoGame
+
+    reference_list = doc.elementsByTagName("Reference");
 
     for(int i = 0; i < reference_list.size(); ++i)
     {
@@ -296,43 +405,7 @@ void DllPipeline::fixReferences(const QString &projectFile)
                         current_include = "MonoGame.Framework";
                     }
                 }
-                else if(mod()->getModManager()->profile()->StardewValleyTechnology() == Platform::GameTechnologyXNA)
-                {
-                    // We cannot apply translation procedure here. The entry will be deleted and XNA will be added
-
-                    if(current_include.startsWith("MonoGame.Framework"))
-                    {
-                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Detected MonoGame in XNA mode");
-
-                        QDomNode reflist = nd.parentNode();
-                        reflist.removeChild(nd);
-
-                        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-reffix", "Now adding XNA dependencies");
-
-                        addReferenceNode(doc, reflist,
-                                         "Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
-                                         "",
-                                         false,
-                                         true);
-                        addReferenceNode(doc, reflist,
-                                         "Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
-                                         "",
-                                         false,
-                                         true);
-                        addReferenceNode(doc, reflist,
-                                         "Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
-                                         "",
-                                         false,
-                                         true);
-                        addReferenceNode(doc, reflist,
-                                         "Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86",
-                                         "",
-                                         false,
-                                         true);
-                    }
-                }
             }
-
 
             if(m_referenceMap.contains(current_include))
             {

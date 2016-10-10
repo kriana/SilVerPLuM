@@ -74,7 +74,7 @@ void Launcher::start()
 
     if(Platform::getCurrentPlatform() == Platform::Windows)
     {
-        m_process->setProgram(executable.executable());
+        m_process->setProgram(path);
         m_process->setArguments(executable.arguments());
     }
     else

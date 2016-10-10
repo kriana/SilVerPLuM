@@ -1,5 +1,8 @@
 #include "globalsettings.h"
 #include "platform.h"
+#include <QFileInfo>
+#include <QStandardPaths>
+#include <QDir>
 
 GlobalSettings * GlobalSettings::m_pInstance = nullptr;
 
@@ -53,7 +56,7 @@ bool GlobalSettings::getDLLRedirectXNA()
     switch(Platform::getCurrentPlatform())
     {
     case Platform::Windows:
-        _default = false;
+        _default = true;
         break;
     case Platform::Linux:
         _default = true;
@@ -153,17 +156,27 @@ QString GlobalSettings::getProgramMSBUILD()
 {
     QString _default = "";
 
-    switch(Platform::getCurrentPlatform())
+    if(Platform::getCurrentPlatform() == Platform::Windows)
     {
-    case Platform::Windows:
-        _default = "msbuild";
-        break;
-    case Platform::Linux:
-        _default = "xbuild";
-        break;
-    case Platform::Mac:
-        _default = "xbuild";
-        break;
+        QStringList windows_msbuild;
+
+        windows_msbuild << "C:/Windows/Microsoft.Net/Framework/v4.0.30319/MSBuild.exe"
+                        << "C:/Windows/Microsoft.Net/Framework64/v4.0.30319/MSBuild.exe";
+
+         _default = "MSBuild.exe";
+        for(QString f : windows_msbuild)
+        {
+            if(QFileInfo(f).exists())
+            {
+                _default = f;
+            }
+        }
+
+
+    }
+    else
+    {
+        _default = "/usr/bin/xbuild";
     }
 
     return m_Settings->value("Programs/MSBUILD", _default).toString();
@@ -182,13 +195,13 @@ QString GlobalSettings::getProgramNuget()
     switch(Platform::getCurrentPlatform())
     {
     case Platform::Windows:
-        _default = "nuget";
+        _default = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("nuget.exe");
         break;
     case Platform::Linux:
-        _default = "nuget";
+        _default = "/usr/bin/nuget";
         break;
     case Platform::Mac:
-        _default = "nuget";
+        _default = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("nuget.exe");
         break;
     }
 
