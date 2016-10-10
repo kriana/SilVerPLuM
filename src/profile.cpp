@@ -402,7 +402,15 @@ QDir Profile::DefaultStardewValleySavegameDir()
     switch(Platform::getCurrentPlatform())
     {
     case Platform::Windows:
-        return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).filePath("StardewValley\\Saves");
+
+        // Need workaround for Windows as GenericConfigLocation and GenericDataLocation both point to appdata local and not roaming
+        {
+            QDir loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+            loc.cdUp();
+
+            return loc.filePath("StardewValley/Saves");
+        }
+
     case Platform::Linux:
         return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("StardewValley/Saves");
     case Platform::Mac:
