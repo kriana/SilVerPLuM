@@ -9,6 +9,7 @@
 #include "globalsettingsdialog.h"
 #include "utils.h"
 #include "logviewer.h"
+#include "encryptedcontentpasswordgenerator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->playLogStop, &QPushButton::clicked, this, &MainWindow::stopGameClicked);
     connect(ui->btnApplicationSettings, &QPushButton::clicked, this, &MainWindow::openApplicationSettings);
     connect(ui->btnShowLog, &QPushButton::clicked, this, &MainWindow::openProfileLog);   
+    connect(ui->actionOpenPasswordGenerator, &QAction::triggered, this, &MainWindow::showPasswordGeneratorTriggered);
 
     // Update splitter
     ui->splitter->setSizes(QList<int>() << 100 << 500);
@@ -31,6 +33,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // UI lazyness
     ui->mainTabWidget->setCurrentWidget(ui->tabPlay);
     ui->playStackedWidget->setCurrentWidget(ui->playLauncherPage);
+
+    // Menu
+    QMenu * dev_menu = new QMenu(ui->btnShowLog);
+    dev_menu->addAction(ui->actionOpenPasswordGenerator);
+    ui->btnShowLog->setMenu(dev_menu);
 
     // Restore state
     GlobalSettings::instance()->getWindowState(this);
@@ -83,6 +90,12 @@ void MainWindow::playSubActionTriggered()
             }
         }
     }
+}
+
+void MainWindow::showPasswordGeneratorTriggered()
+{
+    EncryptedContentPasswordGenerator dlg;
+    dlg.exec();
 }
 
 void MainWindow::cmbSelectedProfile(int index)

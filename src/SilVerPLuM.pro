@@ -58,7 +58,8 @@ SOURCES += main.cpp\
     savegamemanagerwidgetitem.cpp \
     savegamemanagerwidgetbackupitem.cpp \
     savegameviewerdialog.cpp \
-    debuglauncher.cpp
+    debuglauncher.cpp \
+    encryptedcontentpasswordgenerator.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -105,7 +106,9 @@ HEADERS  += mainwindow.h \
     savegamemanagerwidgetitem.h \
     savegamemanagerwidgetbackupitem.h \
     savegameviewerdialog.h \
-    debuglauncher.h
+    debuglauncher.h \
+    encryptedcontentpasswordgenerator.h \
+    quazipcompress.h
 
 
 FORMS    += mainwindow.ui \
@@ -122,7 +125,8 @@ FORMS    += mainwindow.ui \
     savegamemanagerwidget.ui \
     savegamemanagerwidgetitem.ui \
     savegamemanagerwidgetbackupitem.ui \
-    savegameviewerdialog.ui
+    savegameviewerdialog.ui \
+    encryptedcontentpasswordgenerator.ui
 
 RESOURCES += \
     resources.qrc
@@ -135,6 +139,7 @@ macx: RESOURCES += icons/icontheme.qrc
 
 
 # We need zlib and quazip for extracting/installing new mods
+
 unix {
     LIBS += -lquazip5 -lz
     INCLUDEPATH += /usr/include/quazip5/

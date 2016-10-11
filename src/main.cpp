@@ -3,6 +3,7 @@
 #include "profilemanager.h"
 #include "globalsettings.h"
 #include <QtConcurrent>
+#include "quazipcompress.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,11 +24,13 @@ int main(int argc, char *argv[])
     }
 
     QApplication::setApplicationName("SilVerPLuM");
-    QApplication::setApplicationVersion("1.0.0.1");
+    QApplication::setApplicationVersion("1.0.1.0");
 
-    MainWindow w;
-    w.show();
-    ret = a.exec();
+    QuazipCompress::extractDir("/home/ruman/tmp/test.zip", "/home/ruman/tmp", "1234");
+
+    //MainWindow w;
+    //w.show();
+    //ret = a.exec();
 
     // Get rid of singletons
     delete Game::instance();

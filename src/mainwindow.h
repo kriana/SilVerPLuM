@@ -33,6 +33,8 @@ private slots:
 
     void playSubActionTriggered();
 
+    void showPasswordGeneratorTriggered();
+
     void cmbSelectedProfile(int index);
 
     void profileSelected(Profile * p);

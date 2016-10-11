@@ -15,10 +15,67 @@
 #include <sundown/src/html.h>
 #include <sundown/src/buffer.h>
 #include <QCryptographicHash>
+#include <random>
 #include "platform.h"
 
 namespace utils
 {
+
+inline QString ecryptedContentEncryptPassword(const QString & password)
+{
+    if(password.isEmpty())
+        return "";
+
+    // Use STL random
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 64);
+    std::uniform_int_distribution<> dis2(0, 255);
+
+    int start_index = dis(gen);
+
+    QByteArray password_array = password.toUtf8();
+    for(int i = 0; i < password_array.length(); ++i)
+    {
+        password_array[i] = ~password_array[i];
+    }
+
+    QByteArray res(start_index + password_array.length(), '\0');
+
+    for(int i = 0; i < res.size(); ++i)
+    {
+        res[i] = dis2(gen);
+    }
+
+    res[0] = start_index;
+
+    for(int i = 0; i < password_array.length(); ++i)
+    {
+        res[i + start_index] = password_array[i];
+    }
+
+    return QString(res.toHex());
+}
+
+inline QString encryptedContentDecryptPassword(const QString & epassword)
+{
+    if(epassword.isEmpty())
+        return epassword;
+
+    QByteArray password_array = QByteArray::fromHex(epassword.toUtf8());
+    int start_index = password_array[0];
+
+    if(start_index < 0 || start_index >= password_array.length())
+        return "";
+
+    QByteArray core(password_array.length() - start_index, '\0');
+    for(int i = 0; i < core.length(); ++i)
+    {
+        core[i] = ~password_array[i + start_index];
+    }
+
+    return QString::fromUtf8(core);
+}
 
 inline void wrapMonoExecutable(QProcess * process, const QString & exectuable, const QStringList & arguments)
 {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>634</width>
-    <height>390</height>
+    <width>680</width>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>
-                  <widget class="QPushButton" name="btnApplicationSettings">
+                  <widget class="QToolButton" name="btnApplicationSettings">
                    <property name="text">
                     <string>Application settings</string>
                    </property>
@@ -68,13 +68,16 @@
                     <iconset theme="configure">
                      <normaloff>.</normaloff>.</iconset>
                    </property>
-                   <property name="flat">
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="btnShowLog">
+                  <widget class="QToolButton" name="btnShowLog">
                    <property name="text">
                     <string>Profile log</string>
                    </property>
@@ -82,7 +85,13 @@
                     <iconset theme="view-list-text">
                      <normaloff>.</normaloff>.</iconset>
                    </property>
-                   <property name="flat">
+                   <property name="popupMode">
+                    <enum>QToolButton::MenuButtonPopup</enum>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                   <property name="autoRaise">
                     <bool>true</bool>
                    </property>
                   </widget>
@@ -125,8 +134,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>556</width>
-                    <height>171</height>
+                    <width>624</width>
+                    <height>193</height>
                    </rect>
                   </property>
                   <property name="autoFillBackground">
@@ -431,6 +440,17 @@
     </item>
    </layout>
   </widget>
+  <action name="actionOpenPasswordGenerator">
+   <property name="icon">
+    <iconset theme="document-encrypt"/>
+   </property>
+   <property name="text">
+    <string>Encryped content password generator</string>
+   </property>
+   <property name="toolTip">
+    <string>If you want to distribute encrypted content, you will need to supply a password. This tool will build a password out of the actual password.</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
