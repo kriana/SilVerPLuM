@@ -108,7 +108,7 @@ QMap<QString, QString> Pipeline::resolveInstallables()
 
                 QString rdst = dst + "/" + rsrc.mid(src.length());
                 rsrc = QFileInfo(rsrc).canonicalFilePath();
-                rdst = QFileInfo(rdst).canonicalFilePath();
+                rdst = QFileInfo(rdst).exists() ? QFileInfo(rdst).canonicalFilePath() : rdst;
 
                 getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
 
@@ -118,7 +118,7 @@ QMap<QString, QString> Pipeline::resolveInstallables()
         else
         {
             src = QFileInfo(src).canonicalFilePath();
-            dst = QFileInfo(dst).canonicalFilePath();
+            dst = QFileInfo(dst).exists() ? QFileInfo(dst).canonicalFilePath() : dst;
 
             getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 

@@ -1,0 +1,37 @@
+{
+  "id" : "testlauncher",
+  "name" : "Test Launcher",
+  "author" : "mrboese",
+  "license" : "GPLv3",
+  "url" : "https://github.com/rumangerst/",
+  "version" : "1.0.0",
+  "requires" : [ "stardewvalley>0" ],
+  "content" : {
+    "testlauncher" : {
+      "name" : "The Launcher",
+      "description" : "Contains the DLL and a launcher. Don't forget to activate it!",
+      "default" : true,
+      "platforms" : ["windows", "linux", "mac"],
+      "priority" : 0,
+      "pipeline" : "compile-dll",
+      "nuget-restore" : true,
+      "references" : { },
+      "location" : "file",
+      "installables" : {
+		  "TestLauncher/bin/Debug/TestLauncher.exe" : "TestLauncher.exe",
+		  "TestLauncher.runner.unix.sh" : "TestLauncher"
+		  },
+      "launchers" : {
+		  "test-launcher" : {
+			  "name" : "Testlauncher",			  
+			  "description" : "Runs some test application",
+			  "executables" : {
+				  "windows" : { "executable" : "stardewvalley://TestLauncher.exe", "arguments" : [], "workdir" : "stardewvalley://" },
+				  "mac" : { "executable" : "stardewvalley://TestLauncher", "arguments" : [], "workdir" : "stardewvalley://" },
+				  "linux" : { "executable" : "stardewvalley://TestLauncher", "arguments" : [], "workdir" : "stardewvalley://" }
+			  }
+		  }
+	  }
+    }
+  }
+}
