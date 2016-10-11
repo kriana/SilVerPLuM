@@ -34,7 +34,6 @@ SOURCES += main.cpp\
     launcherexecutable.cpp \
     modmanagerwidget.cpp \
     modmanager.cpp \
-    filepipeline.cpp \
     modmanagerwidgetitem.cpp \
     globalsettingsdialog.cpp \
     modmanagerwidgetpipelineitem.cpp \
@@ -59,7 +58,8 @@ SOURCES += main.cpp\
     savegamemanagerwidgetbackupitem.cpp \
     savegameviewerdialog.cpp \
     debuglauncher.cpp \
-    encryptedcontentpasswordgenerator.cpp
+    encryptedcontentpasswordgenerator.cpp \
+    quazipcompress.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -83,7 +83,6 @@ HEADERS  += mainwindow.h \
     launcherexecutable.h \
     modmanagerwidget.h \
     modmanager.h \
-    filepipeline.h \
     modmanagerwidgetitem.h \
     globalsettingsdialog.h \
     modmanagerwidgetpipelineitem.h \
@@ -133,9 +132,11 @@ RESOURCES += \
 
 
 # The icon theme is only needed for Mac and Windows
-win32: RESOURCES += icons/icontheme.qrc
-win64: RESOURCES += icons/icontheme.qrc
-macx: RESOURCES += icons/icontheme.qrc
+#win32: RESOURCES += icons/icontheme.qrc
+#win64: RESOURCES += icons/icontheme.qrc
+#macx: RESOURCES += icons/icontheme.qrc
+
+# Removed this from the executable. use rcc -binary icontheme.qrc -o icontheme.rcc to build the icon theme
 
 
 # We need zlib and quazip for extracting/installing new mods

@@ -64,14 +64,8 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
     return pip;
 }
 
-int DllPipeline::prime(bool force)
+int DllPipeline::prime()
 {
-    if(!force && alreadyPrimed())
-    {
-        getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "Priming not needed. Correct prime file is available.");
-        return 0;
-    }
-
     int this_exit = 0;
 
     getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime", "Start priming");

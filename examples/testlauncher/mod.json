@@ -15,8 +15,7 @@
       "priority" : 0,
       "pipeline" : "compile-dll",
       "nuget-restore" : true,
-      "references" : { },
-      "location" : "file",
+      "references" : { },      
       "installables" : {
 		  "TestLauncher/bin/Debug/TestLauncher.exe" : "TestLauncher.exe",
 		  "TestLauncher.runner.unix.sh" : "TestLauncher"

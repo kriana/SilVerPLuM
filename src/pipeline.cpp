@@ -7,6 +7,7 @@
 #include "profile.h"
 #include "utils.h"
 #include "game.h"
+#include "quazipcompress.h"
 
 Pipeline::Pipeline(Modification *mod, const QString &id) : m_mod(mod), m_id(id)
 {
@@ -60,6 +61,32 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
                                                      id,
                                                      launcher_map[id].toObject());
         pip->setLauncher(id, launcher);
+    }
+
+    QJsonObject encrypted_map = json["encrypted-content"].toObject();
+
+    for(QString zipfile : encrypted_map.keys())
+    {
+        EncryptionEntry entry;
+        entry.zipfile = zipfile;
+        entry.password = encrypted_map[zipfile].toObject()["password"].toString();
+        entry.destination = encrypted_map[zipfile].toObject()["destination"].toString();
+
+        for(QJsonValue val : encrypted_map[zipfile].toObject()["keep"].toArray())
+        {
+            entry.keep << val.toString();
+        }
+
+        if(GlobalSettings::instance()->getEnableFileGuard())
+        {
+            if(entry.zipfile.contains("..") || entry.destination.contains(".."))
+            {
+                pip->getLogger().log(Logger::Warning, "pipeline", pip->id(), "load", "Refuse to load encrypted entry " + zipfile + " by file guard");
+                continue;
+            }
+        }
+
+        pip->addEncryptionEntry(entry);
     }
 
     return true;
@@ -127,6 +154,34 @@ QMap<QString, QString> Pipeline::resolveInstallables()
     }
 
     return result;
+}
+
+bool Pipeline::alreadyPrimed()
+{
+    return true;
+}
+
+QList<Pipeline::EncryptionEntry> Pipeline::getEncryptionEntries() const
+{
+    return QList<EncryptionEntry>(m_encryptionEntries);
+}
+
+void Pipeline::addEncryptionEntry(const Pipeline::EncryptionEntry &entry)
+{
+    m_encryptionEntries << entry;
+}
+
+Pipeline *Pipeline::loadFromJson(Modification *mod, const QString &id, const QJsonObject &json)
+{
+    Pipeline * pip = new Pipeline(mod, id);
+
+        if(!loadGenericFromJson(json, pip))
+        {
+            delete pip;
+            return nullptr;
+        }
+
+    return pip;
 }
 
 Logger &Pipeline::getLogger()
@@ -322,6 +377,100 @@ void Pipeline::setInstallable(const QString &src, const QString &dst)
 void Pipeline::setLauncher(const QString &id, Launcher *launcher)
 {
     m_launchers[id] = launcher;
+}
+
+int Pipeline::primePipeline(bool force)
+{
+    if(!force && alreadyPrimed())
+        return 0;
+
+    int ret = 0;
+
+    QStringList keep_encryped_raw;
+    QStringList extracted;
+
+    for(const EncryptionEntry & entry : m_encryptionEntries)
+    {
+        for(QString keep : entry.keep)
+        {
+            keep_encryped_raw << pipelineBaseDir().absolutePath() + "/" + keep;
+        }
+    }
+
+    // Extract encrypted files
+    for(const EncryptionEntry & entry : m_encryptionEntries)
+    {
+        QString zipfile = pipelineBaseDir().absolutePath() + "/" + entry.zipfile;
+        QString destination = pipelineBaseDir().absolutePath() + "/" + entry.destination;
+
+        QDir(destination).mkpath(".");
+
+        QString pw = utils::encryptedContentDecryptPassword(entry.password);
+
+
+        QStringList extracted_here = QuazipCompress::extractDir(zipfile, destination, pw);
+        extracted << extracted_here;
+
+        if(extracted_here.isEmpty())
+        {
+            ret = 2;
+            break;
+        }
+    }
+
+    // Prime
+    if(ret == 0)
+    {
+        ret = prime();
+    }
+    else
+    {
+        getLogger().log(Logger::Error, "pipeline-prime", id(), "prime", "Could not extract encrypted folders!");
+    }
+
+    // Resolve kept files
+    QStringList keep;
+
+    for(QString file : keep_encryped_raw)
+    {
+        if(QFileInfo(file).exists())
+        {
+            if(QFileInfo(file).isFile())
+            {
+                keep << QFileInfo(file).canonicalFilePath();
+            }
+            else
+            {
+                for(QString f : utils::findAllFiles(file))
+                {
+                    keep << QFileInfo(f).canonicalFilePath();
+                }
+            }
+        }
+    }
+
+    // Delete encryped files
+    for(QString file : extracted)
+    {
+        if(QFileInfo(file).exists())
+        {
+            if(keep.contains(QFileInfo(file).canonicalFilePath()))
+            {
+                continue;
+            }
+            else
+            {
+                QFile(file).remove();
+            }
+        }
+    }
+
+    return ret;
+}
+
+int Pipeline::prime()
+{
+    return 0;
 }
 
 bool Pipeline::isdefault() const

@@ -20,8 +20,7 @@
                 "windows" : ["/p:Configuration=Release"],
                 "linux" : ["/p:Configuration=Release"],
                 "mac" : ["/p:Configuration=Release"]
-                },
-            "location": "file",
+                },            
             "installables": {
                 "StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
                 "StardewModdingAPI/StardewModdingAPI": "StardewModdingAPI"

@@ -6,6 +6,7 @@ mkdir windows
 
 WINEPREFIX="/home/ruman/PlayOnLinux's virtual drives/WindowsDevelopment/" wine windeployqt --dir windows ../build-SilVerPLuM-Desktop_Qt_5_7_0_MinGW_32bit-Release/release/SilVerPLuM.exe
 cp lib-windows/* windows
+cp shared/* windows
 cp ../build-SilVerPLuM-Desktop_Qt_5_7_0_MinGW_32bit-Release/release/SilVerPLuM.exe windows
 cp ../LICENSE windows
 cp ../README.md windows
@@ -15,6 +16,7 @@ cp ../README.md windows
 rm -rv linux
 mkdir linux
 
+cp shared/* linux
 cp ../build-SilVerPLuM-Desktop-Release/SilVerPLuM linux
 cp ../LICENSE linux
 cp ../README.md linux

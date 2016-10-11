@@ -72,7 +72,7 @@ int ModManager::setEnabled(const QString &mod, const QString &content, bool enab
 
     if(enabled)
     {
-        err = getPipeline(mod, content)->prime(false);
+        err = getPipeline(mod, content)->primePipeline(false);
     }
 
     emit updatedModStatus(mod, content, enabled);

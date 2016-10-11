@@ -50,10 +50,10 @@ You may need to set the correct paths of these programs in SilVerPLuM's applicat
 SilVerPLuM is written in Qt5 with qmake building system and has following dependencies:
 
 * Qt5 (core gui network concurrent xml)
-* Quazip5
+* quazip5 / quazip
 * zlib
 
-If you want to use the commandline, you can use `qmake` and then `make`. Otherwise you can use an IDE like QtCreator.
+If you want to use the commandline, you can use `qmake` and then `make`. Otherwise you can use an IDE like QtCreator. On Mac and Windows check if there's an additional build step `rcc -binary icontheme.qrc icontheme.rcc` to include icon resources. The resulting icontheme.rcc should be present in the binary folder.
 
 # Using SilVerPLuM
 

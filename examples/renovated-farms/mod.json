@@ -14,8 +14,7 @@
             "default": true,
             "platforms": ["windows", "linux", "mac"],
             "priority": 0,
-            "pipeline": "file",            
-            "location": "file",
+            "pipeline": "file",
             "installables": {
                 "Content": "Content"
             },

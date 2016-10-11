@@ -17,7 +17,7 @@ public:
 
     static DllPipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    int prime(bool force);
+    int prime();
 
     bool enableNugetRestore() const;
 

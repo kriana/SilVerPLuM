@@ -17,6 +17,21 @@ int main(int argc, char *argv[])
 
     int ret = -1;
 
+    // Register icon theme
+    qDebug() << "Registering resource file" << QApplication::applicationDirPath() + "/icontheme.rcc";
+    if(QResource::registerResource(QApplication::applicationDirPath() + "/icontheme.rcc"))
+    {
+        qDebug() << "... Success";
+    }
+    else
+    {
+        qDebug() << "... Not successful";
+
+        if(QFileInfo(QApplication::applicationDirPath() + "/icontheme.rcc").exists())
+            qDebug() << "But file exists!";
+    }
+
+
     // Import the icon theme if its not set. Needed for Windows and MacOS
     if(QIcon::themeName().isEmpty())
     {
@@ -26,11 +41,9 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("SilVerPLuM");
     QApplication::setApplicationVersion("1.0.1.0");
 
-    QuazipCompress::extractDir("/home/ruman/tmp/test.zip", "/home/ruman/tmp", "1234");
-
-    //MainWindow w;
-    //w.show();
-    //ret = a.exec();
+    MainWindow w;
+    w.show();
+    ret = a.exec();
 
     // Get rid of singletons
     delete Game::instance();

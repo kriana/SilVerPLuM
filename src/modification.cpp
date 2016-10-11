@@ -3,7 +3,6 @@
 #include "profile.h"
 #include <QDebug>
 #include <QRegExp>
-#include "filepipeline.h"
 #include "dllpipeline.h"
 #include "globalsettings.h"
 #include "utils.h"
@@ -148,7 +147,7 @@ int Modification::prime(bool force)
         {
             if(!p->unsupported() || GlobalSettings::instance()->getForceUnsupported())
             {
-                int e = p->prime(force);
+                int e = p->primePipeline(force);
 
                 if(e != 0)
                     err = e;
@@ -233,7 +232,7 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
 
         if(content_json["pipeline"] == "file")
         {
-            pipeline = FilePipeline::loadFromJson(mod, key, content_json);
+            pipeline = Pipeline::loadFromJson(mod, key, content_json);
         }
         else if(content_json["pipeline"] == "compile-dll")
         {

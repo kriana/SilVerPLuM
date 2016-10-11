@@ -15,6 +15,16 @@ class Pipeline : public QObject
 
 public:
 
+    struct EncryptionEntry
+    {
+        QString zipfile;
+        QString password;
+        QString destination;
+        QStringList keep;
+    };
+
+    Pipeline(Modification * mod, const QString & id);
+
     virtual ~Pipeline();
 
     QString name() const;
@@ -32,12 +42,10 @@ public:
 
     void setLauncher(const QString & id, Launcher * launcher);
 
-    /**
-     * @brief This function is called to create missing files for installation
-     */
-    virtual int prime(bool force) = 0;
+    virtual int primePipeline(bool force);
 
     bool isdefault() const;
+
     void setDefault(bool isdefault);
 
     QString id() const;
@@ -62,13 +70,21 @@ public:
 
     Logger & getLogger();
 
-protected:
+    QList<EncryptionEntry> getEncryptionEntries() const;
 
-    Pipeline(Modification * mod, const QString & id);
+    void addEncryptionEntry(const EncryptionEntry & entry);
+
+    static Pipeline * loadFromJson(Modification *mod, const QString &id, const QJsonObject &json);
+
+protected:
 
     static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
 
     virtual QMap<QString, QString> resolveInstallables();
+
+    virtual bool alreadyPrimed();
+
+    virtual int prime();
 
 private:
 
@@ -85,6 +101,8 @@ private:
     bool m_default;
 
     bool m_unsupported;
+
+    QList<EncryptionEntry> m_encryptionEntries;
 
     QMap<QString, QString> m_installables;
 
