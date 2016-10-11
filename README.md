@@ -89,9 +89,11 @@ This tab has a profile manager that allows you to create, duplicate and remove p
 
 This tab contains the mod manager. You can install mods by clicking the respective button on the top. Each mod is shown as its own entry in the list. With 'Show more' you can show more information, hand-pick optional submods and delete a mod.
 
-If you install more complex mods, you may get a dependency warning that tells you which mod is missing. Alos keep in mind that dependencies must be *above* the requesting mod as SilVerPLuM goes from top to bottom and one by one installs the mods.
+If you install more complex mods, you may get a dependency warning that tells you which mod is missing. Also keep in mind that dependencies must be *above* the requesting mod as SilVerPLuM goes from top to bottom and one by one installs the mods.
 
 This tab has a profile manager that allows you to create, duplicate and remove profiles.
+
+You can see that there are buttons to priotize the mods (move them up or down). If mods don't interfere or depend on each other, the order doesn't matter. But if you e.g. install a mod modifying some other mod, the mod with the "newer" files must be placed at bottom. It's like this because mods at the top are installed *first* and other mods can then overwrite those files.
 
 ![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_modify.png)
 
