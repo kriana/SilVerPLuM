@@ -3,7 +3,7 @@
     "name": "Renovated Farms",
     "author": "AngryCat",
     "license": "Unknown",
-    "description" : "",
+    "description": "",
     "url": "http://community.playstarbound.com/threads/alternate-farms-dried-dehydrated-renovated.125263/",
     "version": "1.0",
     "requires": ["stardewvalley=1.1.1"],
@@ -19,6 +19,6 @@
                 "Content": "Content"
             },
             "launchers": {}
-            }
         }
     }
+}

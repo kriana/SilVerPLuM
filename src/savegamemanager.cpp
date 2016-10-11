@@ -24,12 +24,14 @@ QStringList SavegameManager::lookForSavegameIds() const
 
     for(QString id : profile()->profileSavegameDir().entryList(QDir::Dirs | QDir::NoDotAndDotDot))
     {
-        ids.insert(id);
+        if(id.contains("_"))
+            ids.insert(id);
     }
 
     for(QString id : profile()->profileSavegameBackupDir().entryList(QDir::Dirs | QDir::NoDotAndDotDot))
     {
-        ids.insert(id);
+        if(id.contains("_"))
+            ids.insert(id);
     }
 
     return ids.toList();
@@ -43,6 +45,18 @@ QMap<QString, BackupSavegame *> SavegameManager::getSavegames() const
 QList<QString> SavegameManager::getSavegameIds() const
 {
     return m_savegames.keys();
+}
+
+QSet<QString> SavegameManager::getSavegameUIDs()
+{
+    QSet<QString> existing_uids;
+
+    for(BackupSavegame * sav : profile()->getSavegameManager()->getSavegames().values())
+    {
+        existing_uids << sav->getAnySavegame()->uid();
+    }
+
+    return existing_uids;
 }
 
 BackupSavegame * SavegameManager::getSavegame(const QString &id)
@@ -63,20 +77,7 @@ bool SavegameManager::import(const QString &path)
 
     if(tmp.isValid())
     {
-        JlCompress::extractDir(path, tmp.path());
-
-        // Determine the identifier
-        QString id;
-
-        for(QString & file : QDir(tmp.path()).entryList(QDir::Files))
-        {
-            if(file.contains("_") && !file.contains(".") && !file.endsWith("_old"))
-            {
-                id = file;
-            }
-        }
-
-        profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "ID is " + id);
+        JlCompress::extractDir(path, tmp.path());     
 
         Savegame * sav = Savegame::loadFromDirectory(tmp.path(), profile());
 
@@ -86,22 +87,9 @@ bool SavegameManager::import(const QString &path)
             return false;
         }
 
+        sav->copyTo(profile()->profileSavegameDir(), false);
+
         delete sav;
-
-        if(getSavegameIds().contains(id))
-        {
-            profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "ID already exists. Renaming.");
-            QString new_id = Savegame::findNewIdFor(id, getSavegameIds());
-            BackupSavegame::renameSavegame(tmp.path(), id, new_id);
-
-            id = new_id;
-        }
-
-        profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Copying ...");
-        QDir destination = profile()->profileSavegameDir().absoluteFilePath(id);
-        destination.removeRecursively();
-
-        utils::copyDirectory(tmp.path(), destination, true);
 
         profile()->getLogger().log(Logger::Info, "savegames", "manager", "import", "Finished");
 

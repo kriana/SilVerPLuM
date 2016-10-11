@@ -52,6 +52,19 @@ QList<Savegame *> BackupSavegame::getBackupSavegames() const
     return result;
 }
 
+Savegame *BackupSavegame::getAnySavegame() const
+{
+    if(m_mainSavegame != nullptr)
+        return m_mainSavegame;
+
+    for(Savegame * sav : getBackupSavegames())
+    {
+        return sav;
+    }
+
+    return nullptr;
+}
+
 bool BackupSavegame::isEmpty() const
 {
     return m_mainSavegame == nullptr && m_BackupSavegames.isEmpty();
@@ -92,22 +105,7 @@ bool BackupSavegame::single(Savegame *sav)
         return false;
     }
 
-    QString new_id = findNewIdFor(this, m_savegameManager->getSavegameIds());
-
-    getLogger().log(Logger::Info, "backup-savegame", "single", "single", "Savegame in " + sav->directory().absolutePath() + " will be singled out into id " + new_id);
-    QDir destination = m_savegameManager->profile()->profileSavegameDir().absoluteFilePath(new_id);
-
-    if(destination.exists())
-    {
-        getLogger().log(Logger::Info, "backup-savegame", "single", "test-existing", "Directory " + destination.absolutePath() + " exists, but seems to be non-functional. Deleting it.");
-        destination.removeRecursively();
-    }
-
-    utils::copyDirectory(sav->directory(), destination, true);
-
-    // Fix the files or we will break the savegames if renamed
-    renameSavegame(destination, id(), new_id);
-
+    sav->copyTo(savegameManager()->profile()->profileSavegameDir(), false);
     m_savegameManager->reloadSavegames();
 
     return true;
@@ -138,6 +136,11 @@ bool BackupSavegame::deleteSavegame(Savegame *sav)
         delete sav;
 
         emit backupListChanged();
+    }
+
+    if(getAnySavegame() == nullptr)
+    {
+        m_savegameManager->reloadSavegames();
     }
 
     return true;
@@ -217,26 +220,29 @@ bool BackupSavegame::backup()
     return false;
 }
 
-bool BackupSavegame::copyTo(Profile *p, QString as)
+bool BackupSavegame::copyTo(Profile *p, OverwriteBehavior behavior)
 {
     getLogger().log(Logger::Info, "backup-savegame", "clone", "clone", "Starting to clone savegame " + id() + " into profile " + p->id());
 
-    if(as.isEmpty())
+    QString uid = getAnySavegame()->uid();
+
+    if(p->getSavegameManager()->getSavegameUIDs().contains(uid))
     {
-        as = id();
-    }
-    else
-    {
-        getLogger().log(Logger::Info, "backup-savegame", "clone", "clone", "Will be renamed to " + as);
+        switch(behavior)
+        {
+        case DontOverwrite:
+            return false;
+        case Overwrite:
+            break;
+        case Rename:
+            uid = Savegame::findNewUID(p);
+            break;
+        }
     }
 
-    if(p->getSavegameManager()->getSavegameIds().contains(as))
-    {
-        return false;
-    }
 
-    QDir destination_savegame = p->profileSavegameDir().absoluteFilePath(as);
-    QDir destination_backupsavegame = p->profileSavegameBackupDir().absoluteFilePath(as);
+    QDir destination_savegame = p->profileSavegameDir().absoluteFilePath(getAnySavegame()->generatedDirectoryPrefix() +  "_" + uid);
+    QDir destination_backupsavegame = p->profileSavegameBackupDir().absoluteFilePath(getAnySavegame()->generatedDirectoryPrefix() +  "_" + uid);
 
     if(destination_savegame.exists())
     {
@@ -252,16 +258,14 @@ bool BackupSavegame::copyTo(Profile *p, QString as)
     if(m_mainSavegame != nullptr)
     {
         getLogger().log(Logger::Info, "backup-savegame", "clone", "copy", "Copy savegame ...");
-        utils::copyDirectory(m_mainSavegame->directory(), destination_savegame, true);
-        renameSavegame(destination_savegame, id(), as);
+        m_mainSavegame->copyToAsWithDirName(destination_savegame.absolutePath(), uid);
     }
 
     getLogger().log(Logger::Info, "backup-savegame", "clone", "copy", "Copy savegame backups ...");
-    utils::copyDirectory(backupDir(), destination_backupsavegame, true);
-
-    for(QString bid : destination_backupsavegame.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+    for(Savegame * sav : m_BackupSavegames)
     {
-        renameSavegame(destination_backupsavegame.absoluteFilePath(bid), id(), as);
+        QString path = destination_backupsavegame.absoluteFilePath(sav->directory().dirName());
+        sav->copyToAsWithDirName(path, uid);
     }
 
     p->getSavegameManager()->reloadSavegames();
@@ -326,44 +330,6 @@ void BackupSavegame::pruneBackups()
     }
 
     getLogger().log(Logger::Info, "backup-savegame", "prune", "prune", "Pruning finished");
-}
-
-QString BackupSavegame::findNewIdFor(BackupSavegame *sav, const QStringList &ids)
-{
-    QString prefix;
-
-    // If somebody tinkered with the folder names, use a different naming schema
-    if(sav->id().contains("_"))
-    {
-        prefix = sav->id().split("_").first();
-    }
-    else
-    {
-        prefix = "save";
-    }
-
-    // Use STL random
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(100000000, 999999999);
-
-    QString new_id;
-
-    while(new_id.isEmpty() || ids.contains(new_id))
-    {
-        new_id = prefix + "_" + QString::number(dis(gen));
-    }
-
-    return new_id;
-}
-
-void BackupSavegame::renameSavegame(QDir dir, const QString &old_id, const QString &new_id)
-{
-    if(old_id != new_id)
-    {
-        dir.rename(old_id, new_id);
-        dir.rename(old_id + "_old", new_id + "_old");
-    }
 }
 
 void BackupSavegame::initialize()

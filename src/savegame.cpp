@@ -6,10 +6,21 @@
 #include "utils.h"
 #include <JlCompress.h>
 #include <random>
+#include "backupsavegame.h"
 
 Savegame::Savegame(const QDir &directory, Profile *p) : m_directory(directory), m_profile(p)
 {
     m_settings = new QSettings(directory.absoluteFilePath("SilVerPLuM-info.ini"), QSettings::IniFormat);
+}
+
+QString Savegame::uid() const
+{
+    return m_uid;
+}
+
+void Savegame::setUid(const QString &uid)
+{
+    m_uid = uid;
 }
 
 Profile *Savegame::profile() const
@@ -26,6 +37,8 @@ Savegame::~Savegame()
 Savegame *Savegame::loadFromDirectory(const QDir &dir, Profile *profile)
 {
     profile->getLogger().log(Logger::Info, "savegame", "load", "load", "Loading savegame info in " + dir.absolutePath());
+
+    // Read the savegame info
 
     QDomDocument doc;
     QFile file(dir.absoluteFilePath("SaveGameInfo"));
@@ -45,6 +58,56 @@ Savegame *Savegame::loadFromDirectory(const QDir &dir, Profile *profile)
     savegame->setTimePlayedMs(doc.firstChildElement().firstChildElement("millisecondsPlayed").firstChild().nodeValue().toInt());
     savegame->setIsMale(doc.firstChildElement().firstChildElement("isMale").firstChild().nodeValue() == "true");
     savegame->setMoney(doc.firstChildElement().firstChildElement("money").firstChild().nodeValue().toInt());
+
+
+    profile->getLogger().log(Logger::Info, "savegame", "load", "load", "Loading UID");
+    // Read the savegame UID
+    /*
+     * The UID is tricky as the file is EXTREMELY large. DOM won't help here
+     *
+     * Solution: Datamining -> It is in an element <uniqueIDForThisGame>UID</uniqueIDForThisGame>
+     */
+
+    QString datafile;
+
+    for(QString entry : dir.entryList(QDir::Files))
+    {
+        if(entry.startsWith(savegame->name()) && !entry.endsWith("_old"))
+        {
+            datafile = dir.absoluteFilePath(entry);
+            break;
+        }
+    }
+
+    if(datafile.isEmpty())
+    {
+        profile->getLogger().log(Logger::Error, "savegame", "load", "load", "Could not find data file!");
+        delete savegame;
+
+        return nullptr;
+    }
+
+    profile->getLogger().log(Logger::Info, "savegame", "load", "load", "UID is in " + datafile);
+
+    QString data_content = utils::readAllTextFrom(datafile).replace("\r","").replace("\n", "");
+
+    int uidstart = data_content.indexOf("<uniqueIDForThisGame>");
+    int uidend = data_content.indexOf("</uniqueIDForThisGame>");
+
+    if(uidstart < 0 || uidend < 0 || uidend == uidstart || uidend < uidstart)
+    {
+        profile->getLogger().log(Logger::Error, "savegame", "load", "load", "Could not get UID from data file!");
+        delete savegame;
+
+        return nullptr;
+    }
+
+    uidstart += QString("<uniqueIDForThisGame>").length();
+
+    QString uid = data_content.mid(uidstart, uidend - uidstart);
+
+    profile->getLogger().log(Logger::Info, "savegame", "load", "load", "UID is " + uid);
+    savegame->setUid(uid);
 
     return savegame;
 }
@@ -147,6 +210,16 @@ QDir Savegame::directory() const
     return m_directory;
 }
 
+QString Savegame::generatedDirectoryPrefix()
+{
+    return m_name.replace(" ", "");
+}
+
+QString Savegame::generatedDirectoryName()
+{
+    return generatedDirectoryPrefix() + "_" + uid();
+}
+
 bool Savegame::contentEquals(Savegame *other) const
 {
     return utils::folderEqual(directory(), other->directory(), QStringList() << "SilVerPLuM-info.ini");
@@ -159,31 +232,94 @@ bool Savegame::exportToZip(const QString &path)
     return JlCompress::compressDir(path, directory().absolutePath(), true);
 }
 
-QString Savegame::findNewIdFor(const QString & old_id, const QStringList &ids)
+QString Savegame::findNewUID(Profile *profile)
 {
-    QString prefix;
-
-    // If somebody tinkered with the folder names, use a different naming schema
-    if(old_id.contains("_"))
-    {
-        prefix = old_id.split("_").first();
-    }
-    else
-    {
-        prefix = "save";
-    }
+    // Need to find a new ID
+    QSet<QString> existing_uids = profile->getSavegameManager()->getSavegameUIDs();
 
     // Use STL random
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(100000000, 999999999);
 
-    QString new_id;
+    QString as_uid;
 
-    while(new_id.isEmpty() || ids.contains(new_id))
+    while(as_uid.isEmpty() || existing_uids.contains(as_uid))
     {
-        new_id = prefix + "_" + QString::number(dis(gen));
+        return QString::number(dis(gen));
     }
 
-    return new_id;
+    return "";
+}
+
+QString Savegame::findNewUID() const
+{
+    return findNewUID(m_profile);
+}
+
+bool Savegame::copyTo(const QDir &dir, bool overwrite)
+{
+    QString as_uid = uid();
+
+    if(QDir(dir.absoluteFilePath(generatedDirectoryName())).exists())
+    {
+        if(overwrite)
+        {
+            QDir(dir.absoluteFilePath(generatedDirectoryName())).removeRecursively();
+        }
+        else
+        {
+            as_uid = findNewUID();
+        }
+    }
+
+    // Now copy
+    QString destination = dir.absoluteFilePath(generatedDirectoryPrefix() + "_" + as_uid);
+
+    return copyToAsWithDirName(destination, as_uid);
+}
+
+bool Savegame::copyToAsWithDirName(QDir dir, const QString &as_uid)
+{
+    dir.removeRecursively();
+
+    utils::copyDirectory(directory(), dir.absolutePath(), true);
+
+    if(as_uid != uid())
+    {
+        QDir dstdir = dir;
+
+        // Fix the filenames
+        dstdir.rename(generatedDirectoryName(), generatedDirectoryPrefix() + "_" + as_uid);
+        dstdir.rename(generatedDirectoryName() + "_old", generatedDirectoryPrefix() + "_" + as_uid + "_old");
+
+        // Fix the UID
+        QString data_content = utils::readAllTextFrom(dstdir.absoluteFilePath(generatedDirectoryPrefix() + "_" + as_uid)).replace("\r","").replace("\n", "");
+
+        data_content = data_content.replace(QString("<uniqueIDForThisGame>%1</uniqueIDForThisGame>").arg(uid()),
+                                            QString("<uniqueIDForThisGame>%1</uniqueIDForThisGame>").arg(as_uid));
+
+        QFile datafile(dstdir.absoluteFilePath(generatedDirectoryPrefix() + "_" + as_uid));
+
+        if(datafile.open(QFile::ReadWrite))
+        {
+            datafile.resize(0);
+
+            QTextStream stream(&datafile);
+            stream << data_content;
+
+            datafile.close();
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+
+
+    }
+
+    return true;
 }

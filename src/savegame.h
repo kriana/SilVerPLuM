@@ -17,36 +17,51 @@ public:
 
     static Savegame *loadFromDirectory(const QDir & dir, Profile * profile);
 
+    QString uid() const;
+
     QString name() const;
-    void setName(const QString &name);
 
     QString timedate() const;
-    void setTimedate(const QString &timedate);
 
     bool isMale() const;
-    void setIsMale(bool isMale);
 
     QString farmName() const;
-    void setFarmName(const QString &farmName);
 
     QString favoriteThing() const;
-    void setFavoriteThing(const QString &favoriteThing);
 
     int money() const;
-    void setMoney(int money);
 
     int timePlayedMs() const;
-    void setTimePlayedMs(int timePlayedMs);
 
     QString comment() const;
-    void setComment(const QString &comment);  
+
+    void setComment(const QString &comment);
 
     QDateTime backupDate();
+
     void setBackupDate(const QDateTime & datetime);
 
     QDir directory() const;
 
+    QString generatedDirectoryPrefix();
+
+    QString generatedDirectoryName();
+
     Profile *profile() const;
+
+    QString findNewUID() const;
+
+    static QString findNewUID(Profile * profile);
+
+    /**
+     * @brief Copies this savegame to directory. If overwrite is not set, it will rename this savegame if needed
+     * @param dir
+     * @param overwrite
+     * @return
+     */
+    bool copyTo(const QDir & dir, bool overwrite);
+
+    bool copyToAsWithDirName(QDir dir, const QString & as_uid);
 
     /**
      * @brief Returns true if this and the other savegame have the same content
@@ -60,7 +75,6 @@ public:
      */
     bool exportToZip(const QString & path);
 
-    static QString findNewIdFor(const QString & old_id, const QStringList &ids);
 
 protected:
 
@@ -71,6 +85,8 @@ private:
     QDir m_directory;
 
     Profile * m_profile;
+
+    QString m_uid;
 
     QString m_name;
 
@@ -87,6 +103,15 @@ private:
     int m_timePlayedMs;
 
     QSettings *m_settings = nullptr;
+
+    void setName(const QString &name);
+    void setTimedate(const QString &timedate);
+    void setIsMale(bool isMale);
+    void setFarmName(const QString &farmName);
+    void setFavoriteThing(const QString &favoriteThing);
+    void setMoney(int money);
+    void setTimePlayedMs(int timePlayedMs);
+    void setUid(const QString &uid);
 
 };
 

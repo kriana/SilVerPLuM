@@ -15,6 +15,14 @@ class BackupSavegame : public QObject
     Q_OBJECT
 
 public:
+
+    enum OverwriteBehavior
+    {
+        DontOverwrite,
+        Overwrite,
+        Rename
+    };
+
     BackupSavegame(const QString &id, SavegameManager *mgr);
 
     ~BackupSavegame();
@@ -28,6 +36,8 @@ public:
     Savegame *getMainSavegame() const;
 
     QList<Savegame *> getBackupSavegames() const;
+
+    Savegame *getAnySavegame() const;
 
     bool isEmpty() const;
 
@@ -71,7 +81,7 @@ public:
      * @param p
      * @return
      */
-    bool copyTo(Profile * p, QString as = "");
+    bool copyTo(Profile * p, OverwriteBehavior behavior);
 
 
     /**
@@ -84,18 +94,7 @@ public:
     /**
      * @brief Removes all backups that have duplicates
      */
-    void pruneBackups();    
-
-
-    /**
-     * @brief Finds a new valid ID
-     * @param sav
-     * @return
-     */
-    static QString findNewIdFor(BackupSavegame *sav, const QStringList & ids );
-
-    static void renameSavegame(QDir dir, const QString & old_id, const QString & new_id);
-
+    void pruneBackups();
 
 private:
 

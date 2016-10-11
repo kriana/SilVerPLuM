@@ -217,7 +217,7 @@ void SavegameManagerWidgetItem::savegameCopyTo()
             throw std::runtime_error("Implementation fail!");
         }
 
-        if(p->getSavegameManager()->getSavegameIds().contains(m_savegame->id()))
+        if(!m_savegame->copyTo(p, BackupSavegame::DontOverwrite))
         {
             QMessageBox overwritedlg;
             overwritedlg.setText("Copy to ...");
@@ -234,23 +234,19 @@ void SavegameManagerWidgetItem::savegameCopyTo()
 
                 // Delete the existing one and copy
                 p->getSavegameManager()->getSavegame(m_savegame->id())->deleteAll();
-                m_savegame->copyTo(p);
+                m_savegame->copyTo(p, BackupSavegame::Overwrite);
 
                 break;
             case QMessageBox::No:
 
                 // Find a new name
-                m_savegame->copyTo(p, BackupSavegame::findNewIdFor(m_savegame, p->getSavegameManager()->getSavegameIds()));
+                m_savegame->copyTo(p, BackupSavegame::Rename);
 
                 break;
             case QMessageBox::Cancel:
                 return;
             }
 
-        }
-        else
-        {
-            m_savegame->copyTo(p);
         }
     }
 }

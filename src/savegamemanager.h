@@ -28,6 +28,8 @@ public:
 
     QList<QString> getSavegameIds() const;
 
+    QSet<QString> getSavegameUIDs();
+
     BackupSavegame *getSavegame(const QString & id);
 
     void initialize();
