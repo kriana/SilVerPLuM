@@ -20,6 +20,7 @@ cp shared/* linux
 cp ../build-SilVerPLuM-Desktop-Release/SilVerPLuM linux
 cp ../LICENSE linux
 cp ../README.md linux
+cp ../src/resources/icons/application-128.png linux/icon.png
 
 # Package
 
