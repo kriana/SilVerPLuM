@@ -103,9 +103,9 @@ namespace StardewModdingAPI
             //_modContentPaths.ForEach(path => VerifyPath(path));
             VerifyPath(Constants.LogDir);
 
-			if (!File.Exists(Constants.ExecutionPath + System.IO.Path.DirectorySeparatorChar + "StardewValley.exe"))
+            if (!File.Exists(Constants.ExecutionPath + "\\Stardew Valley.exe"))
             {
-				throw new FileNotFoundException($"Could not found: {Constants.ExecutionPath}" + System.IO.Path.DirectorySeparatorChar + "StardewValley.exe");
+                throw new FileNotFoundException($"Could not found: {Constants.ExecutionPath}\\Stardew Valley.exe");
             }
         }
 
@@ -117,7 +117,7 @@ namespace StardewModdingAPI
             Log.AsyncY("Initializing SDV Assembly...");
 
             // Load in the assembly - ignores security
-			StardewAssembly = Assembly.UnsafeLoadFrom(Constants.ExecutionPath + System.IO.Path.DirectorySeparatorChar + "StardewValley.exe");
+            StardewAssembly = Assembly.UnsafeLoadFrom(Constants.ExecutionPath + "\\Stardew Valley.exe");
             StardewProgramType = StardewAssembly.GetType("StardewValley.Program", true);
             StardewGameInfo = StardewProgramType.GetField("gamePtr");
 

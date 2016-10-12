@@ -20,10 +20,10 @@
                 "windows" : ["/p:Configuration=Release"],
                 "linux" : ["/p:Configuration=Release"],
                 "mac" : ["/p:Configuration=Release"]
-                },            
-            "installables": {                
+                },
+            "installables": {
 				"StormLoader" : "StormLoader",
-				"Storm/bin/Release/StormLoader.exe" : "StormLoader.exe",
+				"Storm/bin/Release" : "",
 				"interface_injectors.json" : "stardewvalley-userdata://Storm/interface_injectors.json"
             },
             "launchers": {

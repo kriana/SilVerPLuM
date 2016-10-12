@@ -1,0 +1,6 @@
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\StardewModdingAPI\bin\Release\Mods\TrainerMod\manifest.json
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\StardewModdingAPI\bin\Release\Mods\TrainerMod\TrainerMod.dll
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\StardewModdingAPI\bin\Release\Mods\TrainerMod\TrainerMod.pdb
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\TrainerMod\obj\Release\TrainerMod.csprojResolveAssemblyReference.cache
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\TrainerMod\obj\Release\TrainerMod.dll
+C:\Users\Ruman\AppData\Roaming\SilVerPLuM\profiles\default\mods\smapi\smapi\TrainerMod\obj\Release\TrainerMod.pdb

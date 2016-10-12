@@ -1,17 +1,17 @@
 {
     "id": "smapi",
     "name": "SMAPI",
-    "author": "cjsu",
+    "author": "ClxS",
     "license": "LGPL",
     "url": "https://github.com/cjsu/SMAPI",
-    "version": "1.0.0",
+    "version": "0.40.1.1",
     "requires": ["stardewvalley>=1.1", "stardewvalley<1.2"],
     "content": {
         "smapi": {
             "name": "Stardew Valley Modding API",
             "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods.",
             "default": true,
-            "platforms": ["windows", "linux", "mac"],
+            "platforms": ["windows"],
             "priority": 0,
             "pipeline": "compile-dll",
             "nuget-restore": true,
@@ -20,9 +20,11 @@
                 "windows" : ["/p:Configuration=Release"],
                 "linux" : ["/p:Configuration=Release"],
                 "mac" : ["/p:Configuration=Release"]
-                },            
+                },
+            "location": "file",
             "installables": {
                 "StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "StardewModdingAPI/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll",
                 "StardewModdingAPI/StardewModdingAPI": "StardewModdingAPI"
             },
             "launchers": {
@@ -32,14 +34,6 @@
                     "executables": {
                         "windows": {
                             "executable": "stardewvalley://StardewModdingAPI.exe",
-                            "arguments": []
-                        },
-                        "mac": {
-                            "executable": "stardewvalley://StardewModdingAPI",
-                            "arguments": []
-                        },
-                        "linux": {
-                            "executable": "stardewvalley://StardewModdingAPI",
                             "arguments": []
                         }
                     }
