@@ -315,7 +315,7 @@ void Game::finish()
 
 void Game::issueFullBackup()
 {
-    if(m_Status != StatusRun)
+    if(m_Status != StatusRun && m_Status != StatusPrepare)
         return;
 
     getLogger().log(Logger::Info, "launcher", "post", "auto-backup", "Issuing full-backup");
