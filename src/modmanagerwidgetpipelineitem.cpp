@@ -47,7 +47,7 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
                    SLOT(contentEnabledDisabled(bool)));
 
         ui->lblName->setText(m_currentPipeline->name());
-       ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->description())));
+       ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()))));
         ui->lblIdentifier->setText(m_currentPipeline->id());
 
         bool enabled = m_currentPipeline->isEnabled();

@@ -8,6 +8,8 @@
 #include <JlCompress.h>
 #include "utils.h"
 
+const QStringList ModManager::FORBIDDEN_MOD_IDS = QStringList() << "stardewvalley" << "stardewvalley-savegames" << "stardewvalley-userdata";
+
 ModManager::ModManager(Profile *profile) : m_profile(profile)
 {
     m_config = new QSettings(profile->profileBaseDir().absoluteFilePath("mod-config.ini"), QSettings::IniFormat);
@@ -359,27 +361,80 @@ void ModManager::uninstall()
     }
 }
 
-QString ModManager::resolveModUrl(const QString &url)
+QString ModManager::autoResolveModUrls(QString content)
+{
+    content = content.replace("stardewvalley://", profile()->StardewValleyDir().absolutePath() + "/");
+    content = content.replace("stardewvalley-savegames://", profile()->StardewValleySavegameDir().absolutePath() + "/");
+    content = content.replace("stardewvalley-userdata://", profile()->StardewValleyUserDataDir().absolutePath() + "/");
+
+    for(Modification * mod : m_mods)
+    {
+        content = content.replace(mod->id() + "://", mod->modBasePath().absolutePath() + "/");
+    }
+
+    return content;
+}
+
+QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
 {
     if(!url.contains("://"))
-        return "";
+        return emptyoninvalid ? "" : url;
     if(url.contains("..") && GlobalSettings::instance()->getEnableFileGuard())
-        return "";
+        return emptyoninvalid ? "" : url;
 
     QString modid = url.split("://")[0];
     QString path = url.split("://")[1];
 
-    if(modid != "stardewvalley")
+    if(modid == "stardewvalley")
+    {
+        return profile()->StardewValleyDir().absolutePath() + "/" + path;
+    }
+    else if(modid == "stardewvalley-savegames")
+    {
+        return profile()->StardewValleySavegameDir().absolutePath() + "/" + path;
+    }
+    else if(modid == "stardewvalley-userdata")
+    {
+        return profile()->StardewValleyUserDataDir().absolutePath() + "/" + path;
+    }
+    else
     {
          Modification * mod = getModification(modid);
 
          if(mod == nullptr)
-             return "";
+             return emptyoninvalid ? "" : url;
          return mod->modBasePath().absolutePath() + "/" + path;
+    }
+}
+
+bool ModManager::isValidModUrl(const QString &url)
+{
+    if(!url.contains("://"))
+        return false;
+    if(url.contains("..") && GlobalSettings::instance()->getEnableFileGuard())
+        return false;
+
+    QString modid = url.split("://")[0];
+
+    if(modid == "stardewvalley")
+    {
+        return true;
+    }
+    else if(modid == "stardewvalley-savegames")
+    {
+        return true;
+    }
+    else if(modid == "stardewvalley-userdata")
+    {
+        return true;
     }
     else
     {
-        return profile()->StardewValleyDir().absolutePath() + "/" + path;
+         Modification * mod = getModification(modid);
+
+         if(mod == nullptr)
+             return false;
+         return true;
     }
 }
 

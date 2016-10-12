@@ -54,6 +54,10 @@ public:
 
     void setStardewValleySavegameDir(const QDir & dir);
 
+    QDir StardewValleyUserDataDir();
+
+    void setStardewValleyUserDataDir(const QDir & dir);
+
     QVersionNumber StardewValleyVersion();
 
     void setStardewValleyVersion(const QVersionNumber & version);
@@ -150,6 +154,12 @@ public:
      * @return
      */
     static QDir DefaultStardewValleySavegameDir();
+
+    /**
+     * @brief Platform-specific locations for Stardew Valley userdata (savegames are a subfolder)
+     * @return
+     */
+    static QDir DefaultStardewValleyUserDataDir();
 
     /**
      * @brief Platform-specific locations for Stardew Valley

@@ -170,7 +170,7 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
 {
     QString id = json["id"].toString().trimmed();
 
-    if(id == "stardewvalley")
+    if(ModManager::FORBIDDEN_MOD_IDS.contains(id))
     {
         modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Mods with id 'stardewvalley' are forbidden. Skipping mod in " + basepath.absolutePath());
         return nullptr;

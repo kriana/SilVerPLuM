@@ -114,6 +114,21 @@ void Profile::setStardewValleySavegameDir(const QDir &dir)
     getSavegameManager()->reloadSavegames();
 }
 
+QDir Profile::StardewValleyUserDataDir()
+{
+    return m_Settings->value("StardewValley/UserDataDir", DefaultStardewValleyUserDataDir().absolutePath()).toString();
+}
+
+void Profile::setStardewValleyUserDataDir(const QDir &dir)
+{
+    m_Settings->setValue("StardewValley/UserDataDir", dir.absolutePath());
+
+    setting_changed();
+
+    // Trigger savegame list reload
+    getSavegameManager()->reloadSavegames();
+}
+
 QVersionNumber Profile::StardewValleyVersion()
 {
     return QVersionNumber::fromString(m_Settings->value("StardewValley/Version", "0").toString());
@@ -399,6 +414,11 @@ Platform::GameTechnology Profile::DefaultStardewValleyTechnology()
 
 QDir Profile::DefaultStardewValleySavegameDir()
 {
+    return DefaultStardewValleyUserDataDir().absoluteFilePath("Saves");
+}
+
+QDir Profile::DefaultStardewValleyUserDataDir()
+{
     switch(Platform::getCurrentPlatform())
     {
     case Platform::Windows:
@@ -408,13 +428,13 @@ QDir Profile::DefaultStardewValleySavegameDir()
             QDir loc = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
             loc.cdUp();
 
-            return loc.filePath("StardewValley/Saves");
+            return loc.filePath("StardewValley");
         }
 
     case Platform::Linux:
-        return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("StardewValley/Saves");
+        return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("StardewValley");
     case Platform::Mac:
-        return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("StardewValley/Saves");
+        return QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)).filePath("StardewValley");
     default:
         throw std::runtime_error("Unsupported platform!");
     }

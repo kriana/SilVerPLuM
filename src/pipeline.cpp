@@ -98,7 +98,18 @@ QMap<QString, QString> Pipeline::resolveInstallables()
 
     for(const QString & key : m_installables.keys())
     {
-        QString dst = mod()->getModManager()->profile()->StardewValleyDir().absolutePath() + "/" + m_installables[key];
+        QString dst = m_installables[key];
+
+        // New addition: Support mod URLs
+        if(mod()->getModManager()->isValidModUrl(dst))
+        {
+            dst = mod()->getModManager()->resolveModUrl(dst);
+        }
+        else
+        {
+            dst = mod()->getModManager()->profile()->StardewValleyDir().absolutePath() + "/" + dst;
+        }
+
         QString src = pipelineBaseDir().absolutePath() + "/" + key;
 
         // Prevent breaking out of the directories via ..

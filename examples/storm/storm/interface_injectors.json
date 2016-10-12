@@ -1,0 +1,232 @@
+{
+  "ClassInfoParams": [
+    {
+      "SimpleName": "AnimatedSprite",
+      "OwnerType": "StardewValley.AnimatedSprite"
+    },
+    {
+      "SimpleName": "Program",
+      "OwnerType": "StardewValley.Program"
+    },
+    {
+      "SimpleName": "StaticContext",
+      "OwnerType": "StardewValley.Game1"
+    },
+    {
+      "SimpleName": "GameLocation",
+      "OwnerType": "StardewValley.GameLocation"
+    },
+    {
+      "SimpleName": "Billboard",
+      "OwnerType": "StardewValley.Menus.Billboard"
+    },
+    {
+      "SimpleName": "Character",
+      "OwnerType": "StardewValley.Character"
+    },
+    {
+      "SimpleName": "NPC",
+      "OwnerType": "StardewValley.NPC"
+    },
+    {
+      "SimpleName": "Monster",
+      "OwnerType": "StardewValley.Monsters.Monster"
+    },
+    {
+      "SimpleName": "Farmer",
+      "OwnerType": "StardewValley.Farmer"
+    },
+    {
+      "SimpleName": "HUDMessage",
+      "OwnerType": "StardewValley.HUDMessage"
+    },
+    {
+      "SimpleName": "Item",
+      "OwnerType": "StardewValley.Item"
+    },
+    {
+      "SimpleName": "Tool",
+      "OwnerType": "StardewValley.Tool"
+    },
+    {
+      "SimpleName": "Object",
+      "OwnerType": "StardewValley.Object"
+    },
+    {
+      "SimpleName": "Crop",
+      "OwnerType": "StardewValley.Crop"
+    },
+    {
+      "SimpleName": "ClickableMenu",
+      "OwnerType": "StardewValley.Menus.IClickableMenu"
+    },
+    {
+      "SimpleName": "TempAnimatedSprite",
+      "OwnerType": "StardewValley.TemporaryAnimatedSprite"
+    },
+    {
+      "SimpleName": "Event",
+      "OwnerType": "StardewValley.Event"
+    },
+    {
+      "SimpleName": "TerrainFeature",
+      "OwnerType": "StardewValley.TerrainFeatures.TerrainFeature"
+    },
+    {
+      "SimpleName": "HoeDirt",
+      "OwnerType": "StardewValley.TerrainFeatures.HoeDirt"
+    },
+    {
+      "SimpleName": "BobberBar",
+      "OwnerType": "StardewValley.Menus.BobberBar"
+    },
+    {
+      "SimpleName": "Chest",
+      "OwnerType": "StardewValley.Objects.Chest"
+    },
+    {
+      "SimpleName": "InventoryMenu",
+      "OwnerType": "StardewValley.Menus.InventoryMenu"
+    },
+    {
+      "SimpleName": "InventoryPage",
+      "OwnerType": "StardewValley.Menus.InventoryPage"
+    },
+    {
+      "SimpleName": "GameMenu",
+      "OwnerType": "StardewValley.Menus.GameMenu"
+    },
+    {
+      "SimpleName": "Fence",
+      "OwnerType": "StardewValley.Fence"
+    },
+    {
+      "SimpleName": "CraftingPage",
+      "OwnerType": "StardewValley.Menus.CraftingPage"
+    },
+    {
+      "SimpleName": "CraftingRecipe",
+      "OwnerType": "StardewValley.CraftingRecipe"
+    },
+    {
+      "SimpleName": "ClickableComponent",
+      "OwnerType": "StardewValley.Menus.ClickableComponent"
+    },
+    {
+      "SimpleName": "ClickableTextureComponent",
+      "OwnerType": "StardewValley.Menus.ClickableTextureComponent"
+    },
+    {
+      "SimpleName": "FishingRod",
+      "OwnerType": "StardewValley.Tools.FishingRod"
+    },
+    {
+      "SimpleName": "ChatBox",
+      "OwnerType": "StardewValley.Menus.ChatBox"
+    },
+    {
+      "SimpleName": "TextBox",
+      "OwnerType": "StardewValley.Menus.TextBox"
+    },
+    {
+      "SimpleName": "ShopMenu",
+      "OwnerType": "StardewValley.Menus.ShopMenu"
+    },
+    {
+      "SimpleName": "Buff",
+      "OwnerType": "StardewValley.Buff"
+    },
+    {
+      "SimpleName": "BuffsDisplay",
+      "OwnerType": "StardewValley.Menus.BuffsDisplay"
+    },
+    {
+      "SimpleName": "MineShaft",
+      "OwnerType": "StardewValley.Locations.MineShaft"
+    },
+    {
+      "SimpleName": "Horse",
+      "OwnerType": "StardewValley.Characters.Horse"
+    },
+    {
+      "SimpleName": "Barn",
+      "OwnerType": "StardewValley.Buildings.Barn"
+    },
+    {
+      "SimpleName": "Building",
+      "OwnerType": "StardewValley.Buildings.Building"
+    },
+    {
+      "SimpleName": "Coop",
+      "OwnerType": "StardewValley.Buildings.Coop"
+    },
+    {
+      "SimpleName": "Stable",
+      "OwnerType": "StardewValley.Buildings.Stable"
+    },
+    {
+      "SimpleName": "Pet",
+      "OwnerType": "StardewValley.Characters.Pet"
+    },
+    {
+      "SimpleName": "Cat",
+      "OwnerType": "StardewValley.Monsters.Cat"
+    },
+    {
+      "SimpleName": "Dog",
+      "OwnerType": "StardewValley.Characters.Dog"
+    },
+    {
+      "SimpleName": "FarmAnimal",
+      "OwnerType": "StardewValley.FarmAnimal"
+    },
+    {
+      "SimpleName": "Junimo",
+      "OwnerType": "StardewValley.Characters.Junimo"
+    },
+    {
+      "SimpleName": "CommunityCenter",
+      "OwnerType": "StardewValley.Locations.CommunityCenter"
+    },
+    {
+      "SimpleName": "Town",
+      "OwnerType": "StardewValley.Locations.Town"
+    },
+    {
+      "SimpleName": "Tree",
+      "OwnerType": "StardewValley.TerrainFeatures.Tree"
+    },
+    {
+      "SimpleName": "Flooring",
+      "OwnerType": "StardewValley.TerrainFeatures.Flooring"
+    },
+    {
+      "SimpleName": "FruitTree",
+      "OwnerType": "StardewValley.TerrainFeatures.FruitTree"
+    },
+    {
+      "SimpleName": "OptionsPage",
+      "OwnerType": "StardewValley.Menus.OptionsPage"
+    },
+    {
+      "SimpleName": "JunimoNoteMenu",
+      "OwnerType": "StardewValley.Menus.JunimoNoteMenu"
+    },
+    {
+      "SimpleName": "ClickableAnimatedComponent",
+      "OwnerType": "StardewValley.Menus.ClickableAnimatedComponent"
+    },
+    {
+      "SimpleName": "Bundle",
+      "OwnerType": "StardewValley.Menus.Bundle"
+    },
+    {
+      "SimpleName": "ScreenSwipe",
+      "OwnerType": "StardewValley.BellsAndWhistles.ScreenSwipe"
+    },
+    {
+      "SimpleName": "MenuWithInventory",
+      "OwnerType": "StardewValley.Menus.MenuWithInventory"
+    }
+  ]
+}

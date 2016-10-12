@@ -19,6 +19,9 @@ class ModManager : public QObject
     Q_OBJECT
 
 public:
+
+    static const QStringList FORBIDDEN_MOD_IDS;
+
     ModManager(Profile * profile);
 
     ~ModManager();
@@ -50,11 +53,21 @@ public:
     void uninstall();
 
     /**
+     * @brief Resolves all valid mod URLs in content
+     * @param content
+     * @return
+     */
+    QString autoResolveModUrls(QString content);
+
+    /**
      * @brief Resolves mod file paths like modid://file
      * @param url
      * @return
      */
-    QString resolveModUrl(const QString & url);
+    QString resolveModUrl(const QString & url, bool emptyoninvalid = true);
+
+    bool isValidModUrl(const QString & url);
+
 
     Logger & getLogger();
 

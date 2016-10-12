@@ -236,7 +236,7 @@ void ModManagerWidgetItem::updateData()
     Modification * mod = m_currentModification;
 
     ui->lblName->setText(mod->name());
-    ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(mod->description())));
+    ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(mod->getModManager()->autoResolveModUrls(mod->description()))));
     ui->lblAuthor->setText("by " + mod->author());
     ui->lblLicense->setText(mod->license());
     ui->lblIdentifier->setText(mod->id());

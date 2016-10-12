@@ -72,10 +72,17 @@ void Launcher::start()
     if(launcherfile.exists())
         launcherfile.remove();*/
 
+    QStringList resolvedarguments = QStringList(executable.arguments());
+
+    for(int i = 0; i < resolvedarguments.size(); ++i)
+    {
+        resolvedarguments[i] = m_profile->getModManager()->autoResolveModUrls(resolvedarguments[i]);
+    }
+
     if(Platform::getCurrentPlatform() == Platform::Windows)
     {
         m_process->setProgram(path);
-        m_process->setArguments(executable.arguments());
+        m_process->setArguments(resolvedarguments);
     }
     else
     {
@@ -107,7 +114,7 @@ void Launcher::start()
         {
             // Use old solution (which also doesn't work, but isn't as complex)
             QString bash_argument = "";
-            bash_argument += (path + " " + executable.arguments().join(" ")).trimmed();
+            bash_argument += (path + " " + resolvedarguments.join(" ")).trimmed();
 
             bash_argument = bash_argument.replace("\"", "\\\""); // Escape quotes
             bash_argument = "\"" + bash_argument + "\"";

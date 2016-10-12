@@ -163,7 +163,12 @@ void MainWindow::profilesUpdated()
 void MainWindow::updateLauncherInfo()
 {
     // Set profile info in launcher screen
-    ui->profileInfo->setText(utils::makeTextEditHTML(utils::markdownToHTML(ProfileManager::instance()->getSelectedProfile()->description())));
+    QString md = ProfileManager::instance()->getSelectedProfile()->description();
+    md = ProfileManager::instance()->getSelectedProfile()->getModManager()->autoResolveModUrls(md);
+
+    QString html = utils::makeTextEditHTML(utils::markdownToHTML(md));
+
+    ui->profileInfo->setText(html);
 }
 
 void MainWindow::gameRunning(bool running)

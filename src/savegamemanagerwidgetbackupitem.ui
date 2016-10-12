@@ -25,6 +25,18 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="lblInfo">
+     <property name="font">
+      <font>
+       <italic>true</italic>
+      </font>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QToolButton" name="btnRestore">
      <property name="minimumSize">
       <size>
