@@ -6,5 +6,7 @@ Following mods are working:
 
 * SMAPI (Windows only)
 * Renovated Farms (All platforms)
+* Testlauncher (All platforms)
+* Testlauncher Encrypted (All platforms)
 
 The other mods don't run, but compile.
