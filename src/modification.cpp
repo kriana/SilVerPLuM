@@ -353,7 +353,7 @@ int Modification::enableDefaults()
 
     for(Pipeline * pip : m_Pipelines)
     {
-        if(pip->isdefault())
+        if(pip->isdefault() &&(GlobalSettings::instance()->getForceUnsupported() || !pip->unsupported()))
         {
            int e = pip->setEnabled(true);
 
@@ -363,6 +363,21 @@ int Modification::enableDefaults()
     }
 
     return err;
+}
+
+int Modification::getSupportedDefaultMods()
+{
+    int c = 0;
+
+    for(Pipeline * pip : m_Pipelines)
+    {
+        if(pip->isdefault() &&(GlobalSettings::instance()->getForceUnsupported() || !pip->unsupported()))
+        {
+           ++c;
+        }
+    }
+
+    return c;
 }
 
 void Modification::disableAll()

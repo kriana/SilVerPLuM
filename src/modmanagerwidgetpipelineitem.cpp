@@ -66,7 +66,9 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
         ui->lblIcon->setPixmap(icon);
 
         // Unsupported
-        setEnabled(!m_currentPipeline->unsupported() || GlobalSettings::instance()->getForceUnsupported());
+        bool supported = !m_currentPipeline->unsupported() || GlobalSettings::instance()->getForceUnsupported();
+        setEnabled(supported);
+        ui->lblInfo->setText(supported ? "" : "This content is not supported on your platform.");
 
         // UI
         ui->lblDescription->verticalScrollBar()->setValue(ui->lblDescription->verticalScrollBar()->minimum());

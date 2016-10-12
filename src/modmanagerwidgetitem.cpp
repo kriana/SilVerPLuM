@@ -250,6 +250,8 @@ void ModManagerWidgetItem::updateData()
     ui->btnDisableAll->setVisible(enabled.size() > 0);
     ui->btnEnableDefaults->setVisible(enabled.empty());
 
+    ui->btnEnableDefaults->setEnabled(mod->getSupportedDefaultMods() > 0);
+
     if(enabled.empty())
         ui->lblStatus->setText("");
     else

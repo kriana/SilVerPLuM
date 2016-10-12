@@ -66,6 +66,8 @@ public:
 
     int enableDefaults();
 
+    int getSupportedDefaultMods();
+
     void disableAll();
 
     QString author() const;
