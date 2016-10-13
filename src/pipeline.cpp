@@ -382,7 +382,9 @@ Modification *Pipeline::mod() const
 
 void Pipeline::setInstallable(const QString &src, const QString &dst)
 {
-    m_installables[src] = dst;
+    QString ssrc = src;
+    QString sdst = dst;
+    m_installables[ssrc.replace("\\","/")] = sdst.replace("\\","/");
 }
 
 void Pipeline::setLauncher(const QString &id, Launcher *launcher)

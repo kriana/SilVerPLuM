@@ -35,7 +35,7 @@ void FileStash::addFiles(const QStringList &files)
             ui->fileList->addTopLevelItem(new QTreeWidgetItem(ui->fileList,
                                                               QStringList() <<
                                                               QFileInfo(file).fileName()
-                                                              << file));
+                                                              << file.replace("\\","/")));
         }
     }
 
