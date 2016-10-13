@@ -14,7 +14,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     ui->setupUi(this);
 
     QMenu *action_menu = new QMenu(ui->btnDelete);
-    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile << ui->actionReinitialize);
+    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile << ui->actionReinitialize << ui->actionExportMod);
     ui->btnDelete->setMenu(action_menu);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
@@ -25,6 +25,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     connect(ui->btnDelete, &QPushButton::clicked, this, &ModManagerWidgetItem::deleteClicked);
     connect(ui->actionCopyToProfile, &QAction::triggered, this, &ModManagerWidgetItem::copyToProfileClicked);
     connect(ui->actionReinitialize, &QAction::triggered, this, &ModManagerWidgetItem::reprimeClicked);
+    connect(ui->actionExportMod, &QAction::triggered, this, &ModManagerWidgetItem::exportClicked);
 
     ui->expandWidget->hide();
 }
@@ -228,6 +229,41 @@ void ModManagerWidgetItem::reprimeClicked()
     if(err != 0)
     {
         QMessageBox::information(this, "Reactivate", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+    }
+}
+
+void ModManagerWidgetItem::exportClicked()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::AnyFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+    dlg.setAcceptMode(QFileDialog::AcceptSave);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QString file = dlg.selectedFiles().first();
+
+        if(QFileInfo(file).exists())
+        {
+            if(QMessageBox::question(this,
+                                     "Export modification",
+                                     "Do you want to overwrite " + file + "?") != QMessageBox::Yes)
+            {
+                return;
+            }
+        }
+
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        QApplication::processEvents();
+
+        if(!m_currentModification->exportToZip(file))
+        {
+            QMessageBox::critical(this,
+                                  "Export modification",
+                                  "Error while exporting!");
+        }
+
+        QApplication::restoreOverrideCursor();
     }
 }
 

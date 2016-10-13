@@ -409,6 +409,17 @@
     <string>Reinitializes this mod for development and debugging purposes</string>
    </property>
   </action>
+  <action name="actionExportMod">
+   <property name="icon">
+    <iconset theme="document-export"/>
+   </property>
+   <property name="text">
+    <string>Export modification</string>
+   </property>
+   <property name="toolTip">
+    <string>Creates a distributable *.zip file with the contents of this mod.</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>

@@ -31,6 +31,12 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     ui->sdvSavegameDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
     ui->sdvUserDataDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
     ui->profileDirectory->setReadOnly(true);
+
+    // add versions
+    for(QString version : Profile::StardewValleyVersions())
+    {
+        ui->sdvVersion->addItem(version);
+    }
 }
 
 ProfileSettings::~ProfileSettings()

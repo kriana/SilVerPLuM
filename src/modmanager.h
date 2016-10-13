@@ -71,7 +71,9 @@ public:
 
     Logger & getLogger();
 
-    bool addMod(const QString & filename);
+    bool importModFromDirectory(const QDir & dir);
+
+    bool importModFromZip(const QString & filename);
 
     void deleteMod(const QString & modid);
 

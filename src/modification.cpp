@@ -6,6 +6,7 @@
 #include "dllpipeline.h"
 #include "globalsettings.h"
 #include "utils.h"
+#include <JlCompress.h>
 
 QDir Modification::modBasePath() const
 {
@@ -20,6 +21,13 @@ void Modification::setModBasePath(const QDir &modBasePath)
 Logger &Modification::getLogger()
 {
     return m_logger;
+}
+
+bool Modification::exportToZip(const QString &path)
+{
+    QFile(path).remove();
+
+    return JlCompress::compressDir(path, modBasePath().absolutePath(), true);
 }
 
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)

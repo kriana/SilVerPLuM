@@ -42,6 +42,8 @@ private slots:
 
     void reprimeClicked();
 
+    void exportClicked();
+
 private:
     Ui::ModManagerWidgetItem *ui;
 

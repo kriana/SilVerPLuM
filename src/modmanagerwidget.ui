@@ -55,6 +55,9 @@
          <iconset theme="list-add">
           <normaloff>.</normaloff>.</iconset>
         </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>
         </property>
@@ -143,13 +146,25 @@
   </layout>
   <action name="actionReloadMods">
    <property name="icon">
-    <iconset theme="view-refresh"/>
+    <iconset theme="view-refresh">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Reload all mods</string>
    </property>
    <property name="toolTip">
     <string>Reloadss all mods from the mod directory.</string>
+   </property>
+  </action>
+  <action name="actionImportMod">
+   <property name="icon">
+    <iconset theme="document-import"/>
+   </property>
+   <property name="text">
+    <string>Import from files</string>
+   </property>
+   <property name="toolTip">
+    <string>Imports a mod from mods that are not compatible with SilVerPLuM</string>
    </property>
   </action>
  </widget>

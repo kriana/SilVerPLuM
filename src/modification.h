@@ -95,6 +95,8 @@ public:
 
     Logger & getLogger();
 
+    bool exportToZip(const QString &path);
+
 private slots:
 
     void modEnabledDisabled(const QString & modid, const QString & contentid, bool enabled);

@@ -34,6 +34,8 @@ private:
 
 private slots:
 
+    void importModClicked();
+
     void installModClicked();
 
     void search(const QString & searchstring_);

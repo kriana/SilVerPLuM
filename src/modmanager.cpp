@@ -217,7 +217,63 @@ Logger &ModManager::getLogger()
     return m_logger;
 }
 
-bool ModManager::addMod(const QString &filename)
+bool ModManager::importModFromDirectory(const QDir &dir)
+{
+    // Check files by loading the config as Modification
+    QString mod_config_path = dir.absoluteFilePath("mod.json");
+    QFile mod_file(mod_config_path);
+
+    if(!mod_file.open(QFile::ReadOnly))
+    {
+        getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
+
+        return false;
+    }
+
+    QJsonParseError error;
+    QJsonDocument json = QJsonDocument::fromJson(mod_file.readAll(), &error);
+
+    if(error.error != QJsonParseError::NoError)
+    {
+        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading JSON failed!");
+        return false;
+    }
+
+    Modification * mod = Modification::loadFromJson(this, dir.absolutePath(), json.object());
+
+    if(mod == nullptr)
+    {
+        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading mod failed!");
+        return false;
+    }
+
+    QString mod_id = mod->id();
+    delete mod;
+
+    // Copy to correct directory
+    QDir destination = profile()->profileModDir().absoluteFilePath(mod_id);
+
+    if(destination.exists())
+    {
+        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Cannot copy: Folder already existing!");
+
+        if(QMessageBox::question(nullptr, "Add mod", "There's already a mod with the same unique identifier! Do you want to replace it?") == QMessageBox::No)
+        {
+            return false;
+        }
+
+    }
+
+    utils::copyDirectoryProgress(dir.absolutePath(), destination.absolutePath(), true);
+
+    // Now load mod from destination
+    loadMod(destination);
+    sortMods();
+
+    return true;
+}
+
+bool ModManager::importModFromZip(const QString &filename)
 {
     getLogger().log(Logger::Info, "modmanager", "modmanager", "add-mod", "Trying to add mod " + filename);
 
@@ -233,54 +289,7 @@ bool ModManager::addMod(const QString &filename)
             return false;
         }
 
-        // Check files by loading the config as Modification
-        QString mod_config_path = QDir(temp.path()).absoluteFilePath("mod.json");
-        QFile mod_file(mod_config_path);
-
-        if(!mod_file.open(QFile::ReadOnly))
-        {
-            getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
-
-            return false;
-        }
-
-        QJsonParseError error;
-        QJsonDocument json = QJsonDocument::fromJson(mod_file.readAll(), &error);
-
-        if(error.error != QJsonParseError::NoError)
-        {
-            getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading JSON failed!");
-            return false;
-        }
-
-        Modification * mod = Modification::loadFromJson(this, temp.path(), json.object());
-
-        if(mod == nullptr)
-        {
-            getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading mod failed!");
-            return false;
-        }
-
-        QString mod_id = mod->id();
-        delete mod;
-
-        // Copy to correct directory
-        QDir destination = profile()->profileModDir().absoluteFilePath(mod_id);
-
-        if(destination.exists())
-        {
-            getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Cannot copy: Folder already existing!");
-
-            return false;
-        }
-
-        utils::copyDirectoryProgress(temp.path(), destination.absolutePath(), true);
-
-        // Now load mod from destination
-        loadMod(destination);
-        sortMods();
-
-        return true;
+        return importModFromDirectory(temp.path());
     }
     else
     {

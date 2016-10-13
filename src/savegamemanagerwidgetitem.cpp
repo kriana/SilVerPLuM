@@ -310,7 +310,7 @@ void SavegameManagerWidgetItem::savegameExport()
         if(!m_savegame->getMainSavegame()->exportToZip(file))
         {
             QMessageBox::critical(this,
-                                  "Export profile",
+                                  "Export savegame",
                                   "Error while exporting!");
         }
 

@@ -5,6 +5,7 @@
 #include "modmanagerwidgetitem.h"
 #include <QFileDialog>
 #include <QMenu>
+#include "modimporter.h"
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -16,10 +17,15 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(refreshList()));
     connect(ui->btnInstallMod, &QToolButton::clicked, this, &ModManagerWidget::installModClicked);
     connect(ui->actionReloadMods, &QAction::triggered, this, &ModManagerWidget::reloadAllMods);
+    connect(ui->actionImportMod, &QAction::triggered, this, &ModManagerWidget::importModClicked);
 
     QMenu * refresh_menu = new QMenu(ui->btnRefresh);
     refresh_menu->addAction(ui->actionReloadMods);
     ui->btnRefresh->setMenu(refresh_menu);
+
+    QMenu * add_menu = new QMenu(ui->btnInstallMod);
+    add_menu->addAction(ui->actionImportMod);
+    ui->btnInstallMod->setMenu(add_menu);
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -94,6 +100,12 @@ void ModManagerWidget::reloadAllMods()
     }
 }
 
+void ModManagerWidget::importModClicked()
+{
+    ModImporter dlg;
+    dlg.exec();
+}
+
 void ModManagerWidget::installModClicked()
 {
     QFileDialog dlg;
@@ -107,7 +119,7 @@ void ModManagerWidget::installModClicked()
 
         for(QString file : dlg.selectedFiles())
         {
-            if(!m_currentMM->addMod(file))
+            if(!m_currentMM->importModFromZip(file))
             {
                 if(QMessageBox::critical(this,
                                       "Add modification",

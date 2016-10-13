@@ -59,7 +59,11 @@ SOURCES += main.cpp\
     savegameviewerdialog.cpp \
     debuglauncher.cpp \
     encryptedcontentpasswordgenerator.cpp \
-    quazipcompress.cpp
+    quazipcompress.cpp \
+    modimporter.cpp \
+    modimportercontentitem.cpp \
+    identifierlineedit.cpp \
+    filestash.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -107,7 +111,11 @@ HEADERS  += mainwindow.h \
     savegameviewerdialog.h \
     debuglauncher.h \
     encryptedcontentpasswordgenerator.h \
-    quazipcompress.h
+    quazipcompress.h \
+    modimporter.h \
+    modimportercontentitem.h \
+    identifierlineedit.h \
+    filestash.h
 
 
 FORMS    += mainwindow.ui \
@@ -125,7 +133,10 @@ FORMS    += mainwindow.ui \
     savegamemanagerwidgetitem.ui \
     savegamemanagerwidgetbackupitem.ui \
     savegameviewerdialog.ui \
-    encryptedcontentpasswordgenerator.ui
+    encryptedcontentpasswordgenerator.ui \
+    modimporter.ui \
+    modimportercontentitem.ui \
+    filestash.ui
 
 RESOURCES += \
     resources.qrc

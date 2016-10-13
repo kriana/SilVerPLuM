@@ -167,6 +167,12 @@ public:
      */
     static QDir DefaultStardewValleyDir();
 
+    /**
+     * @brief Returns known Stardew Valley versions
+     * @return
+     */
+    static QStringList StardewValleyVersions();
+
     ModManager *getModManager() const;
 
     Logger & getLogger();

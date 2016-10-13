@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-90</y>
         <width>538</width>
-        <height>688</height>
+        <height>814</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -97,7 +97,14 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="MarkdownTextEditor" name="profileDescription"/>
+           <widget class="MarkdownTextEditor" name="profileDescription">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -172,61 +179,6 @@
             <property name="editable">
              <bool>true</bool>
             </property>
-            <item>
-             <property name="text">
-              <string>1.1.1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.7</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.6</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.5</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.4</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.3</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.2</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0.1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1.0</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>0</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="4" column="0">

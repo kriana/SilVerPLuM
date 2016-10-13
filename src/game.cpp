@@ -184,6 +184,9 @@ void Game::prepare()
     QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
+    sdvsavegames.mkpath(".");
+    m_Launcher->getProfile()->StardewValleyUserDataDir().mkpath(".");
+
     if(m_Launcher->getProfile()->enableBackupOnStart())
     {
         getLogger().log(Logger::Info, "launcher", "prepare", "autobackup-start", "Creating a backup for all savegames");

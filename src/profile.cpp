@@ -461,3 +461,22 @@ QDir Profile::DefaultStardewValleyDir()
         throw std::runtime_error("Unsupported platform!");
     }
 }
+
+QStringList Profile::StardewValleyVersions()
+{
+    QStringList versions;
+
+    versions << "1.1.1";
+    versions << "1.1";
+    versions << "1.0.7";
+    versions << "1.0.6";
+    versions << "1.0.5";
+    versions << "1.0.4";
+    versions << "1.0.3";
+    versions << "1.0.2";
+    versions << "1.0.1";
+    versions << "1.0";
+    versions << "0";
+
+    return versions;
+}

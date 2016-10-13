@@ -104,6 +104,25 @@ inline void wrapMonoExecutable(QProcess * process, const QString & exectuable, c
     }
 }
 
+inline bool writeTextTo(const QString & path, const QString & content)
+{
+    QFile file(path);
+    if(file.open(QFile::WriteOnly))
+    {
+        file.resize(0);
+        QTextStream stream(&file);
+
+        stream << content;
+        file.close();
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 inline QString readAllTextFrom(const QString & path)
 {
     QFile file(path);
