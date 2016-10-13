@@ -2,6 +2,7 @@
 #include "ui_filestash.h"
 #include <QToolButton>
 #include <QTreeWidget>
+#include <QApplication>
 
 FileStash::FileStash(QWidget *parent) :
     QWidget(parent),
@@ -22,13 +23,23 @@ FileStash::~FileStash()
 
 void FileStash::addFiles(const QStringList &files)
 {
+    QStringList exisiting = getFiles();
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
     for(QString file : files)
     {
-        ui->fileList->addTopLevelItem(new QTreeWidgetItem(ui->fileList,
-                                                          QStringList() <<
-                                                          QFileInfo(file).fileName()
-                                                          << file));
+        if(!exisiting.contains(file))
+        {
+            ui->fileList->addTopLevelItem(new QTreeWidgetItem(ui->fileList,
+                                                              QStringList() <<
+                                                              QFileInfo(file).fileName()
+                                                              << file));
+        }
     }
+
+    QApplication::restoreOverrideCursor();
 }
 
 QStringList FileStash::getFiles()
