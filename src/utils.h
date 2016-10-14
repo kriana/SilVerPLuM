@@ -21,6 +21,62 @@
 namespace utils
 {
 
+inline QString ArgumentListToString(QStringList list)
+{
+    QString result;
+
+    bool first = true;
+
+    for(QString str : list)
+    {
+        if(!first)
+        {
+            result += " ";
+            first = false;
+        }
+
+        bool q = str.contains(" ");
+
+        result += (q ? "\"" : "") + str.replace("\\", "\\\\").replace("\"", "\\\"") + (q ? "\"" : "");
+    }
+
+    return result;
+}
+
+/**
+ * @brief Source: http://stackoverflow.com/questions/25068750/extract-parameters-from-string-included-quoted-regions-in-qt
+ * @param cmdLine
+ * @return
+ */
+inline QStringList stringToArgumentList(QString cmdLine)
+{
+    QStringList list;
+    QString arg;
+    bool escape = false;
+    enum { Idle, Arg, QuotedArg } state = Idle;
+    for(QChar c : cmdLine) {
+        if (!escape && c == '\\') { escape = true; continue; }
+        switch (state) {
+        case Idle:
+            if (!escape && c == '"') state = QuotedArg;
+            else if (escape || !c.isSpace()) { arg += c; state = Arg; }
+            break;
+        case Arg:
+            if (!escape && c == '"') state = QuotedArg;
+            else if (escape || !c.isSpace()) arg += c;
+            else { list << arg; arg.clear(); state = Idle; }
+            break;
+        case QuotedArg:
+            if (!escape && c == '"') state = arg.isEmpty() ? Idle : Arg;
+            else arg += c;
+            break;
+        }
+        escape = false;
+    }
+    if (!arg.isEmpty()) list << arg;
+    return list;
+}
+
 inline QString ecryptedContentEncryptPassword(const QString & password)
 {
     if(password.isEmpty())

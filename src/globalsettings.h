@@ -4,7 +4,8 @@
 #include <QSettings>
 #include <QWidget>
 #include <QMainWindow>
-
+#include "externalprogram.h"
+#include <QMap>
 
 class GlobalSettings
 {
@@ -134,29 +135,13 @@ public:
      */
     void setRunningBackupProfileSavegames(bool enabled);
 
-    /**
-     * @brief Returns the path to MSBuild/xbuild
-     * @return
-     */
-    QString getProgramMSBUILD();
+    ExternalProgram getExternalProgram(const QString & id);
 
-    /**
-     * @brief Sets the path of MSBuild/xbuild
-     * @param program
-     */
-    void setProgramMSBUILD(const QString & program);
+    void removeExternalProgram(const QString & id);
 
-    /**
-     * @brief Gets the path of Nuget
-     * @return
-     */
-    QString getProgramNuget();
+    void setExternalProgram(const ExternalProgram & program);
 
-    /**
-     * @brief Sets the path of Nuget
-     * @param program
-     */
-    void setProgramNuget(const QString & program);
+    QList<ExternalProgram> getExternalPrograms();
 
 private:
 
@@ -165,6 +150,16 @@ private:
     GlobalSettings();
 
     QSettings * m_Settings;
+
+    QMap<QString, ExternalProgram> m_DefaultExternalPrograms;
+
+    void initializeDefaultExternalPrograms();
+
+    void initializeWindowsExternalPrograms();
+
+    void initializeLinuxExternalPrograms();
+
+    void initializeMacExternalPrograms();
 };
 
 #endif // GLOBALSETTINGS_H

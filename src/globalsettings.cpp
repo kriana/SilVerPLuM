@@ -3,6 +3,7 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QDir>
+#include "utils.h"
 
 GlobalSettings * GlobalSettings::m_pInstance = nullptr;
 
@@ -14,6 +15,75 @@ GlobalSettings::GlobalSettings()
 GlobalSettings::~GlobalSettings()
 {
     delete m_Settings;
+}
+
+void GlobalSettings::initializeDefaultExternalPrograms()
+{
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        initializeWindowsExternalPrograms();
+        break;
+    case Platform::Linux:
+        initializeLinuxExternalPrograms();
+        break;
+    case Platform::Mac:
+        initializeMacExternalPrograms();
+        break;
+    }
+}
+
+void GlobalSettings::initializeWindowsExternalPrograms()
+{
+    m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "C:/Program Files/MSBuild/14.0/Bin/MSBuild.exe"
+                                                           << "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList(),
+                                                           true);
+    m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "nuget.exe",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList(),
+                                                           true);
+}
+
+void GlobalSettings::initializeLinuxExternalPrograms()
+{
+    m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "/usr/bin/xbuild",
+                                                           QStringList() <<"{insertargs}",
+                                                           QStringList(),
+                                                           true);
+    m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "/usr/bin/nuget",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList(),
+                                                         true);
+    m_DefaultExternalPrograms["mono"] = ExternalProgram(QStringList() << "/usr/bin/mono",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "application/x-ms-dos-executable",
+                                                         true);
+    m_DefaultExternalPrograms["bash"] = ExternalProgram(QStringList() << "/bin/bash",
+                                                           QStringList() << "-c" << "{joinedargs}",
+                                                           QStringList() << "application/x-shellscript",
+                                                         true);
+}
+
+void GlobalSettings::initializeMacExternalPrograms()
+{
+    m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "/usr/bin/xbuild",
+                                                           QStringList() <<"{insertargs}",
+                                                           QStringList(),
+                                                           true);
+    m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "/usr/bin/nuget",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList(),
+                                                         true);
+    m_DefaultExternalPrograms["mono"] = ExternalProgram(QStringList() << "/usr/bin/mono",
+                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "application/x-ms-dos-executable",
+                                                         true);
+    m_DefaultExternalPrograms["bash"] = ExternalProgram(QStringList() << "/bin/bash",
+                                                           QStringList() << "-c" << "{joinedargs}",
+                                                           QStringList() << "application/x-shellscript",
+                                                         true);
 }
 
 GlobalSettings *GlobalSettings::instance()
@@ -152,62 +222,44 @@ void GlobalSettings::setRunningBackupProfileSavegames(bool enabled)
     m_Settings->sync();
 }
 
-QString GlobalSettings::getProgramMSBUILD()
+ExternalProgram GlobalSettings::getExternalProgram(const QString &id)
 {
-    QString _default = "";
+    ExternalProgram default_program = m_DefaultExternalPrograms[id];
 
-    if(Platform::getCurrentPlatform() == Platform::Windows)
+    QString executable = m_Settings->value("Programs/" + id + "/Executable", default_program.executablePath()).toString();
+    QString argumentString = m_Settings->value("Programs/" + id + "/ArgumentString", utils::ArgumentListToString(default_program.arguments())).toString();
+    QString mimetypeString = m_Settings->value("Programs/" + id + "/MimeTypeString", utils::ArgumentListToString(default_program.runtimeMimeTypes())).toString();
+    bool runnable = m_Settings->value("Programs/" + id + "/Runnable", default_program.runnable()).toBool();
+
+    ExternalProgram program;
+    program.setExecutablePath(executable);
+    program.setArguments(utils::stringToArgumentList(argumentString));
+    program.setRuntimeMimeTypes(utils::stringToArgumentList(mimetypeString));
+    program.setRunnable(runnable);
+
+    return program;
+}
+
+void GlobalSettings::removeExternalProgram(const QString &id)
+{
+    if(!id.isEmpty())
+        m_Settings->remove("Programs/" + id);
+}
+
+void GlobalSettings::setExternalProgram(const ExternalProgram &program)
+{
+    if(!program.isEmpty())
     {
-        QStringList windows_msbuild;
-
-        windows_msbuild << "C:/Program Files/MSBuild/14.0/Bin/MSBuild.exe"
-                        << "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe";
-
-         _default = "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe";
-        for(QString f : windows_msbuild)
-        {
-            if(QFileInfo(f).exists())
-            {
-                _default = f;
-            }
-        }
+        m_Settings->setValue("Programs/" + program.id() + "/Executable", program.executablePath());
+        m_Settings->setValue("Programs/" + program.id() + "/ArgumentString", program.arguments().join("<<"));
+        m_Settings->setValue("Programs/" + program.id() + "/MimeTypeString", program.runtimeMimeTypes().join(";"));
+        m_Settings->setValue("Programs/" + program.id() + "/Runnable", program.runnable());
     }
-    else
-    {
-        _default = "/usr/bin/xbuild";
-    }
-
-    return m_Settings->value("Programs/MSBUILD", _default).toString();
 }
 
-void GlobalSettings::setProgramMSBUILD(const QString &program)
+QList<ExternalProgram> GlobalSettings::getExternalPrograms()
 {
-    m_Settings->setValue("Programs/MSBUILD", program);
-    m_Settings->sync();
+    m_Settings->beginGroup("Programs");
+    m_Settings->endGroup();
 }
 
-QString GlobalSettings::getProgramNuget()
-{
-    QString _default = "";
-
-    switch(Platform::getCurrentPlatform())
-    {
-    case Platform::Windows:
-        _default = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("nuget.exe");
-        break;
-    case Platform::Linux:
-        _default = "/usr/bin/nuget";
-        break;
-    case Platform::Mac:
-        _default = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("nuget.exe");
-        break;
-    }
-
-    return m_Settings->value("Programs/Nuget", _default).toString();
-}
-
-void GlobalSettings::setProgramNuget(const QString &program)
-{
-    m_Settings->setValue("Programs/Nuget", program);
-    m_Settings->sync();
-}

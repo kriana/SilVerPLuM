@@ -38,7 +38,7 @@
         <x>0</x>
         <y>0</y>
         <width>543</width>
-        <height>554</height>
+        <height>506</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -142,54 +142,7 @@
          <property name="title">
           <string>Programs</string>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>msbuild/xbuild</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="FileSelectorEdit" name="programsMSBUILD" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Nuget</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="FileSelectorEdit" name="programsNuget" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <layout class="QFormLayout" name="formLayout"/>
         </widget>
        </item>
        <item>
@@ -376,14 +329,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>FileSelectorEdit</class>
-   <extends>QWidget</extends>
-   <header>fileselectoredit.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>

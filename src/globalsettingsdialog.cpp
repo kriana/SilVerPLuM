@@ -13,8 +13,6 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     ui->appName->setText(QApplication::applicationName());
     ui->appVersion->setText(QApplication::applicationVersion());
 
-    connect(ui->programsMSBUILD, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
-    connect(ui->programsNuget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->modsRedirectXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modsForceUnsupported, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modsEnableFileGuard, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
@@ -35,9 +33,7 @@ GlobalSettingsDialog::~GlobalSettingsDialog()
 }
 
 void GlobalSettingsDialog::discart()
-{
-    ui->programsMSBUILD->setCurrentPath(GlobalSettings::instance()->getProgramMSBUILD());
-    ui->programsNuget->setCurrentPath(GlobalSettings::instance()->getProgramNuget());
+{  
     ui->modsRedirectXNA->setChecked(GlobalSettings::instance()->getDLLRedirectXNA());
     ui->modsForceUnsupported->setChecked(GlobalSettings::instance()->getForceUnsupported());
     ui->modDisablePrimeCache->setChecked(!GlobalSettings::instance()->getEnablePrimeCache());
@@ -51,9 +47,7 @@ void GlobalSettingsDialog::discart()
 }
 
 void GlobalSettingsDialog::save()
-{
-    GlobalSettings::instance()->setProgramMSBUILD(ui->programsMSBUILD->getCurrentPath());
-    GlobalSettings::instance()->setProgramNuget(ui->programsNuget->getCurrentPath());
+{   
     GlobalSettings::instance()->setDLLRedirectXNA(ui->modsRedirectXNA->isChecked());
     GlobalSettings::instance()->setForceUnsupported(ui->modsForceUnsupported->isChecked());
     GlobalSettings::instance()->setEnablePrimeCache(!ui->modDisablePrimeCache->isChecked());

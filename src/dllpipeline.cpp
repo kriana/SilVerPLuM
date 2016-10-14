@@ -262,10 +262,10 @@ int DllPipeline::runMSBUILD()
 
     QStringList args = m_buildArguments[Platform::getPlatformString()];
 
-    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBUILD() + " " + args.join(" "));
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBuild() + " " + args.join(" "));
 
     QProcess process;
-    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBUILD(), args);
+    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBuild(), args);
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 

@@ -63,7 +63,9 @@ SOURCES += main.cpp\
     modimporter.cpp \
     modimportercontentitem.cpp \
     identifierlineedit.cpp \
-    filestash.cpp
+    filestash.cpp \
+    externalprogram.cpp \
+    externalprogramwidget.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -115,7 +117,9 @@ HEADERS  += mainwindow.h \
     modimporter.h \
     modimportercontentitem.h \
     identifierlineedit.h \
-    filestash.h
+    filestash.h \
+    externalprogram.h \
+    externalprogramwidget.h
 
 
 FORMS    += mainwindow.ui \
@@ -136,7 +140,8 @@ FORMS    += mainwindow.ui \
     encryptedcontentpasswordgenerator.ui \
     modimporter.ui \
     modimportercontentitem.ui \
-    filestash.ui
+    filestash.ui \
+    externalprogramwidget.ui
 
 RESOURCES += \
     resources.qrc
