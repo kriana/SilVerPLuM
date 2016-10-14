@@ -55,6 +55,9 @@ SilVerPLuM is written in Qt5 with qmake building system and has following depend
 
 If you want to use the commandline, you can use `qmake` and then `make`. Otherwise you can use an IDE like QtCreator. On Mac and Windows check if there's an additional build step `rcc -binary icontheme.qrc icontheme.rcc` to include icon resources. The resulting icontheme.rcc should be present in the binary folder.
 
+## Reporting issues
+If you have an issue, take a look at the corresponding [Wiki entry](https://github.com/rumangerst/SilVerPLuM/wiki/Finding-problems) for steps how to single out the problem and the correct way to report them.
+
 # Using SilVerPLuM
 
 ## Concepts
