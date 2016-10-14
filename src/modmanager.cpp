@@ -85,6 +85,11 @@ int ModManager::setEnabled(const QString &mod, const QString &content, bool enab
 
 bool ModManager::isEnabled(const QString &mod, const QString &content)
 {
+    Pipeline * p = getPipeline(mod, content);
+
+    if(!GlobalSettings::instance()->getForceUnsupported() && p->unsupported())
+        return false;
+
     return m_config->value(mod + "/content/" + content, false).toBool();
 }
 
