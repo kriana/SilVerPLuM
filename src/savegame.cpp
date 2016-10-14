@@ -72,7 +72,7 @@ Savegame *Savegame::loadFromDirectory(const QDir &dir, Profile *profile)
 
     for(QString entry : dir.entryList(QDir::Files))
     {
-        if(entry.startsWith(savegame->name()) && !entry.endsWith("_old"))
+        if(entry.startsWith(savegame->farmerName()) && !entry.endsWith("_old"))
         {
             datafile = dir.absoluteFilePath(entry);
             break;
@@ -112,7 +112,7 @@ Savegame *Savegame::loadFromDirectory(const QDir &dir, Profile *profile)
     return savegame;
 }
 
-QString Savegame::name() const
+QString Savegame::farmerName() const
 {
     return m_name;
 }
@@ -172,7 +172,7 @@ void Savegame::setMoney(int money)
     m_money = money;
 }
 
-int Savegame::timePlayedMs() const
+int Savegame::timePlayedMS() const
 {
     return m_timePlayedMs;
 }

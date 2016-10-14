@@ -26,30 +26,92 @@ public:
 
     ~ModManager();
 
+    /**
+     * @brief Returns the profile of this mod manager
+     * @return
+     */
     Profile *profile() const;
 
+    /**
+     * @brief Initialized this mod manager
+     */
     void initialize();
 
+    /**
+     * @brief Gets a list of all mods. Sorted by priority.
+     * @return
+     */
     QList<Modification*> getModifications();
 
+    /**
+     * @brief Gets the modification with id
+     * @param id
+     * @return
+     */
     Modification * getModification(const QString & id);
 
+    /**
+     * @brief Gets a mod pipelines with id
+     * @param mod
+     * @param content
+     * @return
+     */
     Pipeline * getPipeline(const QString & mod, const QString & content);
 
+    /**
+     * @brief Enables/disables a pipeline
+     * @param mod
+     * @param content
+     * @param enabled
+     * @return exitcode
+     */
     int setEnabled(const QString & mod, const QString & content, bool enabled);
 
+    /**
+     * @brief Returns true if the pipeline is enabled
+     * @param mod
+     * @param content
+     * @return
+     */
     bool isEnabled(const QString & mod, const QString & content);
 
+    /**
+     * @brief Moves a mod to a higher priority
+     * @param mod
+     * @return
+     */
     bool priotizeUp(const QString & mod);
 
+    /**
+     * @brief Moves a mod to a lover priority
+     * @param mod
+     * @return
+     */
     bool priotizeDown(const QString & mod);
 
+    /**
+     * @brief Returns true if the dependency satisfies one of the mod's dependencies
+     * @param dep
+     * @param requester
+     * @param priorityaware
+     * @return
+     */
     bool dependencySatisfied(const Dependency & dep, Modification *requester, bool priorityaware);
 
+    /**
+     * @brief Returns a map of all unsatisfied dependencies based on mod id
+     * @return
+     */
     QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
 
+    /**
+     * @brief Installs all activated mods
+     */
     void install();
 
+    /**
+     * @brief Uninstalls all activated mods
+     */
     void uninstall();
 
     /**
@@ -66,23 +128,56 @@ public:
      */
     QString resolveModUrl(const QString & url, bool emptyoninvalid = true);
 
+    /**
+     * @brief Returns true if the parameter is a valid mod-url
+     * @param url
+     * @return
+     */
     bool isValidModUrl(const QString & url);
 
-
+    /**
+     * @brief Returns the logger of this modmanager
+     * @return
+     */
     Logger & getLogger();
 
+    /**
+     * @brief Imports a mod from a directory
+     * @param dir
+     * @return
+     */
     bool importModFromDirectory(const QDir & dir);
 
+    /**
+     * @brief Imports a mod from a *.zip file
+     * @param filename
+     * @return
+     */
     bool importModFromZip(const QString & filename);
 
+    /**
+     * @brief Deletes a mod from ID
+     * @param modid
+     */
     void deleteMod(const QString & modid);
 
+    /**
+     * @brief Copies a mod to profile
+     * @param modid
+     * @param p
+     */
     void copyModTo(const QString & modid, Profile * p);
 
 public slots:
 
+    /**
+     * @brief Reloads all mods
+     */
     void reloadMods();
 
+    /**
+     * @brief Issues a dependency check. It will signal when it's finished
+     */
     void issueDependencyCheck();
 
 private:

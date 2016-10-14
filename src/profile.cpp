@@ -211,7 +211,7 @@ int Profile::backupInterval()
 
 void Profile::setBackupInterval(int interval)
 {
-    m_Settings->setValue("Savegames/BackupInterval", interval);
+    m_Settings->setValue("Savegames/BackupInterval", interval >= 0 ? interval : 0);
 
     setting_changed();
 }

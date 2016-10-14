@@ -16,6 +16,10 @@ public:
 
     ~SavegameManager();
 
+    /**
+     * @brief Profile of this savegame manager
+     * @return
+     */
     Profile *profile() const;
 
     /**
@@ -24,16 +28,41 @@ public:
      */
     QStringList lookForSavegameIds() const;
 
+    /**
+     * @brief Gets the savegames in this manager
+     * @return
+     */
     QMap<QString, BackupSavegame*> getSavegames() const;
 
+    /**
+     * @brief Gets all backup savegame IDs (not UIDs!)
+     * @return
+     */
     QList<QString> getSavegameIds() const;
 
+    /**
+     * @brief Gets all savegame UIDs (not backup savegame IDs!)
+     * @return
+     */
     QSet<QString> getSavegameUIDs();
 
+    /**
+     * @brief Gets a backup-savegame with ID (not UID!)
+     * @param id
+     * @return
+     */
     BackupSavegame *getSavegame(const QString & id);
 
+    /**
+     * @brief Initializes this manager
+     */
     void initialize();
 
+    /**
+     * @brief Imports a savegame (not backup-savegame)
+     * @param path
+     * @return
+     */
     bool import(const QString & path);
 
 private:

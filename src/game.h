@@ -30,18 +30,44 @@ public:
 
     ~Game();
 
+    /**
+     * @brief Returns true if the game is running
+     * @return
+     */
     bool running();
 
+    /**
+     * @brief Sets the launcher of this game. Will throw an exception if it's still running.
+     * @param l
+     */
     void setLauncher(Launcher * l);
 
+    /**
+     * @brief Runs the current launcher
+     */
     void prepareAndRun();
 
+    /**
+     * @brief Tries to force-stop the current launcher
+     */
     void stop();
 
+    /**
+     * @brief Returns the exit-code of the last run
+     * @return
+     */
     int exitCode() const;
 
+    /**
+     * @brief Gets the logger of this game
+     * @return
+     */
     Logger & getLogger();
 
+    /**
+     * @brief Returns all files that are marked as unoverrideable. Should take effect when FileGuard is active.
+     * @return
+     */
     QSet<QString> getUnoverrideableGameFiles() const;
 
 private:
@@ -62,20 +88,51 @@ private:
 
     int m_exitCode = 0;
 
+    /**
+     * @brief Sends progress to any listener
+     * @param enabled
+     * @param _min
+     * @param _max
+     * @param _val
+     */
     void progress(bool enabled, int _min = 0, int _max = 0, int _val = 0);
 
+    /**
+     * @brief Determines unoverrideable files in prepare step
+     */
     void prepareFindUnoverrideableGameFiles();
 
+    /**
+     * @brief Backups the game's content directory
+     * @param sdvcontentdir
+     * @param sdvcontentbackup
+     */
     void prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup);
 
+    /**
+     * @brief Copies the profile's savegames into the savegame directory
+     * @param sdvsavegames
+     */
     void prepareCopySavegames(QDir sdvsavegames);
 
+    /**
+     * @brief Moves the savegames from the savegame dir back to the profile dir
+     */
     void postMoveSavegames();
 
+    /**
+     * @brief Restores the original content directory
+     */
     void postRestoreContent();
 
+    /**
+     * @brief Installs all activated mods
+     */
     void prepareInstallMods();
 
+    /**
+     * @brief Uninstalls all activated mods
+     */
     void postUninstallMods();
 
 private slots:

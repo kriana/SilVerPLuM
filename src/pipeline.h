@@ -15,6 +15,9 @@ class Pipeline : public QObject
 
 public:
 
+    /**
+     * @brief Contains information about encrypted content
+     */
     struct EncryptionEntry
     {
         QString zipfile;
@@ -27,53 +30,166 @@ public:
 
     virtual ~Pipeline();
 
+    /**
+     * @brief The name of this pipeline
+     * @return
+     */
     QString name() const;
+
+    /**
+     * @brief Sets the name of this pipeline
+     * @param name
+     */
     void setName(const QString &name);
 
+    /**
+     * @brief Description of this pipeline in Markdown format
+     * @return
+     */
     QString description() const;
+
+    /**
+     * @brief Sets the description of this pipeline in Markdown format
+     * @param description
+     */
     void setDescription(const QString &description);
 
+    /**
+     * @brief Gets the priority of this pipeline
+     * @return
+     */
     int priority() const;
+
+    /**
+     * @brief Sets the priority of this pipeline
+     * @param priority
+     */
     void setPriority(int priority);
 
+    /**
+     * @brief Gets the mod this pipeline belongs to
+     * @return
+     */
     Modification *mod() const;
 
+    /**
+     * @brief Sets a file src installed to dst
+     * @param src
+     * @param dst
+     */
     void setInstallable(const QString & src, const QString & dst);
 
+    /**
+     * @brief Inserts a launcher
+     * @param id
+     * @param launcher
+     */
     void setLauncher(const QString & id, Launcher * launcher);
 
+    /**
+     * @brief Primes the pipeline. Will do preparation work such as building extracting encrypted content etc.
+     * @param force
+     * @return
+     */
     virtual int primePipeline(bool force);
 
+    /**
+     * @brief Returns true if this pipeline is supposed to be installed by default
+     * @return
+     */
     bool isdefault() const;
 
+    /**
+     * @brief Set/Unset this pipeline to be installed by default
+     * @param isdefault
+     */
     void setDefault(bool isdefault);
 
+    /**
+     * @brief Gets the ID of this pipeline
+     * @return
+     */
     QString id() const;
 
+    /**
+     * @brief Returns true if this pipeline was enabled
+     * @return
+     */
     bool isEnabled();
 
+    /**
+     * @brief Enables/disables this pipeline
+     * @param enabled
+     * @return exitcode
+     */
     int setEnabled(bool enabled);
 
+    /**
+     * @brief Returns the directory of this pipeline
+     * @return
+     */
     QDir pipelineBaseDir();
 
+    /**
+     * @brief Returns true if this pipeline is not supported by this platform
+     * @return
+     */
     bool unsupported() const;
 
+    /**
+     * @brief Sets/unsets if this pipeline is not supported by this platform
+     * @param unsupported
+     */
     void setUnsupported(bool unsupported);
 
+    /**
+     * @brief Returns true if the searchsting applies to this pipeline
+     * @param searchstring_
+     * @return
+     */
     virtual bool search(const QString & searchstring_);
 
+    /**
+     * @brief Returns the list of launchers
+     * @return
+     */
     QList<Launcher *> launchers() const;
 
+    /**
+     * @brief Installs this pipeline
+     */
     virtual void install();
 
+    /**
+     * @brief Uninstalls this pipeline
+     */
     virtual void uninstall();
 
+    /**
+     * @brief Gets the logger of this pipeline
+     * @return
+     */
     Logger & getLogger();
 
+    /**
+     * @brief Returns the list of encrypted content entries
+     * @return
+     */
     QList<EncryptionEntry> getEncryptionEntries() const;
 
+    /**
+     * @brief Adds an encrypted content entry
+     * @param entry
+     */
     void addEncryptionEntry(const EncryptionEntry & entry);
 
+    /**
+     * @brief Loads this pipeline from configuration
+     * @param mod
+     * @param id
+     * @param json
+     * @return
+     */
     static Pipeline * loadFromJson(Modification *mod, const QString &id, const QJsonObject &json);
 
 protected:

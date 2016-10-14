@@ -29,18 +29,46 @@ public:
 
     SavegameManager *savegameManager() const;
 
+    /**
+     * @brief The ID of this backup-savegame. Usually FarmerName_UID
+     * @return
+     */
     QString id() const;
 
+    /**
+     * @brief Gets the logger for this object
+     * @return
+     */
     Logger &getLogger();
 
+    /**
+     * @brief Gets the currently active savegame. Can be nullptr.
+     * @return
+     */
     Savegame *getMainSavegame() const;
 
+    /**
+     * @brief Gets a list of backup savegames sorted by date.
+     * @return
+     */
     QList<Savegame *> getBackupSavegames() const;
 
+    /**
+     * @brief Gets the main savegame or the newest backup savegame. Can be nullptr.
+     * @return
+     */
     Savegame *getAnySavegame() const;
 
+    /**
+     * @brief Returns true if there's no savegame in this backup savegame.
+     * @return
+     */
     bool isEmpty() const;
 
+    /**
+     * @brief The directory used for the backups
+     * @return
+     */
     QDir backupDir() const;
 
     /**

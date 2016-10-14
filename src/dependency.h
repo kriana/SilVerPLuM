@@ -29,14 +29,34 @@ public:
 
     Dependency(const QString & id, Operation op, const QVersionNumber & version);
 
+    /**
+     * @brief Returns the mod-id of this dependency
+     * @return
+     */
     QString getId() const;
 
+    /**
+     * @brief Gets the operation of this dependency
+     * @return
+     */
     Operation getOperation() const;
 
+    /**
+     * @brief Gets the required version of this dependency
+     * @return
+     */
     QVersionNumber getVersion() const;
 
+    /**
+     * @brief Formats this dependency to a valid dependency string
+     * @return
+     */
     QString toString() const;
 
+    /**
+     * @brief Formats this dependency to a more readable string. Cannot be read into a dependency, again.
+     * @return
+     */
     QString toPrettyString() const;
 
     /**

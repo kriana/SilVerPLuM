@@ -78,11 +78,11 @@ void SavegameManagerWidgetItem::updateData()
 
         if(m_savegame->getMainSavegame() != nullptr)
         {
-            ui->lblFarmerName->setText(m_savegame->getMainSavegame()->name());
+            ui->lblFarmerName->setText(m_savegame->getMainSavegame()->farmerName());
             ui->lblIngameDate->setText(m_savegame->getMainSavegame()->timedate());
             ui->lblMoney->setText(QString("%1 G").arg(m_savegame->getMainSavegame()->money()));
             ui->lblFarmName->setText(m_savegame->getMainSavegame()->farmName() + " Farm");
-            ui->lblPlayTime->setText(QString("%1h played").arg(m_savegame->getMainSavegame()->timePlayedMs() / 1000 / 60 / 60));
+            ui->lblPlayTime->setText(QString("%1h played").arg(m_savegame->getMainSavegame()->timePlayedMS() / 1000 / 60 / 60));
 
 
             if(!m_savegame->getBackupSavegames().isEmpty())

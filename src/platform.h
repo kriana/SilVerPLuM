@@ -18,6 +18,10 @@ public:
         Linux
     };
 
+    /**
+     * @brief Returns the current platform
+     * @return
+     */
     static Type getCurrentPlatform()
     {
         if(QSysInfo::kernelType() == "winnt")
@@ -38,6 +42,11 @@ public:
         }
     }
 
+    /**
+     * @brief Returns the platfrom from a platformstring
+     * @param str
+     * @return
+     */
     static Type getPlatformFromString(const QString & str)
     {
         if(str == "windows")
@@ -58,6 +67,10 @@ public:
         }
     }
 
+    /**
+     * @brief Returns the platform as platformstring
+     * @return
+     */
     static QString getPlatformString()
     {
         switch(getCurrentPlatform())

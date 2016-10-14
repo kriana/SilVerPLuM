@@ -19,53 +19,144 @@ class Profile : public QObject
 
 public:
 
+    /**
+     * @brief Name of the default profiles
+     */
     static QString DEFAULT_PROFILE_NAME;
+
+    /**
+     * @brief ID of the default profile
+     */
     static QString DEFAULT_PROFILE_ID;
 
     Profile(const QString & id);
 
     ~Profile();    
 
+    /**
+     * @brief The directory of this profile
+     * @return
+     */
     QDir profileBaseDir();
 
+    /**
+     * @brief Savegame directory of this profile
+     * @return
+     */
     QDir profileSavegameDir();
 
+    /**
+     * @brief Savegame backup directory of this profile
+     * @return
+     */
     QDir profileSavegameBackupDir();
 
+    /**
+     * @brief Modification directory of this profile
+     * @return
+     */
     QDir profileModDir();
 
+    /**
+     * @brief Identifier of this profile
+     * @return
+     */
     QString id() const;
 
+    /**
+     * @brief Sets ID of this profile
+     * @param id
+     */
     void setId(const QString &id);
 
+    /**
+     * @brief Name of this profile
+     * @return
+     */
     QString name() const;
 
+    /**
+     * @brief Sets the name of this profile
+     * @param name
+     */
     void setName(const QString & name);
 
+    /**
+     * @brief Description of this profile in Markdown format
+     * @return
+     */
     QString description() const;
 
+    /**
+     * @brief Sets the description of this profile in Markdown format
+     * @param desc
+     */
     void setDescription(const QString & desc);
 
+    /**
+     * @brief The Stardew Valley dir
+     * @return
+     */
     QDir StardewValleyDir();
 
+    /**
+     * @brief Sets the Stardew Valley dir
+     * @param dir
+     */
     void setStardewValleyDir(const QDir & dir);
 
+    /**
+     * @brief The savegame dir of Stardew Valley
+     * @return
+     */
     QDir StardewValleySavegameDir();
 
+    /**
+     * @brief Sets the savegame dir of Stardew Valley
+     * @param dir
+     */
     void setStardewValleySavegameDir(const QDir & dir);
 
+    /**
+     * @brief The user data dir of Stardew Valley
+     * @return
+     */
     QDir StardewValleyUserDataDir();
 
+    /**
+     * @brief Sets the user data dir of Stardew Valley
+     * @param dir
+     */
     void setStardewValleyUserDataDir(const QDir & dir);
 
+    /**
+     * @brief The current version of Stardew Valley
+     * @return
+     */
     QVersionNumber StardewValleyVersion();
 
+    /**
+     * @brief Sets the current version of Stardew Valley
+     * @param version
+     */
     void setStardewValleyVersion(const QVersionNumber & version);
 
+    /**
+     * @brief Gets the current Technology used by Stardew Valley
+     * @return
+     */
     Platform::GameTechnology StardewValleyTechnology();
 
+    /**
+     * @brief Sets the current technology used by Stardew Valley
+     * @param tech
+     */
     void setStardewValleyTechnology(Platform::GameTechnology tech);
 
+    /**
+     * @brief Returns the stardew valley technology as string
+     * @return
+     */
     QString StardewValleyTechnologyString();
 
     /**
@@ -74,6 +165,10 @@ public:
      */
     bool enableBackupOnStart();
 
+    /**
+     * @brief Enable/disable if savegames shouldbe backed up before game launch
+     * @param enabled
+     */
     void setEnableBackupOnStart(bool enabled);
 
     /**
@@ -82,6 +177,10 @@ public:
      */
     bool checkForExistingBackups();
 
+    /**
+     * @brief Enabled/disables checking for existing backups
+     * @param enabled
+     */
     void setCheckForExistingBackups(bool enabled);
 
     /**
@@ -90,18 +189,46 @@ public:
      */
     int backupInterval();
 
+    /**
+     * @brief Sets the backup interval. Set to 0 to disable.
+     * @param interval
+     */
     void setBackupInterval(int interval);
 
+    /**
+     * @brief Returns true if the profile directory exists
+     * @return
+     */
     bool exists();
 
+    /**
+     * @brief Sets the current launcher
+     * @param id
+     */
     void setLauncher(const QString & id);
 
+    /**
+     * @brief Gets the current launcher
+     * @return
+     */
     Launcher * getLauncher();
 
+    /**
+     * @brief Get launcher with ID
+     * @param id
+     * @return
+     */
     Launcher * getLauncher(const QString & id);
 
+    /**
+     * @brief Get the list of all launchers
+     * @return
+     */
     QList<Launcher*> getLaunchers();
 
+    /**
+     * @brief Initialize this profile
+     */
     void initialize();
 
     /**
@@ -111,6 +238,9 @@ public:
 
 public slots:
 
+    /**
+     * @brief Creates the directories of this profile
+     */
     void repairDirectories();
 
 private:
