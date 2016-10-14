@@ -539,9 +539,19 @@ void ModManager::reloadMods()
 
 void ModManager::sortMods()
 {
-    std::sort(m_mods.begin(), m_mods.end(), [&](Modification * a, Modification * b) {
-        return getSortPriority(a->id()) < getSortPriority(b->id());
+    QList<Modification*> tosort = QList<Modification*>(m_mods);
+
+    // Bugfix: Prevent access while inplace sorting
+    std::sort(tosort.begin(), tosort.end(), [&](Modification * a, Modification * b) {
+
+        int sa = getSortPriority(a->id());
+        int sb = getSortPriority(b->id());
+
+        return sa < sb;
     });
+
+    m_mods = tosort;
+
     emit updatedModList();
 
     issueDependencyCheck();
