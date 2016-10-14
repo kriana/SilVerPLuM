@@ -139,9 +139,11 @@ public:
 
     void removeExternalProgram(const QString & id);
 
-    void setExternalProgram(const ExternalProgram & program);
+    void setExternalProgram(const QString &id, const ExternalProgram & program);
 
     QList<ExternalProgram> getExternalPrograms();
+
+    QStringList getExternalProgramIds();
 
 private:
 

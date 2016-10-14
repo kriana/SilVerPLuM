@@ -1,10 +1,10 @@
-#ifndef EXTERNALPROGRAM_H
-#define EXTERNALPROGRAM_H
+#pragma once
 
 #include <QString>
 #include <QStringList>
 #include "launcherexecutable.h"
 #include <QProcess>
+#include <QMimeType>
 
 class ExternalProgram
 {
@@ -44,12 +44,6 @@ public:
     void setArguments(const QStringList &arguments);
 
     /**
-     * @brief Return ID of this external program
-     * @return
-     */
-    QString id() const;
-
-    /**
      * @brief Sets ID of this external program
      * @param id
      */
@@ -86,10 +80,17 @@ public:
     void setRunnable(bool runnable);
 
     /**
+     * @brief Returns if this program runs
+     * @param type
+     * @return
+     */
+    bool supportsMime(const QMimeType & type);
+
+    /**
      * @brief Infuses this program's settings into a process
      * @param process
      */
-    bool infuse(QProcess * process, const QStringList & args);
+    bool infuse(QProcess * process, const QString &file, const QStringList & args);
 
     /**
      * @brief Tries to figure out the correct runtime for the file and infuses it into the process
@@ -102,11 +103,8 @@ public:
 
 private:
 
-    QString m_id;
-    QStringList m_executablePaths;
+    QString m_executablePath;
     QStringList m_arguments;
     QStringList m_runtimeMimeTypes;
     bool m_runnable;
 };
-
-#endif // EXTERNALPROGRAM_H

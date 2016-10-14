@@ -13,6 +13,7 @@
 #include "pipeline.h"
 #include "profile.h"
 #include "globalsettings.h"
+#include "externalprogram.h"
 
 DllPipeline::DllPipeline(Modification *mod, const QString &id) : Pipeline(mod, id)
 {
@@ -242,7 +243,17 @@ int DllPipeline::runNuget()
     getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget", "Running nuget restore in " + pipelineBaseDir().absolutePath());
 
     QProcess process;    
-    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramNuget(), QStringList() << "restore");
+    //utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramNuget(), QStringList() << "restore");
+
+    ExternalProgram nuget_program = GlobalSettings::instance()->getExternalProgram("nuget");
+
+    if(nuget_program.isEmpty())
+    {
+        getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Nuget program is empty!");
+        return -1;
+    }
+
+    ExternalProgram::tryToInfuse(&process, nuget_program.executablePath(), QStringList() << "restore");
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
@@ -262,10 +273,21 @@ int DllPipeline::runMSBUILD()
 
     QStringList args = m_buildArguments[Platform::getPlatformString()];
 
-    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBuild() + " " + args.join(" "));
+    //getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + GlobalSettings::instance()->getProgramMSBuild() + " " + args.join(" "));
 
     QProcess process;
-    utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBuild(), args);
+
+    ExternalProgram msbuild_program = GlobalSettings::instance()->getExternalProgram("msbuild");
+
+    if(msbuild_program.isEmpty())
+    {
+        getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "MSBuild/XBuild program is empty!");
+        return -1;
+    }
+
+    ExternalProgram::tryToInfuse(&process, msbuild_program.executablePath(), args);
+
+    //utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBuild(), args);
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 

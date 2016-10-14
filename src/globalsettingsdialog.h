@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
+#include "externalprogramwidget.h"
 
 namespace Ui {
 class GlobalSettingsDialog;
@@ -26,6 +27,12 @@ public slots:
 
 private:
     Ui::GlobalSettingsDialog *ui;
+
+    QList<ExternalProgramWidget*> m_externalProgramWidgets;
+
+private slots:
+
+    void addProgramClicked();
 };
 
 #endif // GLOBALSETTINGSDIALOG_H

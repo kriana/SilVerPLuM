@@ -3,6 +3,7 @@
 #include "pipeline.h"
 #include "game.h"
 #include "utils.h"
+#include "externalprogram.h"
 
 Launcher::Launcher(Profile *p, Pipeline *pip) : m_profile(p), m_pipeline(pip)
 {
@@ -79,49 +80,51 @@ void Launcher::start()
         resolvedarguments[i] = m_profile->getModManager()->autoResolveModUrls(resolvedarguments[i]);
     }
 
-    if(Platform::getCurrentPlatform() == Platform::Windows)
-    {
-        m_process->setProgram(path);
-        m_process->setArguments(resolvedarguments);
-    }
-    else
-    {
-        // OSX and Linux: Wrap around bash, so it will run everything
-        m_process->setProgram("/bin/bash");
+    ExternalProgram::tryToInfuse(m_process, path, resolvedarguments);
 
-        /*
-         * Problem: If I close bash, the children will be still there
-         * Problem: I need to use bash, otherwise nothing will start
-         * Solution: Create a script that is placed somewhere that runs everything
-         */
+//    if(Platform::getCurrentPlatform() == Platform::Windows)
+//    {
+//        m_process->setProgram(path);
+//        m_process->setArguments(resolvedarguments);
+//    }
+//    else
+//    {
+//        // OSX and Linux: Wrap around bash, so it will run everything
+//        m_process->setProgram("/bin/bash");
 
-        // FUCK didn't work
-        /*if(launcherfile.open(QFile::WriteOnly))
-        {
-            QString template_script = utils::readAllTextFrom(":/resources/unix_launcher.sh");
-            QString command = (path + " " + executable.arguments().join(" ")).trimmed();
-            command = command.replace(" ", "\\ "); // Escape spaces
-            command = command.replace("\"", "\\\""); // Escape quotes
+//        /*
+//         * Problem: If I close bash, the children will be still there
+//         * Problem: I need to use bash, otherwise nothing will start
+//         * Solution: Create a script that is placed somewhere that runs everything
+//         */
 
-            template_script = template_script.replace("{}", command);
-            QTextStream stream(&launcherfile);
-            stream << template_script;
-            launcherfile.close();
+//        // FUCK didn't work
+//        /*if(launcherfile.open(QFile::WriteOnly))
+//        {
+//            QString template_script = utils::readAllTextFrom(":/resources/unix_launcher.sh");
+//            QString command = (path + " " + executable.arguments().join(" ")).trimmed();
+//            command = command.replace(" ", "\\ "); // Escape spaces
+//            command = command.replace("\"", "\\\""); // Escape quotes
 
-            m_process->setArguments( QStringList() << launcherfile.fileName());
-        }
-        else*/
-        {
-            // Use old solution (which also doesn't work, but isn't as complex)
-            QString bash_argument = "";
-            bash_argument += (path + " " + resolvedarguments.join(" ")).trimmed();
+//            template_script = template_script.replace("{}", command);
+//            QTextStream stream(&launcherfile);
+//            stream << template_script;
+//            launcherfile.close();
 
-            bash_argument = bash_argument.replace("\"", "\\\""); // Escape quotes
-            bash_argument = "\"" + bash_argument + "\"";
+//            m_process->setArguments( QStringList() << launcherfile.fileName());
+//        }
+//        else*/
+//        {
+//            // Use old solution (which also doesn't work, but isn't as complex)
+//            QString bash_argument = "";
+//            bash_argument += (path + " " + resolvedarguments.join(" ")).trimmed();
 
-            m_process->setArguments( QStringList() << "-c" << bash_argument);
-        }
-    }
+//            bash_argument = bash_argument.replace("\"", "\\\""); // Escape quotes
+//            bash_argument = "\"" + bash_argument + "\"";
+
+//            m_process->setArguments( QStringList() << "-c" << bash_argument);
+//        }
+//    }
 
     getProfile()->getLogger().log(Logger::Info, "launcher", id(), "start", "Running " + m_process->program() + " " + m_process->arguments().join(" "));
 

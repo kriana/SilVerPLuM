@@ -1,6 +1,8 @@
 #include "globalsettingsdialog.h"
 #include "ui_globalsettingsdialog.h"
 #include "globalsettings.h"
+#include "externalprogramwidget.h"
+#include "utils.h"
 
 GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -23,6 +25,7 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     connect(ui->runningBackupProfileSavegames, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
 
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(saveOrDiscart(QAbstractButton*)));
+    connect(ui->btnAddProgram, &QPushButton::clicked, this, &GlobalSettingsDialog::addProgramClicked);
 
     discart();
 }
@@ -34,6 +37,9 @@ GlobalSettingsDialog::~GlobalSettingsDialog()
 
 void GlobalSettingsDialog::discart()
 {  
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
     ui->modsRedirectXNA->setChecked(GlobalSettings::instance()->getDLLRedirectXNA());
     ui->modsForceUnsupported->setChecked(GlobalSettings::instance()->getForceUnsupported());
     ui->modDisablePrimeCache->setChecked(!GlobalSettings::instance()->getEnablePrimeCache());
@@ -43,11 +49,30 @@ void GlobalSettingsDialog::discart()
     ui->runningBackupSDVSavegames->setChecked(GlobalSettings::instance()->getRunningBackupSDVSavegames());
     ui->runningBackupProfileSavegames->setChecked(GlobalSettings::instance()->getRunningBackupProfileSavegames());
 
+    m_externalProgramWidgets.clear();
+    utils::clearLayout(ui->externalProgramsList->layout());
+    for(QString id : GlobalSettings::instance()->getExternalProgramIds())
+    {
+        ExternalProgramWidget * widget = new ExternalProgramWidget(ui->externalProgramsList);
+        widget->fillWith(id);
+
+        connect(widget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
+        ui->externalProgramsList->layout()->addWidget(widget);
+
+        m_externalProgramWidgets << widget;
+    }
+
     ui->buttonBox->hide();
+
+    QApplication::restoreOverrideCursor();
 }
 
 void GlobalSettingsDialog::save()
 {   
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
+
     GlobalSettings::instance()->setDLLRedirectXNA(ui->modsRedirectXNA->isChecked());
     GlobalSettings::instance()->setForceUnsupported(ui->modsForceUnsupported->isChecked());
     GlobalSettings::instance()->setEnablePrimeCache(!ui->modDisablePrimeCache->isChecked());
@@ -56,6 +81,24 @@ void GlobalSettingsDialog::save()
     GlobalSettings::instance()->setEnableDepencyCheckPriorityAwareness(ui->modDepCheckPriorityAware->isChecked());
     GlobalSettings::instance()->setRunningBackupSDVSavegames(ui->runningBackupSDVSavegames->isChecked());
     GlobalSettings::instance()->setRunningBackupProfileSavegames(ui->runningBackupProfileSavegames->isChecked());
+
+    for(QString id : GlobalSettings::instance()->getExternalProgramIds())
+    {
+       GlobalSettings::instance()->removeExternalProgram(id);
+    }
+
+    for(ExternalProgramWidget * widget : m_externalProgramWidgets)
+    {
+        QString programid = widget->getExternalProgramId();
+        ExternalProgram program = widget->getExternalProgram();
+
+        if(!programid.isEmpty() && program.isEmpty())
+        {
+            GlobalSettings::instance()->setExternalProgram(programid, program);
+        }
+    }
+
+    QApplication::restoreOverrideCursor();
 
     discart();
 }
@@ -73,4 +116,14 @@ void GlobalSettingsDialog::saveOrDiscart(QAbstractButton *button)
     default:
         break;
     }
+}
+
+void GlobalSettingsDialog::addProgramClicked()
+{
+    ExternalProgramWidget * widget = new ExternalProgramWidget(ui->externalProgramsList);
+
+    connect(widget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
+    ui->externalProgramsList->layout()->addWidget(widget);
+
+    m_externalProgramWidgets << widget;
 }

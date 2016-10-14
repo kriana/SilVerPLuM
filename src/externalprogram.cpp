@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QMimeDatabase>
 #include "globalsettings.h"
+#include "utils.h"
 
 ExternalProgram::ExternalProgram()
 {
@@ -49,16 +50,6 @@ void ExternalProgram::setArguments(const QStringList &arguments)
     m_arguments = arguments;
 }
 
-QString ExternalProgram::id() const
-{
-    return m_id;
-}
-
-void ExternalProgram::setId(const QString &id)
-{
-    m_id = id;
-}
-
 bool ExternalProgram::isEmpty() const
 {
     return m_executablePath.isEmpty();
@@ -84,13 +75,74 @@ void ExternalProgram::setRunnable(bool runnable)
     m_runnable = runnable;
 }
 
-bool ExternalProgram::infuse(QProcess *process, const QStringList &args)
+bool ExternalProgram::supportsMime(const QMimeType &type)
 {
+    for(QString mime : m_runtimeMimeTypes)
+    {
+        if(type.inherits(mime))
+        {
+            return true;
+        }
+    }
 
+    return false;
+}
+
+bool ExternalProgram::infuse(QProcess *process, const QString & file, const QStringList &args)
+{
+    QStringList procargs = QStringList(m_arguments);
+    QString joinedargs = utils::ArgumentListToString(args);
+    QString joinedfileargs = utils::ArgumentListToString(QStringList() << file << args);
+
+    // Resolve just replaced values
+    for(int i = 0; i < procargs.size(); ++i)
+    {
+        procargs[i] = procargs[i].replace("{file}", file)
+                .replace("{joinedargs}", joinedargs)
+                .replace("{joinedfileargs}", joinedfileargs);
+    }
+
+    // Apply insert
+    while(procargs.contains("{insertargs}"))
+    {
+        int index = procargs.indexOf("{insertargs}");
+
+        for(QString a : args)
+        {
+            procargs.insert(index, a);
+        }
+
+        index = procargs.indexOf("{insertargs}");
+        procargs.removeAt(index);
+    }
+
+    process->setProgram(executablePath());
+    process->setArguments(procargs);
+
+    return true;
 }
 
 bool ExternalProgram::tryToInfuse(QProcess *process, const QString &file, const QStringList &args)
 {
-    QMimeType mime = QMimeDatabase::mimeTypeForFile(file);
+    QMimeDatabase mimedb;
+    QMimeType mime = mimedb.mimeTypeForFile(file);
 
+    QList<ExternalProgram> programs = GlobalSettings::instance()->getExternalPrograms();
+
+    for(ExternalProgram program : programs)
+    {
+        if(program.runnable() && program.supportsMime(mime))
+        {
+            if(program.infuse(process, file, args))
+            {
+                return true;
+            }
+        }
+    }
+
+    // Infuse it as the file being the executable
+    process->setProgram(file);
+    process->setArguments(args);
+
+    return false;
 }

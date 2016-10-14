@@ -31,7 +31,10 @@ inline QString ArgumentListToString(QStringList list)
     {
         if(!first)
         {
-            result += " ";
+            result += " ";            
+        }
+        else
+        {
             first = false;
         }
 

@@ -10,6 +10,7 @@ GlobalSettings * GlobalSettings::m_pInstance = nullptr;
 GlobalSettings::GlobalSettings()
 {
     m_Settings = new QSettings("SilVerPLuM", "SilVerPLuM");
+    initializeDefaultExternalPrograms();
 }
 
 GlobalSettings::~GlobalSettings()
@@ -37,11 +38,11 @@ void GlobalSettings::initializeWindowsExternalPrograms()
 {
     m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "C:/Program Files/MSBuild/14.0/Bin/MSBuild.exe"
                                                            << "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList(),
                                                            true);
     m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "nuget.exe",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList(),
                                                            true);
 }
@@ -49,19 +50,19 @@ void GlobalSettings::initializeWindowsExternalPrograms()
 void GlobalSettings::initializeLinuxExternalPrograms()
 {
     m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "/usr/bin/xbuild",
-                                                           QStringList() <<"{insertargs}",
+                                                           QStringList() << "{file}" <<"{insertargs}",
                                                            QStringList(),
                                                            true);
     m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "/usr/bin/nuget",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList(),
                                                          true);
     m_DefaultExternalPrograms["mono"] = ExternalProgram(QStringList() << "/usr/bin/mono",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "application/x-ms-dos-executable",
                                                          true);
     m_DefaultExternalPrograms["bash"] = ExternalProgram(QStringList() << "/bin/bash",
-                                                           QStringList() << "-c" << "{joinedargs}",
+                                                           QStringList() << "-c" << "{joinedfileargs}",
                                                            QStringList() << "application/x-shellscript",
                                                          true);
 }
@@ -69,19 +70,19 @@ void GlobalSettings::initializeLinuxExternalPrograms()
 void GlobalSettings::initializeMacExternalPrograms()
 {
     m_DefaultExternalPrograms["msbuild"] = ExternalProgram(QStringList() << "/usr/bin/xbuild",
-                                                           QStringList() <<"{insertargs}",
+                                                           QStringList() << "{file}" <<"{insertargs}",
                                                            QStringList(),
                                                            true);
     m_DefaultExternalPrograms["nuget"] = ExternalProgram(QStringList() << "/usr/bin/nuget",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList(),
                                                          true);
     m_DefaultExternalPrograms["mono"] = ExternalProgram(QStringList() << "/usr/bin/mono",
-                                                           QStringList() << "{insertargs}",
+                                                           QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "application/x-ms-dos-executable",
                                                          true);
     m_DefaultExternalPrograms["bash"] = ExternalProgram(QStringList() << "/bin/bash",
-                                                           QStringList() << "-c" << "{joinedargs}",
+                                                           QStringList() << "-c" << "{joinedfileargs}",
                                                            QStringList() << "application/x-shellscript",
                                                          true);
 }
@@ -243,23 +244,50 @@ ExternalProgram GlobalSettings::getExternalProgram(const QString &id)
 void GlobalSettings::removeExternalProgram(const QString &id)
 {
     if(!id.isEmpty())
+    {
         m_Settings->remove("Programs/" + id);
+        m_Settings->sync();
+    }
 }
 
-void GlobalSettings::setExternalProgram(const ExternalProgram &program)
+void GlobalSettings::setExternalProgram(const QString &id, const ExternalProgram &program)
 {
     if(!program.isEmpty())
     {
-        m_Settings->setValue("Programs/" + program.id() + "/Executable", program.executablePath());
-        m_Settings->setValue("Programs/" + program.id() + "/ArgumentString", program.arguments().join("<<"));
-        m_Settings->setValue("Programs/" + program.id() + "/MimeTypeString", program.runtimeMimeTypes().join(";"));
-        m_Settings->setValue("Programs/" + program.id() + "/Runnable", program.runnable());
+        m_Settings->setValue("Programs/" + id + "/Executable", program.executablePath());
+        m_Settings->setValue("Programs/" + id + "/ArgumentString", program.arguments().join("<<"));
+        m_Settings->setValue("Programs/" + id + "/MimeTypeString", program.runtimeMimeTypes().join(";"));
+        m_Settings->setValue("Programs/" + id + "/Runnable", program.runnable());
+        m_Settings->sync();
     }
 }
 
 QList<ExternalProgram> GlobalSettings::getExternalPrograms()
 {
+    QList<ExternalProgram> programs;
+
+    for(QString id : getExternalProgramIds())
+    {
+        ExternalProgram prog = getExternalProgram(id);
+
+        if(!prog.isEmpty())
+        {
+            programs << prog;
+        }
+    }
+
+    return programs;
+}
+
+QStringList GlobalSettings::getExternalProgramIds()
+{
     m_Settings->beginGroup("Programs");
+    QSet<QString> ids = QSet<QString>::fromList(m_Settings->childGroups());
+
+    ids |= QSet<QString>::fromList(m_DefaultExternalPrograms.keys());
+
     m_Settings->endGroup();
+
+    return ids.toList();
 }
 
