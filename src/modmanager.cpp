@@ -85,6 +85,11 @@ int ModManager::setEnabled(const QString &mod, const QString &content, bool enab
 
 bool ModManager::isEnabled(const QString &mod, const QString &content)
 {
+    Pipeline * p = getPipeline(mod, content);
+
+    if(!GlobalSettings::instance()->getForceUnsupported() && p->unsupported())
+        return false;
+
     return m_config->value(mod + "/content/" + content, false).toBool();
 }
 
@@ -539,9 +544,19 @@ void ModManager::reloadMods()
 
 void ModManager::sortMods()
 {
-    std::sort(m_mods.begin(), m_mods.end(), [&](Modification * a, Modification * b) {
-        return getSortPriority(a->id()) < getSortPriority(b->id());
+    QList<Modification*> tosort = QList<Modification*>(m_mods);
+
+    // Bugfix: Prevent access while inplace sorting
+    std::sort(tosort.begin(), tosort.end(), [&](Modification * a, Modification * b) {
+
+        int sa = getSortPriority(a->id());
+        int sb = getSortPriority(b->id());
+
+        return sa < sb;
     });
+
+    m_mods = tosort;
+
     emit updatedModList();
 
     issueDependencyCheck();
