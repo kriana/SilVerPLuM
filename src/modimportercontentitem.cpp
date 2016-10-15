@@ -39,7 +39,19 @@ ModImporterContentItem::ModImporterContentItem(ModImporter * importer, QWidget *
     ui->contentId->setText(importer->findNewContentId());
     ui->contentName->setText("Mod content");
 
-    connect(ui->btnDelete, SIGNAL(clicked(bool)), this, SLOT(remove()));
+    QMenu * menu = new QMenu(ui->btnShowSettings);
+    menu->addAction(ui->actionRemove);
+    ui->btnShowSettings->setMenu(menu);
+
+    connect(ui->actionRemove, SIGNAL(triggered(bool)), this, SLOT(remove()));
+    connect(ui->btnShowSettings, SIGNAL(toggled(bool)), ui->expandWidget, SLOT(setVisible(bool)));
+    connect(ui->contentId, SIGNAL(textChanged(QString)), this, SLOT(updateInformationLabel()));
+    connect(ui->contentName, SIGNAL(textChanged(QString)), this, SLOT(updateInformationLabel()));
+    connect(ui->contentFiles, SIGNAL(changed()), this, SLOT(updateInformationLabel()));
+
+    updateInformationLabel();
+
+    ui->expandWidget->hide();
 }
 
 ModImporterContentItem::~ModImporterContentItem()
@@ -110,6 +122,20 @@ QJsonObject ModImporterContentItem::build(const QDir &modbasepath)
     json_entry["installables"] = installables_json;
 
     return json_entry;
+}
+
+void ModImporterContentItem::setExpanded(bool expand)
+{
+    ui->btnShowSettings->setChecked(expand);
+}
+
+void ModImporterContentItem::updateInformationLabel()
+{
+    QString id = ui->contentId->text().isEmpty() ? "<No ID>" : ui->contentId->text();
+    QString name = ui->contentName->text().isEmpty() ? "<Unnamed>" : ui->contentName->text();
+    int filecount = ui->contentFiles->getFiles().size();
+
+    ui->lblInformation->setText(QString("%1 (%2) - %3 files").arg(name).arg(id).arg(QString::number(filecount)));
 }
 
 void ModImporterContentItem::remove()

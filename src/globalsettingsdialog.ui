@@ -158,6 +158,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="modsRedirectXNA">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, dll-compile mods will translate between XNA and MonoGame depending on profile settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Redirect XNA to MonoGame and vice versa</string>
             </property>
@@ -178,6 +181,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QCheckBox" name="modsForceUnsupported">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, all content can be enabled despite not supported by your platform.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Force unsupported mods to be installable</string>
             </property>
@@ -221,6 +227,9 @@
           </item>
           <item row="4" column="1">
            <widget class="QCheckBox" name="modEnableDepCheck">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, mod depencencies will be checked.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Enable dependency check</string>
             </property>
@@ -228,6 +237,9 @@
           </item>
           <item row="5" column="1">
            <widget class="QCheckBox" name="modDepCheckPriorityAware">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, the dependency check will check if mods have the right order.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Check based on priority</string>
             </property>
@@ -235,6 +247,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="modDisablePrimeCache">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, all mods re-activate on enabling and starting a launcher.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Always rebuild mods on activation</string>
             </property>
@@ -264,6 +279,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="runningBackupSDVSavegames">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, existing savegames will be backed up into a temporary directory before starting the launcher.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Backup savegames in savegame folder</string>
             </property>
@@ -271,6 +289,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QCheckBox" name="runningBackupProfileSavegames">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, savegames in your profile folder are backed up into a temporary directory before moving savegames after launch.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>Backup savegames in profile folder</string>
             </property>
@@ -301,6 +322,12 @@
           <item>
            <widget class="QWidget" name="widget" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
              <item>
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
@@ -320,7 +347,8 @@
                 <string>Add program</string>
                </property>
                <property name="icon">
-                <iconset theme="list-add"/>
+                <iconset theme="list-add">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
@@ -329,7 +357,14 @@
           </item>
           <item>
            <widget class="QWidget" name="externalProgramsList" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_4"/>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+            </layout>
            </widget>
           </item>
          </layout>

@@ -1,5 +1,5 @@
-#include "externalprogramwidget.h"
-#include "ui_externalprogramwidget.h"
+#include "externalprogramsettingswidget.h"
+#include "ui_externalprogramsettingswidget.h"
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QMessageBox>
@@ -9,9 +9,9 @@
 #include "utils.h"
 #include <QFileDialog>
 
-ExternalProgramWidget::ExternalProgramWidget(QWidget *parent) :
+ExternalProgramSettingsWidget::ExternalProgramSettingsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ExternalProgramWidget)
+    ui(new Ui::ExternalProgramSettingsWidget)
 {
     ui->setupUi(this);
 
@@ -24,9 +24,9 @@ ExternalProgramWidget::ExternalProgramWidget(QWidget *parent) :
     connect(ui->programId, SIGNAL(textChanged(QString)), ui->lblIdentifier, SLOT(setText(QString)));
     connect(ui->programExecutable, SIGNAL(changed()), this, SLOT(checkIfProgramExists()));
 
-    connect(ui->actionRemove, &QAction::triggered, this, &ExternalProgramWidget::removeEntry);
+    connect(ui->actionRemove, &QAction::triggered, this, &ExternalProgramSettingsWidget::removeEntry);
     connect(ui->btnShowSettings, SIGNAL(toggled(bool)), ui->expandingWidget, SLOT(setVisible(bool)));
-    connect(ui->btnAddMimeType, &QToolButton::clicked, this, &ExternalProgramWidget::addMimeType);
+    connect(ui->btnAddMimeType, &QToolButton::clicked, this, &ExternalProgramSettingsWidget::addMimeType);
 
     QMenu * menu = new QMenu(ui->btnShowSettings);
     menu->addAction(ui->actionRemove);
@@ -36,24 +36,29 @@ ExternalProgramWidget::ExternalProgramWidget(QWidget *parent) :
     ui->expandingWidget->hide();
 }
 
-ExternalProgramWidget::~ExternalProgramWidget()
+ExternalProgramSettingsWidget::~ExternalProgramSettingsWidget()
 {
     delete ui;
 }
 
-ExternalProgram ExternalProgramWidget::getExternalProgram()
+ExternalProgram ExternalProgramSettingsWidget::getExternalProgram()
 {
     ExternalProgram program;
+
+    program.setExecutablePath(ui->programExecutable->getCurrentPath());
+    program.setArguments(utils::stringToArgumentList(ui->programArguments->text()));
+    program.setRunnable(ui->programRunnable->isChecked());
+    program.setRuntimeMimeTypes(utils::stringToArgumentList(ui->programMimeTypes->text()));
 
     return program;
 }
 
-QString ExternalProgramWidget::getExternalProgramId()
+QString ExternalProgramSettingsWidget::getExternalProgramId()
 {
     return ui->programId->text();
 }
 
-void ExternalProgramWidget::fillWith(const QString &programid)
+void ExternalProgramSettingsWidget::fillWith(const QString &programid)
 {
     ui->programId->setText(programid);
 
@@ -67,7 +72,7 @@ void ExternalProgramWidget::fillWith(const QString &programid)
     checkIfProgramExists();
 }
 
-void ExternalProgramWidget::removeEntry()
+void ExternalProgramSettingsWidget::removeEntry()
 {
     if(QMessageBox::question(this, "Remove entry", "Do you really want to do this? Some mods or parts of this application might need this program.") == QMessageBox::Yes)
     {
@@ -78,7 +83,7 @@ void ExternalProgramWidget::removeEntry()
     }
 }
 
-void ExternalProgramWidget::checkIfProgramExists()
+void ExternalProgramSettingsWidget::checkIfProgramExists()
 {
     bool exists = false;
 
@@ -90,7 +95,7 @@ void ExternalProgramWidget::checkIfProgramExists()
     ui->lblWarning->setVisible(!exists);
 }
 
-void ExternalProgramWidget::addMimeType()
+void ExternalProgramSettingsWidget::addMimeType()
 {
     QFileDialog dlg;
     dlg.setFileMode(QFileDialog::ExistingFiles);

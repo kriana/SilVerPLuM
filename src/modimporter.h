@@ -28,7 +28,7 @@ protected:
 
 private slots:
 
-    void addContent();
+    ModImporterContentItem *addContent();
 
     void import();
 

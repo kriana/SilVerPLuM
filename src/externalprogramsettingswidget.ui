@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ExternalProgramWidget</class>
- <widget class="QWidget" name="ExternalProgramWidget">
+ <class>ExternalProgramSettingsWidget</class>
+ <widget class="QWidget" name="ExternalProgramSettingsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
-    <height>242</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QFrame" name="frame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -48,7 +48,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Text&amp;Label</string>
+            <string>TextLabel</string>
            </property>
           </widget>
          </item>
@@ -59,7 +59,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>90</width>
              <height>20</height>
             </size>
            </property>
@@ -89,7 +89,13 @@
       </item>
       <item>
        <widget class="QWidget" name="expandingWidget" native="true">
-        <layout class="QFormLayout" name="formLayout_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QFormLayout" name="formLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="minimumSize">
@@ -99,12 +105,9 @@
             </size>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Identifier&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>Identifier</string>
            </property>
           </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="IdentifierLineEdit" name="programId"/>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
@@ -115,17 +118,7 @@
             </size>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Executable&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="FileSelectorEdit" name="programExecutable" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+            <string>Executable</string>
            </property>
           </widget>
          </item>
@@ -138,14 +131,24 @@
             </size>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Arguments&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>Arguments</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="programArguments"/>
-         </item>
          <item row="3" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>MIME-Types</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
           <widget class="QLabel" name="label_5">
            <property name="minimumSize">
             <size>
@@ -154,12 +157,39 @@
             </size>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs MIME-Types&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>Settings</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="programId">
+           <property name="toolTip">
+            <string>Identifier of this program. It will be used to select this entry.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="FileSelectorEdit" name="programExecutable" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>The executable of this external program</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="programArguments">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The argument string of this external program. You can include program parameters using placeholders. Supported placeholders are {insertargs} to insert arguments into the argument list, {joinedargs} will be replaced with one string containing all arguments. {joinedfileargs} will be replaced with one string of the input file and additional args.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QWidget" name="widget_2" native="true">
+          <widget class="QWidget" name="widget_4" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -180,7 +210,11 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QLineEdit" name="programMimeTypes"/>
+             <widget class="QLineEdit" name="programMimeTypes">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This list contains all MIME-Types this entry should run. Separate them with space. To make it easier, click the 'Add' button on the right to add the MIME-Type from a file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QToolButton" name="btnAddMimeType">
@@ -188,30 +222,21 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset theme="list-add"/>
+               <iconset theme="list-add">
+                <normaloff>.</normaloff>.</iconset>
               </property>
              </widget>
             </item>
            </layout>
           </widget>
          </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="minimumSize">
-            <size>
-             <width>120</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Settings</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
+         <item row="4" column="1">
           <widget class="QCheckBox" name="programRunnable">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, this program can run directly&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
-            <string>Program is runnable</string>
+            <string>This program is runnable</string>
            </property>
           </widget>
          </item>
@@ -224,7 +249,8 @@
   </layout>
   <action name="actionRemove">
    <property name="icon">
-    <iconset theme="list-remove"/>
+    <iconset theme="list-remove">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Remove entry</string>
@@ -237,11 +263,6 @@
    <extends>QWidget</extends>
    <header>fileselectoredit.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>IdentifierLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>identifierlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

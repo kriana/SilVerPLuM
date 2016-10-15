@@ -38,14 +38,14 @@
         <enum>QToolButton::MenuButtonPopup</enum>
        </property>
        <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonFollowStyle</enum>
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="profileClone">
        <property name="toolTip">
-        <string>Duplicate selected profile</string>
+        <string>Creates a copy of the selected profile.</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -59,13 +59,14 @@
      <item>
       <widget class="QToolButton" name="btnExport">
        <property name="toolTip">
-        <string>Export profile to file</string>
+        <string>Exports the selected profile to a *.zip file.</string>
        </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="document-save-as"/>
+        <iconset theme="document-save-as">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -85,7 +86,7 @@
      <item>
       <widget class="QToolButton" name="profileDelete">
        <property name="toolTip">
-        <string>Delete selected profile</string>
+        <string>Deletes the selected profile.</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -101,10 +102,14 @@
   </layout>
   <action name="actionImport">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Import from file</string>
+   </property>
+   <property name="toolTip">
+    <string>Import a profile from file</string>
    </property>
   </action>
  </widget>

@@ -39,6 +39,8 @@ void FileStash::addFiles(const QStringList &files)
         }
     }
 
+    emit changed();
+
     QApplication::restoreOverrideCursor();
 }
 
@@ -68,4 +70,6 @@ void FileStash::removeSelection()
     {
         delete sel;
     }
+
+    emit changed();
 }

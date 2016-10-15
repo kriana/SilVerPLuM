@@ -28,6 +28,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QToolButton" name="btnRefresh">
+        <property name="toolTip">
+         <string>Refreshes the mod list. Does NOT reload all mods.</string>
+        </property>
         <property name="text">
          <string>Refresh</string>
         </property>
@@ -48,6 +51,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="btnInstallMod">
+        <property name="toolTip">
+         <string>Adds a SilVerPLuM mod from a *.zip file. For non-SilVerPLuM mods use the mod importer in the arrow menu.</string>
+        </property>
         <property name="text">
          <string>Add mod</string>
         </property>
@@ -153,12 +159,13 @@
     <string>Reload all mods</string>
    </property>
    <property name="toolTip">
-    <string>Reloadss all mods from the mod directory.</string>
+    <string>Reloads all mods from the mod directory.</string>
    </property>
   </action>
   <action name="actionImportMod">
    <property name="icon">
-    <iconset theme="document-import"/>
+    <iconset theme="document-import">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Import from files</string>

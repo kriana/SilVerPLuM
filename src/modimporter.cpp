@@ -20,7 +20,7 @@ ModImporter::ModImporter(QWidget *parent) :
 
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
 
-    addContent();
+    addContent()->setExpanded(true);
 
     for(QString version : Profile::StardewValleyVersions())
     {
@@ -84,12 +84,14 @@ void ModImporter::closeEvent(QCloseEvent *event)
     }
 }
 
-void ModImporter::addContent()
+ModImporterContentItem * ModImporter::addContent()
 {
     QLayout * layout = ui->contentItems->layout();
     ModImporterContentItem * item = new ModImporterContentItem(this);
     layout->addWidget(item);
     m_contentItems << item;
+
+    return item;
 }
 
 void ModImporter::import()

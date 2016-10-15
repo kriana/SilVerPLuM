@@ -25,11 +25,15 @@ public:
 
     QJsonObject build(const QDir & modbasepath);
 
+    void setExpanded(bool expand);
+
 private:
     Ui::ModImporterContentItem *ui;
     ModImporter * m_importer;
 
 private slots:
+
+    void updateInformationLabel();
 
     void remove();
 };

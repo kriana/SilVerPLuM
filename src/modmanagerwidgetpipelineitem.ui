@@ -173,6 +173,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnDisable">
+         <property name="toolTip">
+          <string>Disables this content.</string>
+         </property>
          <property name="text">
           <string>Disable</string>
          </property>
@@ -184,6 +187,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnEnable">
+         <property name="toolTip">
+          <string>Enables this content.</string>
+         </property>
          <property name="text">
           <string>Enable</string>
          </property>

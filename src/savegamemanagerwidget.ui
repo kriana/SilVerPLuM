@@ -22,6 +22,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QToolButton" name="btnRefresh">
+        <property name="toolTip">
+         <string>Refreshes the savegame list. This will NOT reload all savegames from the profile directory.</string>
+        </property>
         <property name="text">
          <string>Refresh</string>
         </property>
@@ -42,6 +45,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="btnImport">
+        <property name="toolTip">
+         <string>Imports a savegame form a *.zip file.</string>
+        </property>
         <property name="text">
          <string>Import savegame</string>
         </property>
@@ -126,7 +132,7 @@
     <string>Reload all savegames</string>
    </property>
    <property name="toolTip">
-    <string>Reloadss all savegames from the savegame directory.</string>
+    <string>Reloads all savegames from the savegame directory.</string>
    </property>
   </action>
  </widget>

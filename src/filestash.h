@@ -20,6 +20,10 @@ public:
 
     QStringList getFiles();
 
+signals:
+
+    void changed();
+
 private slots:
 
     void addFiles();

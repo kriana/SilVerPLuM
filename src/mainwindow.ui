@@ -61,6 +61,9 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>
                   <widget class="QToolButton" name="btnApplicationSettings">
+                   <property name="toolTip">
+                    <string>Shows the application settings dialog</string>
+                   </property>
                    <property name="text">
                     <string>Application settings</string>
                    </property>
@@ -78,6 +81,9 @@
                  </item>
                  <item>
                   <widget class="QToolButton" name="btnShowLog">
+                   <property name="toolTip">
+                    <string>Opens the log of the current profile, containing information about errors and other general information.</string>
+                   </property>
                    <property name="text">
                     <string>Profile log</string>
                    </property>
@@ -117,6 +123,9 @@
                      <height>0</height>
                     </size>
                    </property>
+                   <property name="toolTip">
+                    <string>Select the profile you want to launch.</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>
@@ -135,7 +144,7 @@
                     <x>0</x>
                     <y>0</y>
                     <width>624</width>
-                    <height>193</height>
+                    <height>195</height>
                    </rect>
                   </property>
                   <property name="autoFillBackground">
@@ -247,6 +256,9 @@
                     <font>
                      <pointsize>16</pointsize>
                     </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Click to start the currently selected launcher. Click on the arrow to select another launcher.</string>
                    </property>
                    <property name="text">
                     <string>Play</string>
@@ -442,7 +454,8 @@
   </widget>
   <action name="actionOpenPasswordGenerator">
    <property name="icon">
-    <iconset theme="document-encrypt"/>
+    <iconset theme="document-encrypt">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Encryped content password generator</string>

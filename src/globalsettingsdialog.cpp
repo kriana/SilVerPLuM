@@ -1,7 +1,6 @@
 #include "globalsettingsdialog.h"
 #include "ui_globalsettingsdialog.h"
 #include "globalsettings.h"
-#include "externalprogramwidget.h"
 #include "utils.h"
 
 GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
@@ -25,7 +24,7 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     connect(ui->runningBackupProfileSavegames, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
 
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(saveOrDiscart(QAbstractButton*)));
-    connect(ui->btnAddProgram, &QPushButton::clicked, this, &GlobalSettingsDialog::addProgramClicked);
+    connect(ui->btnAddProgram, &QPushButton::clicked, this, &GlobalSettingsDialog::addProgramEntry);
 
     discart();
 }
@@ -53,13 +52,10 @@ void GlobalSettingsDialog::discart()
     utils::clearLayout(ui->externalProgramsList->layout());
     for(QString id : GlobalSettings::instance()->getExternalProgramIds())
     {
-        ExternalProgramWidget * widget = new ExternalProgramWidget(ui->externalProgramsList);
+        auto * widget = addProgramEntry();
         widget->fillWith(id);
 
         connect(widget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
-        ui->externalProgramsList->layout()->addWidget(widget);
-
-        m_externalProgramWidgets << widget;
     }
 
     ui->buttonBox->hide();
@@ -87,7 +83,7 @@ void GlobalSettingsDialog::save()
        GlobalSettings::instance()->removeExternalProgram(id);
     }
 
-    for(ExternalProgramWidget * widget : m_externalProgramWidgets)
+    for(auto * widget : m_externalProgramWidgets)
     {
         QString programid = widget->getExternalProgramId();
         ExternalProgram program = widget->getExternalProgram();
@@ -118,12 +114,14 @@ void GlobalSettingsDialog::saveOrDiscart(QAbstractButton *button)
     }
 }
 
-void GlobalSettingsDialog::addProgramClicked()
+ExternalProgramSettingsWidget * GlobalSettingsDialog::addProgramEntry()
 {
-    ExternalProgramWidget * widget = new ExternalProgramWidget(ui->externalProgramsList);
+    ExternalProgramSettingsWidget * widget = new ExternalProgramSettingsWidget(ui->externalProgramsList);
 
     connect(widget, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     ui->externalProgramsList->layout()->addWidget(widget);
 
     m_externalProgramWidgets << widget;
+
+    return widget;
 }

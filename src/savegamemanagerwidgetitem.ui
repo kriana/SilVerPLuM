@@ -138,6 +138,9 @@
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QToolButton" name="btnBackup">
+               <property name="toolTip">
+                <string>Creates a backup from the current savegame.</string>
+               </property>
                <property name="text">
                 <string>Backup now</string>
                </property>
@@ -220,6 +223,9 @@
    <property name="text">
     <string>Single out</string>
    </property>
+   <property name="toolTip">
+    <string>Creates a new savegame from the current savegame</string>
+   </property>
   </action>
   <action name="actionDeleteMainSavegame">
    <property name="icon">
@@ -228,6 +234,9 @@
    </property>
    <property name="text">
     <string>Delete only savegame</string>
+   </property>
+   <property name="toolTip">
+    <string>Deletes only the current savegame. Backups will be left untouched.</string>
    </property>
   </action>
   <action name="actionPrune">
@@ -238,6 +247,9 @@
    <property name="text">
     <string>Remove duplicate backups</string>
    </property>
+   <property name="toolTip">
+    <string>Removes all backups that are duplicate. The newest one will be kept.</string>
+   </property>
   </action>
   <action name="actionExport">
    <property name="icon">
@@ -246,6 +258,9 @@
    </property>
    <property name="text">
     <string>Export savegame</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports this savegame as *.zip file.</string>
    </property>
   </action>
  </widget>

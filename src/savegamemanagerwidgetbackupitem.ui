@@ -50,6 +50,9 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Restores this backup. Will overwrite the current savegame.</string>
+     </property>
      <property name="text">
       <string>Restore</string>
      </property>
@@ -70,6 +73,9 @@
    <property name="text">
     <string>Delete</string>
    </property>
+   <property name="toolTip">
+    <string>Deletes this backup.</string>
+   </property>
   </action>
   <action name="actionCopyTo">
    <property name="icon">
@@ -78,6 +84,9 @@
    </property>
    <property name="text">
     <string>Copy to another profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Copies this backup into another profile as a new savegame.</string>
    </property>
   </action>
   <action name="actionSingleOut">
@@ -88,6 +97,9 @@
    <property name="text">
     <string>Single out</string>
    </property>
+   <property name="toolTip">
+    <string>Creates a new savegame out of this backup.</string>
+   </property>
   </action>
   <action name="actionExport">
    <property name="icon">
@@ -96,6 +108,9 @@
    </property>
    <property name="text">
     <string>Export savegame</string>
+   </property>
+   <property name="toolTip">
+    <string>Exports this backup as *.zip file.</string>
    </property>
   </action>
  </widget>

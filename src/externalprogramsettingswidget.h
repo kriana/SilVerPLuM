@@ -1,21 +1,20 @@
-#ifndef EXTERNALPROGRAMWIDGET_H
-#define EXTERNALPROGRAMWIDGET_H
+#ifndef EXTERNALPROGRAMSETTINGSWIDGET_H
+#define EXTERNALPROGRAMSETTINGSWIDGET_H
 
 #include <QWidget>
 #include "globalsettings.h"
-#include "ui_externalprogramwidget.h"
 
 namespace Ui {
-class ExternalProgramWidget;
+class ExternalProgramSettingsWidget;
 }
 
-class ExternalProgramWidget : public QWidget
+class ExternalProgramSettingsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExternalProgramWidget(QWidget *parent = 0);
-    ~ExternalProgramWidget();
+    explicit ExternalProgramSettingsWidget(QWidget *parent = 0);
+    ~ExternalProgramSettingsWidget();
 
     ExternalProgram getExternalProgram();
 
@@ -28,7 +27,7 @@ signals:
     void changed();
 
 private:
-    Ui::ExternalProgramWidget *ui;
+    Ui::ExternalProgramSettingsWidget *ui;
 
 private slots:
 
@@ -39,4 +38,4 @@ private slots:
     void addMimeType();
 };
 
-#endif // EXTERNALPROGRAMWIDGET_H
+#endif // EXTERNALPROGRAMSETTINGSWIDGET_H

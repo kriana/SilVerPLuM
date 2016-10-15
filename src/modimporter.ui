@@ -20,7 +20,7 @@
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
@@ -49,7 +49,11 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="IdentifierLineEdit" name="modIdentifier"/>
+        <widget class="IdentifierLineEdit" name="modIdentifier">
+         <property name="toolTip">
+          <string>The identifier of this modification.</string>
+         </property>
+        </widget>
        </item>
        <item row="7" column="0">
         <widget class="QLabel" name="label_7">
@@ -89,6 +93,9 @@
        </item>
        <item row="8" column="1">
         <widget class="QComboBox" name="modRequiresStardewValley">
+         <property name="toolTip">
+          <string>The Stardew Valley version this mod is intended to run.</string>
+         </property>
          <property name="editable">
           <bool>true</bool>
          </property>
@@ -108,7 +115,11 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="modName"/>
+        <widget class="QLineEdit" name="modName">
+         <property name="toolTip">
+          <string>The name of this modification</string>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
@@ -124,7 +135,11 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="modAuthor"/>
+        <widget class="QLineEdit" name="modAuthor">
+         <property name="toolTip">
+          <string>The author of this modification.</string>
+         </property>
+        </widget>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_4">
@@ -146,6 +161,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Select the license used by the modification. The drop-down-box contains pre-made entries you can use.</string>
          </property>
          <property name="editable">
           <bool>true</bool>
@@ -272,6 +290,9 @@
        </item>
        <item row="4" column="1">
         <widget class="QLineEdit" name="modVersion">
+         <property name="toolTip">
+          <string>The version of this mod.</string>
+         </property>
          <property name="text">
           <string>1.0.0.0</string>
          </property>
@@ -291,11 +312,15 @@
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLineEdit" name="modWebsite"/>
+        <widget class="QLineEdit" name="modWebsite">
+         <property name="toolTip">
+          <string>The website URL of this mod.</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="contentItems">
+     <widget class="QWidget" name="contentItemsPage">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -307,7 +332,33 @@
       <attribute name="label">
        <string>Mod content</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QWidget" name="contentItems" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -316,6 +367,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="btnAddContent">
+        <property name="toolTip">
+         <string>Adds another content entry into 'Mod content'.</string>
+        </property>
         <property name="text">
          <string>Add content</string>
         </property>

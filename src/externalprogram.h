@@ -44,12 +44,6 @@ public:
     void setArguments(const QStringList &arguments);
 
     /**
-     * @brief Sets ID of this external program
-     * @param id
-     */
-    void setId(const QString &id);
-
-    /**
      * @brief Returns true if this external program is not usable
      * @return
      */
