@@ -51,6 +51,10 @@ void GlobalSettings::initializeWindowsExternalPrograms()
                                                            QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "text/x-python",
                                                            true);
+    m_DefaultExternalPrograms["cmd"] = ExternalProgram(QStringList() << "C:/Windows/System32/cmd.exe",
+                                                           QStringList() << "/c" << "{file}" << "{joinedargs}",
+                                                           QStringList() << "application/bat" << "application/x-bat",
+                                                           true);
 }
 
 void GlobalSettings::initializeLinuxExternalPrograms()
