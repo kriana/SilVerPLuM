@@ -66,7 +66,8 @@ SOURCES += main.cpp\
     filestash.cpp \
     externalprogram.cpp \
     externalprogramwidget.cpp \
-    externalprogramsettingswidget.cpp
+    externalprogramsettingswidget.cpp \
+    custompipeline.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -121,7 +122,8 @@ HEADERS  += mainwindow.h \
     filestash.h \
     externalprogram.h \
     externalprogramwidget.h \
-    externalprogramsettingswidget.h
+    externalprogramsettingswidget.h \
+    custompipeline.h
 
 
 FORMS    += mainwindow.ui \

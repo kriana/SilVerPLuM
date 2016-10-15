@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QRegExp>
 #include "dllpipeline.h"
+#include "custompipeline.h"
 #include "globalsettings.h"
 #include "utils.h"
 #include <JlCompress.h>
@@ -245,6 +246,10 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
         else if(content_json["pipeline"] == "compile-dll")
         {
             pipeline = DllPipeline::loadFromJson(mod, key, content_json);
+        }
+        else if(content_json["pipeline"] == "custom")
+        {
+            pipeline = CustomPipeline::loadFromJson(mod, key, content_json);
         }
         else
         {

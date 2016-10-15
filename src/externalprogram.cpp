@@ -107,9 +107,9 @@ bool ExternalProgram::infuse(QProcess *process, const QString & file, const QStr
     {
         int index = procargs.indexOf("{insertargs}");
 
-        for(QString a : args)
+        for(int i = args.length() - 1; i >= 0; --i)
         {
-            procargs.insert(index, a);
+            procargs.insert(index, args[i]);
         }
 
         index = procargs.indexOf("{insertargs}");

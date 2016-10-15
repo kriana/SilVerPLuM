@@ -88,7 +88,7 @@ void GlobalSettingsDialog::save()
         QString programid = widget->getExternalProgramId();
         ExternalProgram program = widget->getExternalProgram();
 
-        if(!programid.isEmpty() && program.isEmpty())
+        if(!programid.isEmpty() && !program.isEmpty())
         {
             GlobalSettings::instance()->setExternalProgram(programid, program);
         }

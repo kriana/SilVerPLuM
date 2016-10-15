@@ -434,7 +434,7 @@ int Pipeline::primePipeline(bool force)
     // Prime
     if(ret == 0)
     {
-        ret = prime();
+        ret = prime(force);
     }
     else
     {
@@ -481,7 +481,7 @@ int Pipeline::primePipeline(bool force)
     return ret;
 }
 
-int Pipeline::prime()
+int Pipeline::prime(bool is_forced)
 {
     return 0;
 }

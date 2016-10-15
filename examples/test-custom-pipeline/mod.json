@@ -1,0 +1,28 @@
+{
+  "id" : "test-custom-pipeline",
+  "name" : "Test for custom pipeline",
+  "author" : "mrboese",
+  "license" : "GPLv3",
+  "url" : "https://github.com/rumangerst/",
+  "version" : "1.0.0",
+  "requires" : [ "stardewvalley>0" ],
+  "content" : {
+    "content" : {
+      "name" : "The content",
+      "description" : "Calls a script on activation",
+      "default" : true,
+      "platforms" : ["windows", "linux", "mac"],
+      "priority" : 0,
+      "pipeline" : "custom",
+      "nuget-restore" : true,
+      "references" : { },      
+      "installables" : { },
+      "launchers" : { },
+      "script" : {
+		  "windows" : { "executable" : "script.py", "arguments" : [], "workdir" : "" },
+		  "linux" : { "executable" : "script.py", "arguments" : [], "workdir" : "" },
+		  "mac" : { "executable" : "script.py", "arguments" : [], "workdir" : "" }
+	  }
+	  }
+    }
+  }

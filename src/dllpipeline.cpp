@@ -65,7 +65,7 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
     return pip;
 }
 
-int DllPipeline::prime()
+int DllPipeline::prime(bool is_forced)
 {
     int this_exit = 0;
 
@@ -102,7 +102,7 @@ int DllPipeline::prime()
     }
 
     {
-        int exit = runMSBUILD();
+        int exit = runMSBuild();
 
         if(exit != 0)
         {
@@ -257,7 +257,7 @@ int DllPipeline::runNuget()
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
-
+    getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();
     process.waitForFinished(-1);
 
@@ -267,7 +267,7 @@ int DllPipeline::runNuget()
     return process.exitCode();
 }
 
-int DllPipeline::runMSBUILD()
+int DllPipeline::runMSBuild()
 {
     getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
 
@@ -291,6 +291,7 @@ int DllPipeline::runMSBUILD()
     process.setWorkingDirectory(pipelineBaseDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
+    getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();
     process.waitForFinished(-1);
 

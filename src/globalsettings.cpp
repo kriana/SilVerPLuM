@@ -45,6 +45,12 @@ void GlobalSettings::initializeWindowsExternalPrograms()
                                                            QStringList() << "{file}" << "{insertargs}",
                                                            QStringList(),
                                                            true);
+    m_DefaultExternalPrograms["python3"] = ExternalProgram(QStringList() << "C:/Program Files/Python35-64/python.exe"
+                                                           << "C:/Program Files/Python35-32/python.exe"
+                                                           << "C:/Program Files (x86)/Python35-32/python.exe",
+                                                           QStringList() << "{file}" << "{insertargs}",
+                                                           QStringList() << "text/x-python",
+                                                           true);
 }
 
 void GlobalSettings::initializeLinuxExternalPrograms()
@@ -65,6 +71,10 @@ void GlobalSettings::initializeLinuxExternalPrograms()
                                                            QStringList() << "-c" << "{joinedfileargs}",
                                                            QStringList() << "application/x-shellscript",
                                                          true);
+    m_DefaultExternalPrograms["python3"] = ExternalProgram(QStringList() << "/usr/bin/python3",
+                                                           QStringList() << "{file}" << "{insertargs}",
+                                                           QStringList() << "text/x-python",
+                                                         true);
 }
 
 void GlobalSettings::initializeMacExternalPrograms()
@@ -84,6 +94,10 @@ void GlobalSettings::initializeMacExternalPrograms()
     m_DefaultExternalPrograms["bash"] = ExternalProgram(QStringList() << "/bin/bash",
                                                            QStringList() << "-c" << "{joinedfileargs}",
                                                            QStringList() << "application/x-shellscript",
+                                                         true);
+    m_DefaultExternalPrograms["python3"] = ExternalProgram(QStringList() << "/usr/bin/python3",
+                                                           QStringList() << "{file}" << "{insertargs}",
+                                                           QStringList() << "text/x-python",
                                                          true);
 }
 
@@ -255,8 +269,8 @@ void GlobalSettings::setExternalProgram(const QString &id, const ExternalProgram
     if(!program.isEmpty())
     {
         m_Settings->setValue("Programs/" + id + "/Executable", program.executablePath());
-        m_Settings->setValue("Programs/" + id + "/ArgumentString", program.arguments().join("<<"));
-        m_Settings->setValue("Programs/" + id + "/MimeTypeString", program.runtimeMimeTypes().join(";"));
+        m_Settings->setValue("Programs/" + id + "/ArgumentString", utils::ArgumentListToString(program.arguments()));
+        m_Settings->setValue("Programs/" + id + "/MimeTypeString", utils::ArgumentListToString(program.runtimeMimeTypes()));
         m_Settings->setValue("Programs/" + id + "/Runnable", program.runnable());
         m_Settings->sync();
     }

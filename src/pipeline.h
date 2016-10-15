@@ -200,7 +200,7 @@ protected:
 
     virtual bool alreadyPrimed();
 
-    virtual int prime();
+    virtual int prime(bool is_forced);
 
 private:
 

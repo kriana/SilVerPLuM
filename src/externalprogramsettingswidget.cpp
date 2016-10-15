@@ -63,6 +63,13 @@ void ExternalProgramSettingsWidget::fillWith(const QString &programid)
     ui->programId->setText(programid);
 
     ExternalProgram program = GlobalSettings::instance()->getExternalProgram(programid);
+
+    if(program.isEmpty())
+    {
+        hide();
+        return;
+    }
+
     ui->programExecutable->setCurrentPath(program.executablePath());
     ui->programArguments->setText(utils::ArgumentListToString(program.arguments()));
     ui->programMimeTypes->setText(utils::ArgumentListToString(program.runtimeMimeTypes()));
