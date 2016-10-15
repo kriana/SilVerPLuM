@@ -35,9 +35,8 @@ void SavegameManagerWidgetBackupItem::setSavegame(BackupSavegame * parent, Saveg
 
     if(savegame != nullptr)
     {
-        ui->lblDate->setText(QString("Created on %1, %2 G").arg(savegame->backupDate().toString())
-                             .arg(savegame->money()));
-        ui->lblInfo->setText(QString("%1, %2h played").arg(savegame->timedate()).arg(m_savegame->timePlayedMS() / 1000 / 60 / 60));
+        ui->lblDate->setText(QString("Created on %1").arg(savegame->backupDate().toString()));
+        ui->lblInfo->setText(QString("%1, %2h played, %3 G").arg(savegame->timedate()).arg(m_savegame->timePlayedMS() / 1000 / 60 / 60).arg(savegame->money()));
     }
 }
 
