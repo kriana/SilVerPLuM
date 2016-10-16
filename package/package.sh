@@ -15,11 +15,28 @@ cp ../README.md windows
 
 rm -rv linux
 mkdir linux
+mkdir linux/lib
+mkdir linux/plugins
 
 cp -r shared/* linux
-cp -r lib-linux/* linux
-rm linux/README.md
+cp lib-linux/SilVerPLuM.sh linux
+cp lib-linux/lib/libQt5Widgets* linux/lib
+cp lib-linux/lib/libQt5Gui* linux/lib
+cp lib-linux/lib/libQt5Network* linux/lib
+cp lib-linux/lib/libQt5Concurrent* linux/lib
+cp lib-linux/lib/libQt5Xml* linux/lib
+cp lib-linux/lib/libQt5Core* linux/lib
+cp lib-linux/lib/libicui18n* linux/lib
+cp lib-linux/lib/libicuuc* linux/lib
+cp lib-linux/lib/libicudata* linux/lib
+cp lib-linux/lib/libQt5XcbQpa* linux/lib
+cp lib-linux/lib/libQt5DBus* linux/lib
+cp -r lib-linux/plugins/platforms linux/plugins
 cp ../build-quazip-Desktop-Release/quazip/* linux/lib
+cp ../build-quazip-Desktop-Release/quazip/libquazip.so linux/lib/libquazip5.so
+cp ../build-quazip-Desktop-Release/quazip/libquazip.so.1 linux/lib/libquazip5.so.1
+cp ../build-quazip-Desktop-Release/quazip/libquazip.so.1.0 linux/lib/libquazip5.so.1.0
+cp ../build-quazip-Desktop-Release/quazip/libquazip.so.1.0.0 linux/lib/libquazip5.so.1.0.0
 cp ../build-SilVerPLuM-Desktop-Release/SilVerPLuM linux
 cp ../LICENSE linux
 cp ../README.md linux

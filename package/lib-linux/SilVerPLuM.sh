@@ -10,6 +10,6 @@ SCRIPTPATH=`pwd -P`
 popd > /dev/null
 
 export LD_LIBRARY_PATH="${SCRIPTPATH}/lib"
-export QT_QPA_PLATFORM_PLUGIN_PATH="${SCRIPTPATH}/plugins"
+export QT_QPA_PLATFORM_PLUGIN_PATH="${SCRIPTPATH}/plugins/platforms"
 
 ./SilVerPLuM
