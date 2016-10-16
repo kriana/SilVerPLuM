@@ -5,6 +5,7 @@
 #include "launcherexecutable.h"
 #include <QProcess>
 #include <QMimeType>
+#include <QMimeDatabase>
 
 class ExternalProgram
 {
@@ -78,7 +79,7 @@ public:
      * @param type
      * @return
      */
-    bool supportsMime(const QMimeType & type);
+    bool supportsMime(QMimeDatabase &db, const QString filename);
 
     /**
      * @brief Infuses this program's settings into a process

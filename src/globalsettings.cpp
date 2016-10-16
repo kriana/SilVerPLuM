@@ -47,13 +47,14 @@ void GlobalSettings::initializeWindowsExternalPrograms()
                                                            true);
     m_DefaultExternalPrograms["python3"] = ExternalProgram(QStringList() << "C:/Program Files/Python35-64/python.exe"
                                                            << "C:/Program Files/Python35-32/python.exe"
-                                                           << "C:/Program Files (x86)/Python35-32/python.exe",
+                                                           << "C:/Program Files (x86)/Python35-32/python.exe"
+                                                           << QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/Programs/Python/Python35/python.exe",
                                                            QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "text/x-python",
                                                            true);
     m_DefaultExternalPrograms["cmd"] = ExternalProgram(QStringList() << "C:/Windows/System32/cmd.exe",
                                                            QStringList() << "/c" << "{file}" << "{joinedargs}",
-                                                           QStringList() << "application/bat" << "application/x-bat",
+                                                           QStringList() << "text/plain&.bat",
                                                            true);
 }
 

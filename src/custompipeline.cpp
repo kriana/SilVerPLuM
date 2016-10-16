@@ -95,7 +95,7 @@ int CustomPipeline::prime(bool is_forced)
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.setProcessEnvironment(buildEnvironment(is_forced));
 
-    getLogger().log(Logger::Error, "pipeline-custom", id(), "prime", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
+    getLogger().log(Logger::Info, "pipeline-custom", id(), "prime", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
 
     process.start();
     process.waitForFinished(-1);

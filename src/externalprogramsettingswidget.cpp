@@ -116,7 +116,12 @@ void ExternalProgramSettingsWidget::addMimeType()
         for(QString file : dlg.selectedFiles())
         {
             QMimeType mime = mimedb.mimeTypeForFile(file);
-            mimetypes << mime.name();
+
+            QString extension;
+            if(file.contains("."))
+                extension = file.split(".").last();
+
+            mimetypes << mime.name() + (extension.isEmpty() ? "" : "&." + extension);
         }
     }
 

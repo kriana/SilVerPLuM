@@ -75,10 +75,26 @@ void ExternalProgram::setRunnable(bool runnable)
     m_runnable = runnable;
 }
 
-bool ExternalProgram::supportsMime(const QMimeType &type)
+bool ExternalProgram::supportsMime(QMimeDatabase & db, const QString filename)
 {
     for(QString mime : m_runtimeMimeTypes)
     {
+        QString extension;
+
+        if(mime.contains("&"))
+        {
+            extension = mime.split("&").last();
+            mime = mime.split("&").first();
+        }
+
+        if(!extension.isEmpty())
+        {
+            if(!filename.endsWith(extension))
+                continue;
+        }
+
+        QMimeType type = db.mimeTypeForFile(filename);
+
         if(type.inherits(mime))
         {
             return true;
@@ -125,13 +141,12 @@ bool ExternalProgram::infuse(QProcess *process, const QString & file, const QStr
 bool ExternalProgram::tryToInfuse(QProcess *process, const QString &file, const QStringList &args)
 {
     QMimeDatabase mimedb;
-    QMimeType mime = mimedb.mimeTypeForFile(file);
 
     QList<ExternalProgram> programs = GlobalSettings::instance()->getExternalPrograms();
 
     for(ExternalProgram program : programs)
     {
-        if(program.runnable() && program.supportsMime(mime))
+        if(program.runnable() && program.supportsMime(mimedb, file))
         {
             if(program.infuse(process, file, args))
             {
