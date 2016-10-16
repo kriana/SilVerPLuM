@@ -41,9 +41,25 @@ public:
 
     void downloadNugetIfNotExisting();
 
+    /**
+     * @brief Returns the relative path of source files
+     * @return
+     */
+    QString sourceDirectory() const;
+
+    void setSourceDirectory(const QString &sourceDirectory);
+
+    /**
+     * @brief Returns the directory containing the source files
+     * @return
+     */
+    QDir pipelineSourceDir();
+
 private:
 
     bool m_enableNugetRestore;
+
+    QString m_sourceDirectory;
 
     QMap<QString, QString> m_referenceMap;
 

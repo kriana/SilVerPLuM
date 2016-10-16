@@ -40,6 +40,7 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
     }
 
     pip->setEnableNugetRestore(json["nuget-restore"].toBool());
+    pip->setSourceDirectory(json["sourcedir"].toString());
 
     QJsonObject reference_map = json["references"].toObject();
 
@@ -92,7 +93,7 @@ int DllPipeline::prime(bool is_forced)
     mod()->getModManager()->profile()->fixCrazyness();
 
     // Look for *.csproj files and fix the dependencies
-    QStringList projectfiles = utils::findAllFiles(pipelineBaseDir());
+    QStringList projectfiles = utils::findAllFiles(pipelineSourceDir());
     for(QString file : projectfiles)
     {
         if(QFileInfo(file).isFile() && file.endsWith(".csproj"))
@@ -208,13 +209,28 @@ void DllPipeline::downloadNugetIfNotExisting()
     }*/
 }
 
+QString DllPipeline::sourceDirectory() const
+{
+    return m_sourceDirectory;
+}
+
+void DllPipeline::setSourceDirectory(const QString &sourceDirectory)
+{
+    m_sourceDirectory = sourceDirectory;
+}
+
+QDir DllPipeline::pipelineSourceDir()
+{
+    return pipelineBaseDir().absolutePath() + "/" + sourceDirectory();
+}
+
 bool DllPipeline::alreadyPrimed()
 {
     if(!GlobalSettings::instance()->getEnablePrimeCache())
         return false;
-
+    
     QFile lockfile(pipelineBaseDir().absoluteFilePath("PRIME"));
-
+    
     if (!lockfile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
 
@@ -254,7 +270,7 @@ int DllPipeline::runNuget()
     }
 
     ExternalProgram::tryToInfuse(&process, nuget_program.executablePath(), QStringList() << "restore");
-    process.setWorkingDirectory(pipelineBaseDir().absolutePath());
+    process.setWorkingDirectory(pipelineSourceDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
     getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
@@ -269,7 +285,7 @@ int DllPipeline::runNuget()
 
 int DllPipeline::runMSBuild()
 {
-    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineBaseDir().absolutePath());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running msbuild/xbuild in " + pipelineSourceDir().absolutePath());
 
     QStringList args = m_buildArguments[Platform::getPlatformString()];
 
@@ -288,7 +304,7 @@ int DllPipeline::runMSBuild()
     ExternalProgram::tryToInfuse(&process, msbuild_program.executablePath(), args);
 
     //utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBuild(), args);
-    process.setWorkingDirectory(pipelineBaseDir().absolutePath());
+    process.setWorkingDirectory(pipelineSourceDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
 
     getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());

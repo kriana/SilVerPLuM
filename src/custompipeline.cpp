@@ -127,9 +127,9 @@ QProcessEnvironment CustomPipeline::buildEnvironment(bool force)
     env.insert("STARDEWVALLEY_PLATFORM", Platform::getPlatformString());
     env.insert("STARDEWVALLEY_TECHNOLOGY", mod()->getModManager()->profile()->StardewValleyTechnologyString());
 
-    for(Modification * mod : mod()->getModManager()->getModifications())
+    for(Modification * m : mod()->getModManager()->getModifications())
     {
-        env.insert("SILVERPLUM_MOD_" + mod->id().toUpper() + "_DIR", mod->modBasePath().absolutePath());
+        env.insert("SILVERPLUM_MOD_" + m->id().toUpper() + "_DIR", m->modBasePath().absolutePath());
     }
 
     env.insert("SILVERPLUM_FORCE_PRIME", force ? "true" : "false");
