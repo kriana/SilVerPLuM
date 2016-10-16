@@ -38,13 +38,27 @@ The mod manager supports content replacer mods and DLL mods. It has dependency-c
 
 You can find precompiled packages here: [Download](https://github.com/rumangerst/SilVerPLuM/releases)
 
-SilVerPLuM will need following programs to be able to compile DLL mods:
+Just download the package and extract it somewhere. Run SilVerPLuM.exe or SiLVerPLuM.
 
-* [Nuget CLI](https://dist.nuget.org/win-x86-commandline/latest/nuget.exe)
-* [MSBuild](https://www.microsoft.com/de-DE/download/details.aspx?id=48159) (Windows) or xbuild (Mac, Linux)
-* Mono (Mac, Linux) or [.NET Framework 4.5 SDK](https://www.microsoft.com/en-US/download/details.aspx?id=42637) (Windows)
+## System requirements
 
-You may need to set the correct paths of these programs in SilVerPLuM's application settings. You can download Nuget CLI and put it somewhere. Then set the correct path in the application settings.
+### Windows
+
+* [Microsoft Build Tools 2015](https://www.microsoft.com/de-DE/download/details.aspx?id=48159) for compiling DLL-mods
+* [Nuget CLI](https://dist.nuget.org/win-x86-commandline/latest/nuget.exe) for compiling DLL-mods
+* [Python 3.5 or higher](https://www.python.org/downloads/windows/) for mods with custom scripts. Go to 'Latest Python 3 Release', scroll down and choose 'Windows x86-64 executable installer' or 'Windows x86 executable installer'
+
+You may need to set the correct paths of some external programs in SilVerPLuM's application settings.
+
+### Linux
+
+* Qt5 5.7 or higher (Arch: `qt5-base`, Debian: `qt5-default`)
+* Quazip5 (Arch: `quazip`, Debian: `libquazip5-1`)
+* Nuget CLI (Arch: `nuget`, Debian: `nuget` or download the Windows version)
+* Python3 (Arch: `python`, Debian: `python3`)
+* Mono (Arch: `mono`, Debian: `mono`)
+
+You may need to set the correct paths of some external programs in SilVerPLuM's application settings.
 
 ## Building
 SilVerPLuM is written in Qt5 with qmake building system and has following dependencies:
