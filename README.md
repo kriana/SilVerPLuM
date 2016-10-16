@@ -52,8 +52,15 @@ You may need to set the correct paths of some external programs in SilVerPLuM's 
 
 ### Linux
 
+**Runtime dependencies**
+
 * Qt5 5.7 or higher (Arch: `qt5-base`, Debian: `qt5-default`)
 * Quazip5 (Arch: `quazip`, Debian: `libquazip5-1`)
+
+The updated Linux packages now provide the needed libraries if your distribution doesn't offer the needed ones. Just start `SilVerPLuM.sh` instead of `SilVerPLuM` to use them. Other users can delete the lib and plugin folder safely.
+
+**External programs**
+
 * Nuget CLI (Arch: `nuget`, Debian: `nuget` or download the Windows version)
 * Python3 (Arch: `python`, Debian: `python3`)
 * Mono (Arch: `mono`, Debian: `mono`)
