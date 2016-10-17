@@ -44,19 +44,24 @@ public:
     QList<Modification*> getModifications();
 
     /**
+     * @brief Gets list of all partially active mods. Sorted by priority.
+     * @return
+     */
+    QList<Modification*> getPartiallyActiveMods();
+
+    /**
+     * @brief Orders the list of mods according to their priority
+     * @param unordered
+     * @return
+     */
+    QList<Modification*> getModsInPriorityOrder(QList<Modification*> unordered);
+
+    /**
      * @brief Gets the modification with id
      * @param id
      * @return
      */
     Modification * getModification(const QString & id);
-
-    /**
-     * @brief Gets a mod pipelines with id
-     * @param mod
-     * @param content
-     * @return
-     */
-    Pipeline * getPipeline(const QString & mod, const QString & content);
 
     /**
      * @brief Enables/disables a pipeline
@@ -65,7 +70,7 @@ public:
      * @param enabled
      * @return exitcode
      */
-    int setEnabled(const QString & mod, const QString & content, bool enabled);
+    int setEnabled(Pipeline * pip, bool enabled);
 
     /**
      * @brief Returns true if the pipeline is enabled
@@ -73,21 +78,28 @@ public:
      * @param content
      * @return
      */
-    bool isEnabled(const QString & mod, const QString & content);
+    bool isEnabled(Pipeline * pip);
 
     /**
      * @brief Moves a mod to a higher priority
      * @param mod
      * @return
      */
-    bool priotizeUp(const QString & mod);
+    bool priotizeUp(Modification * mod);
 
     /**
      * @brief Moves a mod to a lover priority
      * @param mod
      * @return
      */
-    bool priotizeDown(const QString & mod);
+    bool priotizeDown(Modification * mod);
+
+    /**
+     * @brief Returns a mod that satisfied the dependency
+     * @param dep
+     * @return
+     */
+    Modification * getSatisfyingMod(const Dependency & dep, const QList<Modification*> modlist, Modification *requester, bool priorityaware);
 
     /**
      * @brief Returns true if the dependency satisfies one of the mod's dependencies
@@ -159,14 +171,22 @@ public:
      * @brief Deletes a mod from ID
      * @param modid
      */
-    void deleteMod(const QString & modid);
+    void deleteMod(Modification * mod);
 
     /**
      * @brief Copies a mod to profile
      * @param modid
      * @param p
      */
-    void copyModTo(const QString & modid, Profile * p);
+    void copyModTo(Modification * mod, Profile * p);
+
+    /**
+     * @brief Checks if all dependencies are fulfilled.
+     * @param priorityaware
+     * @param assumeactivated Assume those pipelines as activated
+     * @return Map of modid vs List of unfulfilled dependencies
+     */
+    QMap<QString, QList<Dependency>> dependencyCheck(bool priorityaware, const QList<Modification*> & modlist);
 
 public slots:
 

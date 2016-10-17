@@ -43,6 +43,34 @@ QList<Modification *> ModManager::getModifications()
     return QList<Modification*>(m_mods);
 }
 
+QList<Modification *> ModManager::getPartiallyActiveMods()
+{
+    QList<Modification*> result;
+
+    for(Modification * mod : m_mods)
+    {
+        if(mod->isPartiallyEnabled())
+        {
+            result << mod;
+        }
+    }
+
+    return result;
+}
+
+QList<Modification *> ModManager::getModsInPriorityOrder(QList<Modification *> unordered)
+{
+    std::sort(unordered.begin(), unordered.end(), [&](Modification * a, Modification * b) {
+
+        int sa = getSortPriority(a->id());
+        int sb = getSortPriority(b->id());
+
+        return sa < sb;
+    });
+
+    return unordered;
+}
+
 Modification *ModManager::getModification(const QString &id)
 {
     for(Modification * mod : m_mods)
@@ -54,43 +82,118 @@ Modification *ModManager::getModification(const QString &id)
     return nullptr;
 }
 
-Pipeline *ModManager::getPipeline(const QString &mod, const QString &content)
+int ModManager::setEnabled(Pipeline *pip, bool enabled)
 {
-    Modification * m = getModification(mod);
-    return m->getPipeline(content);
-}
-
-int ModManager::setEnabled(const QString &mod, const QString &content, bool enabled)
-{
-    Pipeline * p = getPipeline(mod, content);
-
     // If not supported by platform, skip mod
-    if(p->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
+    if(enabled && pip->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
         return -1;
 
-    m_config->setValue(mod + "/content/" + content, enabled);
+    if(enabled && GlobalSettings::instance()->getEnableDepencencyCheck())
+    {
+        QList<Modification*> activemods = getPartiallyActiveMods();
+
+        QSet<Modification*> tocheck;
+        tocheck |= QSet<Modification*>::fromList(activemods);
+        tocheck << pip->mod();
+
+        QMap<QString, QList<Dependency> > unsatisfied = dependencyCheck(false, tocheck.toList());
+
+        if(!unsatisfied.isEmpty())
+        {
+            // Try to resolve missing mods
+            QSet<Modification*> resolved;
+            QList<Dependency> unresolved;
+
+            for(QList<Dependency> deps : unsatisfied.values())
+            {
+                for(Dependency dep : deps)
+                {
+                    Modification * resv = getSatisfyingMod(dep, m_mods, nullptr, false);
+
+                    if(resv != nullptr)
+                    {
+                        // Check this or it will trigger if another mod requests this mod
+                        if(resv != pip->mod())
+                            resolved << resv;
+                    }
+                    else
+                    {
+                        unresolved << dep;
+                    }
+                }
+            }
+
+            // If everything can be resolved, ask the user
+            // Othwise inform that there are problems
+            if(!unresolved.isEmpty() || !resolved.isEmpty())
+            {
+                if(unresolved.isEmpty())
+                {
+                    QStringList resolvednames;
+
+                    for(Modification * mod : resolved)
+                    {
+                        resolvednames << mod->name();
+                    }
+
+                    QMessageBox dlg;
+                    dlg.setText("Enable content");
+                    dlg.setInformativeText(QString("This mod needs other mods to work: %1. Do you want to activate them?").arg(resolvednames.join(", ")));
+                    dlg.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+
+                    int ret = dlg.exec();
+
+                    if(ret == QMessageBox::Yes)
+                    {
+                        for(Modification * mod : resolved)
+                        {
+                            mod->enableDefaults();
+                        }
+                    }
+                    else if(ret == QMessageBox::Cancel)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        // Do nothing
+                    }
+                }
+                else
+                {
+                    QString message = QString("This content has unresolveable dependencies: %1. There may be problems if you activate it.").
+                            arg(Dependency::toListOfPrettyDependencyStrings(unresolved).join(", "));
+
+                    if(QMessageBox::critical(nullptr, "Enable content", message, QMessageBox::Cancel, QMessageBox::Ignore) == QMessageBox::Cancel)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+    }
+
+    m_config->setValue(pip->mod()->id() + "/content/" + pip->id(), enabled);
 
     int err = 0;
 
     if(enabled)
     {
-        err = getPipeline(mod, content)->primePipeline(false);
+        err = pip->primePipeline(false);
     }
 
-    emit updatedModStatus(mod, content, enabled);
+    emit updatedModStatus(pip->mod()->id(), pip->id(), enabled);
     issueDependencyCheck();
 
     return err;
 }
 
-bool ModManager::isEnabled(const QString &mod, const QString &content)
+bool ModManager::isEnabled(Pipeline *pip)
 {
-    Pipeline * p = getPipeline(mod, content);
-
-    if(!GlobalSettings::instance()->getForceUnsupported() && p->unsupported())
+    if(!GlobalSettings::instance()->getForceUnsupported() && pip->unsupported())
         return false;
 
-    return m_config->value(mod + "/content/" + content, false).toBool();
+    return m_config->value(pip->mod()->id() + "/content/" + pip->id(), false).toBool();
 }
 
 int ModManager::getSortPriority(const QString &mod)
@@ -110,10 +213,9 @@ void ModManager::writePriorities()
     m_config->sync();
 }
 
-bool ModManager::priotizeUp(const QString &mod)
+bool ModManager::priotizeUp(Modification *mod)
 {
-    Modification * m = getModification(mod);
-    int index = m_mods.indexOf(m);
+    int index = m_mods.indexOf(mod);
 
     if(index > 0)
     {
@@ -131,10 +233,9 @@ bool ModManager::priotizeUp(const QString &mod)
     return false;
 }
 
-bool ModManager::priotizeDown(const QString &mod)
+bool ModManager::priotizeDown(Modification *mod)
 {
-    Modification * m = getModification(mod);
-    int index = m_mods.indexOf(m);
+    int index = m_mods.indexOf(mod);
 
     if(index < m_mods.size() - 1)
     {
@@ -152,6 +253,25 @@ bool ModManager::priotizeDown(const QString &mod)
     return false;
 }
 
+Modification *ModManager::getSatisfyingMod(const Dependency &dep, const QList<Modification *> modlist, Modification * requester, bool priorityaware)
+{
+    // Mod dependencies
+    for(Modification * mod : modlist)
+    {
+        if(dep.satisfies(mod))
+            return mod;
+
+        if(requester != nullptr && priorityaware && requester == mod)
+        {
+            // We require an already INSTALLED mod
+            // Cancel here
+            break;
+        }
+    }
+
+    return nullptr;
+}
+
 bool ModManager::dependencySatisfied(const Dependency &dep, Modification * requester, bool priorityaware)
 {
     // Meta dependencies
@@ -165,24 +285,9 @@ bool ModManager::dependencySatisfied(const Dependency &dep, Modification * reque
             return dep.satisfies("stardewvalley", sdvv);
     }
 
-    // Mod dependencies
-    for(Modification * mod : m_mods)
-    {
-        if(!mod->isPartiallyEnabled())
-            continue;
+    QList<Modification*> modlist = getPartiallyActiveMods();
 
-        if(dep.satisfies(mod))
-            return true;
-
-        if(priorityaware && requester == mod)
-        {
-            // We require an already INSTALLED mod
-            // Cancel here
-            break;
-        }
-    }
-
-    return false;
+    return getSatisfyingMod(dep, modlist, requester, priorityaware) != nullptr;
 }
 
 void ModManager::issueDependencyCheck()
@@ -194,24 +299,7 @@ void ModManager::issueDependencyCheck()
     {
         bool priorityaware = GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness();
 
-        for(Modification * tocheck : m_mods)
-        {
-            if(!tocheck->isPartiallyEnabled())
-                continue;
-
-            QList<Dependency> unsatisfied;
-
-            for(Dependency * dep : tocheck->dependencies())
-            {
-                if(!dependencySatisfied(*dep, tocheck, priorityaware))
-                {
-                    unsatisfied << *dep;
-                }
-            }
-
-            if(!unsatisfied.isEmpty())
-                m_unsatisfiedDependencies[tocheck->id()] = unsatisfied;
-        }
+        m_unsatisfiedDependencies = dependencyCheck(priorityaware, getPartiallyActiveMods());
     }
 
     emit updatedDependencyCheck();
@@ -303,10 +391,8 @@ bool ModManager::importModFromZip(const QString &filename)
     }
 }
 
-void ModManager::deleteMod(const QString &modid)
+void ModManager::deleteMod(Modification *mod)
 {
-    Modification * mod = getModification(modid);
-
     if(mod == nullptr)
         throw std::invalid_argument("Cannot find mod id");
 
@@ -333,14 +419,12 @@ void ModManager::deleteMod(const QString &modid)
     sortMods();
 }
 
-void ModManager::copyModTo(const QString &modid, Profile *p)
+void ModManager::copyModTo(Modification *mod, Profile *p)
 {
-    Modification * mod = getModification(modid);
-
     if(mod == nullptr)
         throw std::invalid_argument("Cannot find mod id");
 
-    getLogger().log(Logger::Info, "modmanager", "modmanager", "copy-mod", "Started to copy mod " + modid + " to " + p->id());
+    getLogger().log(Logger::Info, "modmanager", "modmanager", "copy-mod", "Started to copy mod " + mod->id() + " to " + p->id());
 
     QDir destination = p->profileModDir().absoluteFilePath(mod->id());
     destination.removeRecursively();
@@ -352,6 +436,29 @@ void ModManager::copyModTo(const QString &modid, Profile *p)
     // Evil
     p->getModManager()->loadMod(destination);
     p->getModManager()->sortMods();
+}
+
+QMap<QString, QList<Dependency> > ModManager::dependencyCheck(bool priorityaware, const QList<Modification *> &modlist)
+{
+    QMap<QString, QList<Dependency> > unsatisfied;
+
+    for(Modification * tocheck : modlist)
+    {
+        QList<Dependency> unsatisfieddeps;
+
+        for(Dependency * dep : tocheck->dependencies())
+        {
+            if(!dependencySatisfied(*dep, tocheck, priorityaware))
+            {
+                unsatisfieddeps << *dep;
+            }
+        }
+
+        if(!unsatisfieddeps.isEmpty())
+            unsatisfied[tocheck->id()] = unsatisfieddeps;
+    }
+
+    return unsatisfied;
 }
 
 QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const
@@ -544,19 +651,7 @@ void ModManager::reloadMods()
 
 void ModManager::sortMods()
 {
-    QList<Modification*> tosort = QList<Modification*>(m_mods);
-
-    // Bugfix: Prevent access while inplace sorting
-    std::sort(tosort.begin(), tosort.end(), [&](Modification * a, Modification * b) {
-
-        int sa = getSortPriority(a->id());
-        int sb = getSortPriority(b->id());
-
-        return sa < sb;
-    });
-
-    m_mods = tosort;
-
+    m_mods = getModsInPriorityOrder(m_mods);
     emit updatedModList();
 
     issueDependencyCheck();

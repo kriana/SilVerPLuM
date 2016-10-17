@@ -150,3 +150,33 @@ bool Dependency::satisfies(Modification *mod) const
 {
     return satisfies(mod->id(), mod->version());
 }
+
+QStringList Dependency::toListOfDependencyStrings(const QList<Dependency> &deps)
+{
+    QStringList result;
+
+    for(Dependency dep : deps)
+    {
+        QString str = dep.toString();
+
+        if(!result.contains(str))
+            result << str;
+    }
+
+    return result;
+}
+
+QStringList Dependency::toListOfPrettyDependencyStrings(const QList<Dependency> &deps)
+{
+    QStringList result;
+
+    for(Dependency dep : deps)
+    {
+        QString str = dep.toPrettyString();
+
+        if(!result.contains(str))
+            result << str;
+    }
+
+    return result;
+}

@@ -73,4 +73,16 @@ public:
      * @return
      */
     bool satisfies(Modification * mod) const;
+
+    /**
+     * @brief Creates a list of depencency string
+     * @param deps
+     */
+    static QStringList toListOfDependencyStrings(const QList<Dependency> & deps);
+
+    /**
+     * @brief Creates a list of depencency string
+     * @param deps
+     */
+    static QStringList toListOfPrettyDependencyStrings(const QList<Dependency> & deps);
 };

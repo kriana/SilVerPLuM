@@ -327,12 +327,12 @@ QString Pipeline::id() const
 
 bool Pipeline::isEnabled()
 {
-    return m_mod->getModManager()->isEnabled(m_mod->id(), id());
+    return m_mod->getModManager()->isEnabled(this);
 }
 
 int Pipeline::setEnabled(bool enabled)
 {
-    return m_mod->getModManager()->setEnabled(m_mod->id(), id(), enabled);
+    return m_mod->getModManager()->setEnabled(this, enabled);
 }
 
 QDir Pipeline::pipelineBaseDir()

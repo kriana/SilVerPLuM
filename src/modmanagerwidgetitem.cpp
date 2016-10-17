@@ -124,7 +124,7 @@ void ModManagerWidgetItem::moveUpClicked()
 {
     if(m_currentModification != nullptr)
     {
-        m_currentModification->getModManager()->priotizeUp(m_currentModification->id());
+        m_currentModification->getModManager()->priotizeUp(m_currentModification);
     }
 }
 
@@ -132,7 +132,7 @@ void ModManagerWidgetItem::moveDownClicked()
 {
     if(m_currentModification != nullptr)
     {
-        m_currentModification->getModManager()->priotizeDown(m_currentModification->id());
+        m_currentModification->getModManager()->priotizeDown(m_currentModification);
     }
 }
 
@@ -150,11 +150,11 @@ void ModManagerWidgetItem::deleteClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        QString id = m_currentModification->id();
+        Modification * current = m_currentModification;
         ModManager * mgr = m_currentModification->getModManager();
         setCurrentModification(nullptr);
 
-        mgr->deleteMod(id);
+        mgr->deleteMod(current);
 
         QApplication::restoreOverrideCursor();
     }
@@ -211,7 +211,7 @@ void ModManagerWidgetItem::copyToProfileClicked()
         QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
-        m_currentModification->getModManager()->copyModTo(m_currentModification->id(), p);
+        m_currentModification->getModManager()->copyModTo(m_currentModification, p);
 
         QApplication::restoreOverrideCursor();
     }
