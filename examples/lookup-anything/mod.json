@@ -1,0 +1,53 @@
+{
+    "id": "lookup-anything",
+    "name": "Lookup Anything",
+    "author": "Pathoschild, vizv",
+    "license": "LGPL",
+    "url": "https://github.com/vizv/LookupAnything",
+    "version": "0.40.1.1",
+    "requires": ["stardewvalley=1.1.1", "smapi=0.40.1.1"],
+    "content": {
+        "linux": {
+            "name": "Lookup Anything",
+            "description": "Contains the necessary mod data.",
+            "default": true,
+            "platforms": ["linux", "mac"],
+            "priority": 0,
+            "pipeline": "compile-dll",
+            "nuget-restore": true,
+            "references": {
+                "StardewModdingAPI" : "smapi://smapi-linux/src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe"
+                },
+            "build-parameters" : {
+                "windows" : ["/p:Configuration=Release"],
+                "linux" : ["/p:Configuration=Release"],
+                "mac" : ["/p:Configuration=Release"]
+                },
+            "location": "file",
+            "installables": {
+                "LookupAnything/bin/Release/LookupAnything.dll": "Mods/LookupAnything.dll"
+            }            
+        },
+        "windows": {
+            "name": "Lookup Anything",
+            "description": "Contains the necessary mod data.",
+            "default": true,
+            "platforms": ["windows"],
+            "priority": 0,
+            "pipeline": "compile-dll",
+            "nuget-restore": true,
+            "references": {
+                "StardewModdingAPI" : "smapi://smapi/src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe"
+                },
+            "build-parameters" : {
+                "windows" : ["/p:Configuration=Release"],
+                "linux" : ["/p:Configuration=Release"],
+                "mac" : ["/p:Configuration=Release"]
+                },
+            "location": "file",
+            "installables": {
+                "LookupAnything/bin/Release/LookupAnything.dll": "Mods/LookupAnything.dll"
+            }            
+        }
+    }
+}
