@@ -57,6 +57,7 @@
             "location": "file",
             "installables": {
                 "src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "StardewModdingAPI" : "StardewModdingAPI",
                 "src/StardewModdingAPI/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
             },
             "launchers": {
@@ -65,7 +66,7 @@
                     "description": "Runs Stardew Valley with SMAPI mods.",
                     "executables": {
                         "linux": {
-                            "executable": "stardewvalley://StardewModdingAPI.exe",
+                            "executable": "stardewvalley://StardewModdingAPI",
                             "arguments": []
                         }
                     }
