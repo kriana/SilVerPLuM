@@ -162,10 +162,11 @@ RESOURCES += \
 
 # We need zlib and quazip for extracting/installing new mods
 
-unix {
+unix:!mac {
     LIBS += -lquazip5 -lz
     INCLUDEPATH += /usr/include/quazip5/
 }
+
 
 win32 {
     INCLUDEPATH += $$PWD/../quazip-0.7.2/quazip
@@ -176,7 +177,16 @@ win32 {
     LIBS += -LC:/GnuWin32/bin/ -lz
 }
 
+macx {
+LIBS += -L$$PWD/../quazip-0.7.2/build-quazip-Desktop-Release/quazip/ -lquazip.1.0.0
+
+INCLUDEPATH += $$PWD/../quazip-0.7.2/build-quazip-Desktop-Release/quazip
+DEPENDPATH += $$PWD/../quazip-0.7.2/build-quazip-Desktop-Release/quazip
+INCLUDEPATH += $$PWD/../quazip-0.7.2/quazip/
+
+    LIBS += -lz.1.2.8
+}
+
 # Make the windows executable have an icon
 RC_FILE = SilVerPLuM.rc
-
 
