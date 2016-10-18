@@ -148,6 +148,20 @@ bool Dependency::satisfies(const QString &id, const QVersionNumber &version) con
 
 bool Dependency::satisfies(Modification *mod) const
 {
+    // Check the provides
+    if(m_Id.startsWith("@"))
+    {
+        QString pid = m_Id.mid(1);
+
+        for(QString prov : mod->getProvides())
+        {
+            if(prov == pid)
+            {
+                return satisfies(m_Id, mod->version());
+            }
+        }
+    }
+
     return satisfies(mod->id(), mod->version());
 }
 
