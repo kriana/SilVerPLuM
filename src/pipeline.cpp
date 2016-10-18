@@ -89,6 +89,23 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
         pip->addEncryptionEntry(entry);
     }
 
+    // Provides identifiers
+    QStringList provides;
+
+    for(QJsonValue prov : json["provides"].toArray())
+    {
+        if(prov.toString().replace(QRegExp("[^a-z0-9_.\\-]+"), "") == prov.toString())
+        {
+            provides << prov.toString();
+        }
+        else
+        {
+            pip->getLogger().log(Logger::Error, "pipeline", pip->id(), "load", "Refusing provides " + prov.toString() + ": same rules as pipeline-id");
+        }
+    }
+
+    pip->setProvides(provides);
+
     return true;
 }
 
@@ -484,6 +501,16 @@ int Pipeline::primePipeline(bool force)
 int Pipeline::prime(bool is_forced)
 {
     return 0;
+}
+
+QStringList Pipeline::getProvides() const
+{
+    return m_provides;
+}
+
+void Pipeline::setProvides(const QStringList &provides)
+{
+    m_provides = provides;
 }
 
 bool Pipeline::isdefault() const

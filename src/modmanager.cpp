@@ -490,8 +490,29 @@ QString ModManager::autoResolveModUrls(QString content)
 
     for(Modification * mod : m_mods)
     {
+        // Resolve provides
+        if(mod->isPartiallyEnabled())
+        {
+            // Modid provides @modprovides://path to abspath
+            for(QString prov : mod->getProvides())
+            {
+                content = content.replace("@" + prov + "://", mod->modBasePath().absolutePath() + "/");
+            }
+
+            // Content provides abspath/@contentid -> abspath/contentdir
+            for(Pipeline * pip : mod->getPipelines())
+            {
+                for(QString prov : pip->getProvides())
+                {
+                    content = content.replace(mod->modBasePath().absolutePath() + "/@" + prov, mod->modBasePath().absolutePath() + "/" + pip->id());
+                }
+            }
+        }
+
+
         content = content.replace(mod->id() + "://", mod->modBasePath().absolutePath() + "/");
-    }
+    }    
+
 
     return content;
 }
@@ -505,6 +526,21 @@ QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
 
     QString modid = url.split("://")[0];
     QString path = url.split("://")[1];
+
+    // Resolve modid provides
+    if(modid.startsWith("@"))
+    {
+        modid = modid.mid(1);
+
+        for(Modification * mod : getPartiallyActiveMods())
+        {
+            if(mod->getProvides().contains(modid))
+            {
+                modid = mod->id();
+                break;
+            }
+        }
+    }
 
     if(modid == "stardewvalley")
     {
@@ -522,6 +558,24 @@ QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
     {
          Modification * mod = getModification(modid);
 
+         //Resolve path provides
+         if(path.startsWith("@"))
+         {
+             path = path.mid(1);
+             QString prov = path.contains("/") ? path.mid(0, path.indexOf('/')) : path;
+
+             for(Pipeline * pip : mod->getPipelines())
+             {
+                 if(pip->isEnabled() && pip->getProvides().contains(prov))
+                 {
+                     path = path.mid(prov.length());
+                     path = pip->id() + path;
+
+                     break;
+                 }
+             }
+         }
+
          if(mod == nullptr)
              return emptyoninvalid ? "" : url;
          return mod->modBasePath().absolutePath() + "/" + path;
@@ -536,6 +590,21 @@ bool ModManager::isValidModUrl(const QString &url)
         return false;
 
     QString modid = url.split("://")[0];
+
+    // Resolve modid provides
+    if(modid.startsWith("@"))
+    {
+        modid = modid.mid(1);
+
+        for(Modification * mod : getPartiallyActiveMods())
+        {
+            if(mod->getProvides().contains(modid))
+            {
+                modid = mod->id();
+                break;
+            }
+        }
+    }
 
     if(modid == "stardewvalley")
     {

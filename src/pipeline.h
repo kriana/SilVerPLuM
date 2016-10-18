@@ -192,6 +192,18 @@ public:
      */
     static Pipeline * loadFromJson(Modification *mod, const QString &id, const QJsonObject &json);
 
+    /**
+     * @brief List of pipeline-ids this pipeline can provide
+     * @return
+     */
+    QStringList getProvides() const;
+
+    /**
+     * @brief Sets pipeline-ids that this pipeline can provide
+     * @param provides
+     */
+    void setProvides(const QStringList &provides);
+
 protected:
 
     static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
@@ -227,6 +239,8 @@ private:
     Logger m_logger;
 
     QSet<QString> m_fgInstalledFiles;
+
+    QStringList m_provides;
 
 private slots:
 

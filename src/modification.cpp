@@ -31,6 +31,16 @@ bool Modification::exportToZip(const QString &path)
     return JlCompress::compressDir(path, modBasePath().absolutePath(), true);
 }
 
+QStringList Modification::getProvides() const
+{
+    return m_provides;
+}
+
+void Modification::setProvides(const QStringList &provides)
+{
+    m_provides = provides;
+}
+
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
     connect(modmgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));
@@ -223,6 +233,23 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
     {
         mod->addDependency(new Dependency(req.toString()));
     }
+
+    // Provides identifiers
+    QStringList provides;
+
+    for(QJsonValue prov : json["provides"].toArray())
+    {
+        if(prov.toString().replace(QRegExp("[^a-z0-9_.\\-]+"), "") == prov.toString())
+        {
+            provides << prov.toString();
+        }
+        else
+        {
+            modmgr->getLogger().log(Logger::Error, "modification", id, "load", "Refusing provides " + prov.toString() + ": same rules as mod-id");
+        }
+    }
+
+    mod->setProvides(provides);
 
     // Additional way of description
     if(QFileInfo(basepath.absoluteFilePath("mod-description.md")).exists())

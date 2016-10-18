@@ -33,6 +33,7 @@ private:
     QList<Pipeline*> m_Pipelines;
     QSet<QString> m_PipelineIds;
     Logger m_logger;
+    QStringList m_provides;
 
 public:
     Modification(ModManager * modmgr, const QString & id);
@@ -234,6 +235,18 @@ public:
      * @return
      */
     bool exportToZip(const QString &path);
+
+    /**
+     * @brief Returns list of IDs this mod provides
+     * @return
+     */
+    QStringList getProvides() const;
+
+    /**
+     * @brief Sets list of IDs this mod provides
+     * @param provides
+     */
+    void setProvides(const QStringList &provides);
 
 protected:
 
