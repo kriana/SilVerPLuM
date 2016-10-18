@@ -27,6 +27,10 @@ public:
 
     void setExpanded(bool expand);
 
+    void addFiles(const QStringList & files);
+
+    void setInstallDir(const QString & dir);
+
 private:
     Ui::ModImporterContentItem *ui;
     ModImporter * m_importer;

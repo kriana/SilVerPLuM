@@ -6,6 +6,7 @@
 #include "globalsettings.h"
 #include <quazip.h>
 #include <JlCompress.h>
+#include <random>
 #include "utils.h"
 
 const QStringList ModManager::FORBIDDEN_MOD_IDS = QStringList() << "stardewvalley" << "stardewvalley-savegames" << "stardewvalley-userdata";
@@ -469,6 +470,29 @@ QMap<QString, QList<Dependency> > ModManager::dependencyCheck(bool priorityaware
 QMap<QString, QList<Dependency> > ModManager::getUnsatisfiedDependencies() const
 {
     return m_unsatisfiedDependencies;
+}
+
+QString ModManager::unifyModId(QString id)
+{
+    id = utils::makeValidModId(id);
+
+    if(getModification(id) == nullptr)
+        return id;
+
+    // Unify it
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(100000000, 999999999);
+
+
+    QString as_uid;
+
+    while(as_uid.isEmpty() || m_modId.contains(id + "-" + as_uid))
+    {
+        as_uid = QString::number(dis(gen));
+    }
+
+    return id + "-" + as_uid;
 }
 
 void ModManager::install()

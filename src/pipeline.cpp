@@ -94,7 +94,7 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
 
     for(QJsonValue prov : json["provides"].toArray())
     {
-        if(prov.toString().replace(QRegExp("[^a-z0-9_.\\-]+"), "") == prov.toString())
+        if(utils::isValidModId(prov.toString()))
         {
             provides << prov.toString();
         }

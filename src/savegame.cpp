@@ -246,10 +246,10 @@ QString Savegame::findNewUID(Profile *profile)
 
     while(as_uid.isEmpty() || existing_uids.contains(as_uid))
     {
-        return QString::number(dis(gen));
+        as_uid = QString::number(dis(gen));
     }
 
-    return "";
+    return as_uid;
 }
 
 QString Savegame::findNewUID() const

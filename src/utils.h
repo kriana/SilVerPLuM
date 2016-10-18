@@ -17,9 +17,31 @@
 #include <QCryptographicHash>
 #include <random>
 #include "platform.h"
+#include <QRegExp>
 
 namespace utils
 {
+
+inline QString findFileInFileList(const QString & filename, const QStringList & filelist)
+{
+    for(QString f : filelist)
+    {
+        if(QFileInfo(f).fileName() == filename)
+            return f;
+    }
+
+    return "";
+}
+
+inline QString makeValidModId(QString str)
+{
+    return str.trimmed().toLower().replace("..", "").replace(" ", "-").replace(QRegExp("[^a-z0-9_.\\-]+"), "");
+}
+
+inline bool isValidModId(QString id)
+{
+    return !id.isEmpty() && id.toLower() == id && !id.contains("..") && id.replace(QRegExp("[^a-z0-9_.\\-]+"), "") == id;
+}
 
 inline QString ArgumentListToString(QStringList list)
 {

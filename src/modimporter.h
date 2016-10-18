@@ -34,11 +34,19 @@ private slots:
 
     void nameChanged(const QString & text);
 
+    void importManuallyClicked();
+
+    void importZipClicked();
+
+    void importDirectoryClicked();
+
 private:
     Ui::ModImporter *ui;
     QList<ModImporterContentItem*> m_contentItems;
 
     bool isValid();
+
+    void importDirectory(const QDir & dir, QString name);
 };
 
 #endif // MODIMPORTER_H

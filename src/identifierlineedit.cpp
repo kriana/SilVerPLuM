@@ -1,5 +1,6 @@
 #include "identifierlineedit.h"
 #include <QRegExp>
+#include "utils.h"
 
 IdentifierLineEdit::IdentifierLineEdit(QWidget *parent) : QLineEdit(parent)
 {
@@ -8,6 +9,5 @@ IdentifierLineEdit::IdentifierLineEdit(QWidget *parent) : QLineEdit(parent)
 
 void IdentifierLineEdit::checkText(const QString & text)
 {
-    QString t = text.toLower();
-    setText(t.replace(" ", "-").replace(QRegExp("[^a-z0-9_.\\-]+"), "").trimmed());
+    setText(utils::makeValidModId(text));
 }

@@ -114,7 +114,7 @@ QJsonObject ModImporterContentItem::build(const QDir &modbasepath)
         QString filename = QFileInfo(file).fileName();
         if(QFile::copy(file, contentbasepath.absoluteFilePath(filename)))
         {
-            installables_json[filename] =  path_prefix + "/" + filename;
+            installables_json[filename] =  path_prefix.replace("\\", "/") + "/" + filename;
         }
 
     }
@@ -127,6 +127,16 @@ QJsonObject ModImporterContentItem::build(const QDir &modbasepath)
 void ModImporterContentItem::setExpanded(bool expand)
 {
     ui->btnShowSettings->setChecked(expand);
+}
+
+void ModImporterContentItem::addFiles(const QStringList &files)
+{
+    ui->contentFiles->addFiles(files);
+}
+
+void ModImporterContentItem::setInstallDir(const QString &dir)
+{
+    ui->contentInstallTo->setCurrentText(dir);
 }
 
 void ModImporterContentItem::updateInformationLabel()

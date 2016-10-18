@@ -11,6 +11,8 @@
 #include "utils.h"
 #include "profile.h"
 #include "profilemanager.h"
+#include <QFileDialog>
+#include <JlCompress.h>
 
 ModImporter::ModImporter(QWidget *parent) :
     QDialog(parent),
@@ -32,7 +34,11 @@ ModImporter::ModImporter(QWidget *parent) :
     connect(ui->btnAddContent, SIGNAL(clicked(bool)), this, SLOT(addContent()));
     connect(ui->modName, SIGNAL(textChanged(QString)), this, SLOT(nameChanged(QString)));
 
-    ui->toolBox->setCurrentWidget(ui->modInfoPage);
+    connect(ui->btnImportDirectory, &QPushButton::clicked, this, &ModImporter::importDirectoryClicked);
+    connect(ui->btnImportZip, &QPushButton::clicked, this, &ModImporter::importZipClicked);
+    connect(ui->btnImportManually, &QPushButton::clicked, this, &ModImporter::importManuallyClicked);
+
+    ui->toolBox->setCurrentWidget(ui->infoPage);
 }
 
 ModImporter::~ModImporter()
@@ -194,6 +200,53 @@ void ModImporter::nameChanged(const QString &text)
     ui->modIdentifier->setText(text);
 }
 
+void ModImporter::importManuallyClicked()
+{
+    ui->toolBox->setCurrentWidget(ui->modInfoPage);
+}
+
+void ModImporter::importZipClicked()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::ExistingFile);
+    dlg.setMimeTypeFilters(QStringList() << "application/zip" << "application/octet-stream");
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        QTemporaryDir tempdir;
+        tempdir.setAutoRemove(false);
+
+        if(tempdir.isValid())
+        {
+            QStringList extracted = JlCompress::extractDir(dlg.selectedFiles().first(), tempdir.path());
+
+            if(extracted.isEmpty())
+            {
+                QMessageBox::critical(nullptr, "Import *.zip", "Extraction of file failed!");
+                return;
+            }
+
+            importDirectory(tempdir.path(), QFileInfo(dlg.selectedFiles().first()).fileName());
+        }
+        else
+        {
+            QMessageBox::critical(nullptr, "Import *.zip", "Could not create temporary directory!");
+            return;
+        }
+    }
+}
+
+void ModImporter::importDirectoryClicked()
+{
+    QFileDialog dlg;
+    dlg.setFileMode(QFileDialog::DirectoryOnly);
+
+    if(dlg.exec() == QFileDialog::Accepted)
+    {
+        importDirectory(dlg.selectedFiles().first(), QDir(dlg.selectedFiles().first()).dirName());
+    }
+}
+
 bool ModImporter::isValid()
 {
     if(ui->modIdentifier->text().isEmpty())
@@ -208,4 +261,31 @@ bool ModImporter::isValid()
         return false;
 
     return true;
+}
+
+void ModImporter::importDirectory(const QDir &dir, QString name)
+{
+    // Clean up
+    while(!m_contentItems.isEmpty())
+        removeContent(m_contentItems.first());
+
+    // Determine name
+    name = name.replace("-", " ");
+    ui->modName->setText(name);
+    ui->modIdentifier->setText(ProfileManager::instance()->getSelectedProfile()->getModManager()->unifyModId(name));
+    ui->modAuthor->setText("Unknown");
+    ui->modLicense->setCurrentText("Unknown");
+
+    // Find all mod files
+    QStringList mod_files = utils::findAllFiles(dir);
+    QStringList game_files = utils::findAllFiles(ProfileManager::instance()->getSelectedProfile()->StardewValleyDir());
+
+    // Find all XNB files
+    for(QString file : mod_files)
+    {
+        if(file.endsWith(".xnb"))
+        {
+
+        }
+    }
 }

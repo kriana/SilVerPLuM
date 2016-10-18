@@ -117,6 +117,13 @@ public:
     QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
 
     /**
+     * @brief Creates an unique mod-id from the ID
+     * @param id
+     * @return
+     */
+    QString unifyModId(QString id);
+
+    /**
      * @brief Installs all activated mods
      */
     void install();

@@ -80,16 +80,14 @@ Profile *ProfileManager::getProfile(const QString & id)
 
 Profile * ProfileManager::createOrLoadProfile(const QString &name)
 {
-    QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
+    QString id = utils::makeValidModId(name);
 
     return createOrLoadProfile(id, name);
 }
 
 Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &name)
-{
-    QString id_ = id.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
-
-    if(id_ != id)
+{   
+    if(!utils::isValidModId(id))
     {
         getLogger().log(Logger::Warning, "profiles", "manager", "create-or-load", "Invalid ID " + id);
         return nullptr;
@@ -150,7 +148,7 @@ bool ProfileManager::deleteProfile(Profile *p)
 
 bool ProfileManager::duplicateProfile(Profile *p, const QString &name)
 {
-    QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
+    QString id = utils::makeValidModId(name);
 
     if(idExists(id))
     {
@@ -187,7 +185,7 @@ bool ProfileManager::exportProfile(Profile *p, const QString &path)
 
 bool ProfileManager::importProfile(const QString &path, const QString & name)
 {
-    QString id = name.toLower().replace(QRegExp("[^a-zA-Z0-9_.]+"), "_");
+    QString id = utils::makeValidModId(name);
 
     if(idExists(id))
     {

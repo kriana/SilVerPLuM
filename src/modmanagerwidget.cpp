@@ -132,7 +132,7 @@ void ModManagerWidget::installModClicked()
             {
                 if(QMessageBox::critical(this,
                                       "Add modification",
-                                      "Could not add " + file,
+                                      "Could not add " + file + ". Such mods need to be compatible with SilVerPLuM. You can try out the mod importer in the menu that opens if you click the arrow next to 'Add mod'.",
                                       QMessageBox::Ok,
                                       QMessageBox::Cancel) == QMessageBox::Cancel)
                 {
