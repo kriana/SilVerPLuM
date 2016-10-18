@@ -1,6 +1,7 @@
 #include "logviewer.h"
 #include "ui_logviewer.h"
 #include "utils.h"
+#include "profilemanager.h"
 #include <QClipboard>
 
 LogViewer::LogViewer(QWidget *parent) :
@@ -52,6 +53,7 @@ void LogViewer::execForProfile(Profile *p)
 
     joined.insert(p->getLogger());
     joined.insert(p->getModManager()->getLogger());
+    joined.insert(ProfileManager::instance()->getLogger());
 
     for(Modification * mod : p->getModManager()->getModifications())
     {

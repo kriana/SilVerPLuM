@@ -39,6 +39,8 @@ void ProfileManager::initialize()
     if(m_initialized)
         throw std::runtime_error("Profile manager is already initialized!");
 
+    getLogger().log(Logger::Info, "program", "program", "arguments", utils::ArgumentListToString(QApplication::arguments()));
+
     // Look for existing profiles
     if(ProfilesDir().exists())
     {

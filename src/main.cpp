@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
             qDebug() << "But file exists!";
     }
 
-
     // Import the icon theme if its not set. Needed for Windows and MacOS
     if(QIcon::themeName().isEmpty())
     {
