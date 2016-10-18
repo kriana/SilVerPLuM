@@ -129,6 +129,18 @@ void Profile::setStardewValleyUserDataDir(const QDir &dir)
     getSavegameManager()->reloadSavegames();
 }
 
+QDir Profile::StardewValleyContentDir()
+{
+    return m_Settings->value("StardewValley/ContentDir", DefaultStardewValleyContentDir().absolutePath()).toString();
+}
+
+void Profile::setStardewValleyContentDir(const QDir &dir)
+{
+    m_Settings->setValue("StardewValley/ContentDir", dir.absolutePath());
+
+    setting_changed();
+}
+
 QVersionNumber Profile::StardewValleyVersion()
 {
     return QVersionNumber::fromString(m_Settings->value("StardewValley/Version", "0").toString());
@@ -457,6 +469,21 @@ QDir Profile::DefaultStardewValleyDir()
         return QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absolutePath() + ("/.local/share/Steam/steamapps/common/Stardew Valley/");
     case Platform::Mac:
         return QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).absolutePath() + ("/Library/Application Support/Steam/steamapps/common/Stardew Valley");
+    default:
+        throw std::runtime_error("Unsupported platform!");
+    }
+}
+
+QDir Profile::DefaultStardewValleyContentDir()
+{
+    switch(Platform::getCurrentPlatform())
+    {
+    case Platform::Windows:
+        return DefaultStardewValleyDir().absoluteFilePath("Content");
+    case Platform::Linux:
+        return DefaultStardewValleyDir().absoluteFilePath("Content");
+    case Platform::Mac:
+        throw std::runtime_error("--> Insert here <--");
     default:
         throw std::runtime_error("Unsupported platform!");
     }

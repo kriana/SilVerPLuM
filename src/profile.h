@@ -130,6 +130,18 @@ public:
     void setStardewValleyUserDataDir(const QDir & dir);
 
     /**
+     * @brief The content dir of Stardew Valley
+     * @return
+     */
+    QDir StardewValleyContentDir();
+
+    /**
+     * @brief Sets the content dir of Stardew Valley
+     * @param dir
+     */
+    void setStardewValleyContentDir(const QDir & dir);
+
+    /**
      * @brief The current version of Stardew Valley
      * @return
      */
@@ -296,6 +308,12 @@ public:
      * @return
      */
     static QDir DefaultStardewValleyDir();
+
+    /**
+     * @brief Platform-specific locations for Stardew Valley content (Thanks to MacOS)
+     * @return
+     */
+    static QDir DefaultStardewValleyContentDir();
 
     /**
      * @brief Returns known Stardew Valley versions

@@ -9,7 +9,7 @@
 #include <random>
 #include "utils.h"
 
-const QStringList ModManager::FORBIDDEN_MOD_IDS = QStringList() << "stardewvalley" << "stardewvalley-savegames" << "stardewvalley-userdata";
+const QStringList ModManager::FORBIDDEN_MOD_IDS = QStringList() << "stardewvalley" << "stardewvalley-savegames" << "stardewvalley-userdata" << "stardewvalley-content";
 
 ModManager::ModManager(Profile *profile) : m_profile(profile)
 {
@@ -516,6 +516,7 @@ QString ModManager::autoResolveModUrls(QString content)
     content = content.replace("stardewvalley://", profile()->StardewValleyDir().absolutePath() + "/");
     content = content.replace("stardewvalley-savegames://", profile()->StardewValleySavegameDir().absolutePath() + "/");
     content = content.replace("stardewvalley-userdata://", profile()->StardewValleyUserDataDir().absolutePath() + "/");
+    content = content.replace("stardewvalley-content://", profile()->StardewValleyContentDir().absolutePath() + "/");
 
     for(Modification * mod : m_mods)
     {
@@ -583,6 +584,10 @@ QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
     {
         return profile()->StardewValleyUserDataDir().absolutePath() + "/" + path;
     }
+    else if(modid == "stardewvalley-content")
+    {
+        return profile()->StardewValleyContentDir().absolutePath() + "/" + path;
+    }
     else
     {
          Modification * mod = getModification(modid);
@@ -644,6 +649,10 @@ bool ModManager::isValidModUrl(const QString &url)
         return true;
     }
     else if(modid == "stardewvalley-userdata")
+    {
+        return true;
+    }
+    else if(modid == "stardewvalley-content")
     {
         return true;
     }

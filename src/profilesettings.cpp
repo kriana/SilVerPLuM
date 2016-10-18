@@ -19,6 +19,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     connect(ui->sdvApplicationDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvSavegameDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvUserDataDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
+    connect(ui->sdvContentDirectory, SIGNAL(changed()), ui->buttonBox, SLOT(show()));
     connect(ui->sdvVersion, SIGNAL(currentTextChanged(QString)), ui->buttonBox, SLOT(show()));
     connect(ui->sdvTechXNA, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->sdvTechMonoGame, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
@@ -30,6 +31,7 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     ui->sdvApplicationDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);    
     ui->sdvSavegameDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
     ui->sdvUserDataDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
+    ui->sdvContentDirectory->getFileDialog()->setFileMode(QFileDialog::DirectoryOnly);
     ui->profileDirectory->setReadOnly(true);
 
     // add versions
@@ -101,6 +103,7 @@ void ProfileSettings::discart()
         ui->profileDescription->document()->setPlainText(m_CurrentProfile->description());
         ui->profileDirectory->setCurrentPath(m_CurrentProfile->profileBaseDir().absolutePath());
         ui->sdvApplicationDirectory->setCurrentPath(m_CurrentProfile->StardewValleyDir().absolutePath());
+        ui->sdvContentDirectory->setCurrentPath(m_CurrentProfile->StardewValleyContentDir().absolutePath());
         ui->sdvSavegameDirectory->setCurrentPath(m_CurrentProfile->StardewValleySavegameDir().absolutePath());
         ui->sdvUserDataDirectory->setCurrentPath(m_CurrentProfile->StardewValleyUserDataDir().absolutePath());
         ui->sdvVersion->setCurrentText(m_CurrentProfile->StardewValleyVersion().toString());
@@ -160,6 +163,7 @@ void ProfileSettings::save()
     m_CurrentProfile->setName(ui->profileName->text().trimmed());
     m_CurrentProfile->setDescription(ui->profileDescription->document()->toPlainText());
     m_CurrentProfile->setStardewValleyDir(ui->sdvApplicationDirectory->getCurrentPath());
+    m_CurrentProfile->setStardewValleyContentDir(ui->sdvContentDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleySavegameDir(ui->sdvSavegameDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleyUserDataDir(ui->sdvUserDataDirectory->getCurrentPath());
     m_CurrentProfile->setStardewValleyVersion(QVersionNumber::fromString(ui->sdvVersion->currentText()));
@@ -192,6 +196,7 @@ void ProfileSettings::autodetectSDV()
 {
     // For now: Reset to defaults
     ui->sdvApplicationDirectory->setCurrentPath(Profile::DefaultStardewValleyDir().absolutePath());
+    ui->sdvContentDirectory->setCurrentPath(Profile::DefaultStardewValleyContentDir().absolutePath());
     ui->sdvSavegameDirectory->setCurrentPath(Profile::DefaultStardewValleySavegameDir().absolutePath());
     ui->sdvUserDataDirectory->setCurrentPath(Profile::DefaultStardewValleyUserDataDir().absolutePath());
     ui->sdvVersion->setCurrentText("0");

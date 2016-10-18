@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-376</y>
+        <y>-198</y>
         <width>538</width>
-        <height>814</height>
+        <height>844</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -151,7 +151,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_2">
             <property name="minimumSize">
              <size>
@@ -164,7 +164,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="FileSelectorEdit" name="sdvSavegameDirectory" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -177,7 +177,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_8">
             <property name="minimumSize">
              <size>
@@ -190,7 +190,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="5" column="1">
            <widget class="QComboBox" name="sdvVersion">
             <property name="toolTip">
              <string>The Stardew Valley version that is installed in the application directory.</string>
@@ -200,7 +200,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="6" column="0">
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -213,14 +213,14 @@
             </property>
            </spacer>
           </item>
-          <item row="4" column="1">
+          <item row="6" column="1">
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Set version to 0 to disable version checks</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="label_7">
             <property name="minimumSize">
              <size>
@@ -233,7 +233,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="label_6">
             <property name="minimumSize">
              <size>
@@ -246,7 +246,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
+          <item row="10" column="1">
            <widget class="QPushButton" name="btnSDVAutodetect">
             <property name="minimumSize">
              <size>
@@ -263,7 +263,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="8" column="1">
            <widget class="QWidget" name="widget" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -307,7 +307,7 @@
             </layout>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_12">
             <property name="minimumSize">
              <size>
@@ -320,7 +320,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="FileSelectorEdit" name="sdvUserDataDirectory" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -330,6 +330,29 @@
             </property>
             <property name="toolTip">
              <string>The directory that contains other user data of Stardew Valley.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="minimumSize">
+             <size>
+              <width>140</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Content directory</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="FileSelectorEdit" name="sdvContentDirectory" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
@@ -484,15 +507,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>MarkdownTextEditor</class>
+   <extends>QPlainTextEdit</extends>
+   <header>markdowntexteditor.h</header>
+  </customwidget>
+  <customwidget>
    <class>FileSelectorEdit</class>
    <extends>QWidget</extends>
    <header>fileselectoredit.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MarkdownTextEditor</class>
-   <extends>QPlainTextEdit</extends>
-   <header>markdowntexteditor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

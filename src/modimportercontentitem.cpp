@@ -16,21 +16,21 @@ ModImporterContentItem::ModImporterContentItem(ModImporter * importer, QWidget *
 {
     ui->setupUi(this);
 
-    ui->contentInstallTo->addItems(QStringList() << "Content"
-                                   << "Content/Animals"
-                                   << "Content/Buildings"
-                                   << "Content/Characters"
-                                   << "Content/Data"
-                                   << "Content/Fonts"
-                                   << "Content/LooseSprites"
-                                   << "Content/Maps"
-                                   << "Content/Mines"
-                                   << "Content/Minigames"
-                                   << "Content/Portraits"
-                                   << "Content/Strings"
-                                   << "Content/TerrainFeatures"
-                                   << "Content/TileSheets"
-                                   << "Content/XACT");
+    ui->contentInstallTo->addItems(QStringList() << "stardewvalley-content://"
+                                   << "stardewvalley-content://Animals"
+                                   << "stardewvalley-content://Buildings"
+                                   << "stardewvalley-content://Characters"
+                                   << "stardewvalley-content://Data"
+                                   << "stardewvalley-content://Fonts"
+                                   << "stardewvalley-content://LooseSprites"
+                                   << "stardewvalley-content://Maps"
+                                   << "stardewvalley-content://Mines"
+                                   << "stardewvalley-content://Minigames"
+                                   << "stardewvalley-content://Portraits"
+                                   << "stardewvalley-content://Strings"
+                                   << "stardewvalley-content://TerrainFeatures"
+                                   << "stardewvalley-content://TileSheets"
+                                   << "stardewvalley-content://XACT");
     for(QString modid : ModManager::FORBIDDEN_MOD_IDS)
     {
         ui->contentInstallTo->addItem(modid + "://");

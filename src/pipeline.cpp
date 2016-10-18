@@ -124,7 +124,27 @@ QMap<QString, QString> Pipeline::resolveInstallables()
         }
         else
         {
-            dst = mod()->getModManager()->profile()->StardewValleyDir().absolutePath() + "/" + dst;
+            getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "No valid mod URL in installable. Assuming stardewvalley://");
+
+            /*
+             * Support content dir override
+             */
+            if(dst == "Content")
+            {
+                getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "Content directory detected. Please use stardewvalley-content://");
+
+                dst = mod()->getModManager()->profile()->StardewValleyContentDir().absolutePath();
+            }
+            else if(dst.startsWith("Content/"))
+            {
+                getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "Content directory detected. Please use stardewvalley-content://");
+
+                dst = dst.replace("Content/", mod()->getModManager()->profile()->StardewValleyContentDir().absolutePath() + "/");
+            }
+            else
+            {
+                dst = mod()->getModManager()->profile()->StardewValleyDir().absolutePath() + "/" + dst;
+            }
         }
 
         QString src = pipelineBaseDir().absolutePath() + "/" + key;
@@ -178,6 +198,23 @@ QMap<QString, QString> Pipeline::resolveInstallables()
             getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 
             result[src] = dst;
+        }
+    }
+
+    // Post-resolve content
+    for(QString src : result.keys())
+    {
+        QString dst = result[src];
+
+        if(dst.startsWith(mod()->getModManager()->profile()->StardewValleyDir().absoluteFilePath("Content") + "/"))
+        {
+            QString ndst = dst.replace(mod()->getModManager()->profile()->StardewValleyDir().absoluteFilePath("Content") + "/",
+                                       mod()->getModManager()->profile()->StardewValleyContentDir().absolutePath());
+            if(dst != ndst)
+            {
+                getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-post-contentfix", "Resolved for " + src + " destination from " + dst + " to " + ndst);
+                result[src] = ndst;
+            }
         }
     }
 

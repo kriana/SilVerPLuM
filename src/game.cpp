@@ -91,8 +91,8 @@ void Game::progress(bool enabled, int _min, int _max, int _val)
 
 void Game::prepareFindUnoverrideableGameFiles()
 {
-    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
-    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
+    //QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
+    QDir sdvcontentdir = m_Launcher->getProfile()->StardewValleyContentDir();
 
     getLogger().log(Logger::Info, "launcher", "prepare", "find-gamefiles", "Determining unoverrideable files");
 
@@ -172,9 +172,8 @@ void Game::prepare()
 {
     getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
 
-    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
-    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
-    QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
+    QDir sdvcontentdir =  m_Launcher->getProfile()->StardewValleyContentDir();
+    QDir sdvcontentbackup =  m_Launcher->getProfile()->profileBaseDir().absoluteFilePath("sdv-content-backup");
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
     sdvsavegames.mkpath(".");
@@ -261,15 +260,15 @@ void Game::postMoveSavegames()
 void Game::postRestoreContent()
 {
     getLogger().log(Logger::Info, "launcher", "post", "restore-content", "Starting to restore content directory");
-    QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
-    QDir sdvcontentdir = sdvdir.absoluteFilePath("Content");
-    QDir sdvcontentbackup = sdvdir.absoluteFilePath("Content.mod_backup");
+
+    QDir sdvcontentdir =  m_Launcher->getProfile()->StardewValleyContentDir();
+    QDir sdvcontentbackup =  m_Launcher->getProfile()->profileBaseDir().absoluteFilePath("sdv-content-backup");
 
     if(sdvcontentbackup.exists())
     {
         progress(true, 0, 5, 5);
         sdvcontentdir.removeRecursively();
-        sdvdir.rename(sdvcontentbackup.dirName(), sdvcontentdir.dirName());
+        utils::copyDirectory(sdvcontentbackup, sdvcontentdir, true);
     }
     else
     {

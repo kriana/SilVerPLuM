@@ -21,8 +21,14 @@ public:
 
     static void execForProfile(Profile * p);
 
+private slots:
+
+    void copyClicked();
+
 private:
     Ui::LogViewer *ui;
+
+    QString m_logText;
 
     QString formatEntry(const Logger::Entry & entry);
 

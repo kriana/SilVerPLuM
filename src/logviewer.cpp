@@ -1,6 +1,7 @@
 #include "logviewer.h"
 #include "ui_logviewer.h"
 #include "utils.h"
+#include <QClipboard>
 
 LogViewer::LogViewer(QWidget *parent) :
     QDialog(parent),
@@ -9,7 +10,8 @@ LogViewer::LogViewer(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
 
-    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(close()));
+    connect(ui->btnClose, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->btnCopy, SIGNAL(clicked(bool)), this, SLOT(copyClicked()));
 }
 
 LogViewer::~LogViewer()
@@ -23,12 +25,14 @@ void LogViewer::setLogger(const Logger &logger)
     QApplication::processEvents();
 
     QString html = "<table>";
+    m_logText = "";
 
     html += "<tr><th>Type</th><th>Timestamp</th><th>Component</th><th>Subcomponent</th><th>Operation</th><th>Message</th></tr>";
 
     for(const Logger::Entry & entry : logger.entries())
     {
         html += formatEntry(entry);
+        m_logText += entry.toString() + "\n";
     }
 
     html += "</table>";
@@ -65,6 +69,11 @@ void LogViewer::execForProfile(Profile *p)
     dlg.setWindowTitle(QString("Logviewer for profile %1 (%2)").arg(p->name()).arg(p->id()));
     dlg.setLogger(joined);
     dlg.exec();
+}
+
+void LogViewer::copyClicked()
+{
+    QApplication::clipboard()->setText(m_logText);
 }
 
 QString LogViewer::formatEntry(const Logger::Entry &entry)
