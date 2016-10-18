@@ -305,6 +305,11 @@ void ModManager::issueDependencyCheck()
     emit updatedDependencyCheck();
 }
 
+QStringList ModManager::getUnloadableModPaths() const
+{
+    return m_unloadableModPaths;
+}
+
 Logger &ModManager::getLogger()
 {
     return m_logger;
@@ -630,6 +635,8 @@ bool ModManager::isValidModUrl(const QString &url)
 
 bool ModManager::loadMod(const QDir &directory)
 {
+    m_unloadableModPaths.removeAll(directory.absolutePath());
+
     getLogger().log(Logger::Info, "modmanager", "modmanager", "load-mod", "Trying to load mod in " + directory.absolutePath());
 
     QString mod_config_path = directory.absoluteFilePath("mod.json");
@@ -637,7 +644,7 @@ bool ModManager::loadMod(const QDir &directory)
     if(!QFileInfo(mod_config_path).exists())
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot find mod.json! Skipping");
-
+        m_unloadableModPaths << directory.absolutePath();
         return false;
     }
 
@@ -646,7 +653,7 @@ bool ModManager::loadMod(const QDir &directory)
     if(!mod_file.open(QFile::ReadOnly))
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Cannot open mod.json! Skipping");
-
+        m_unloadableModPaths << directory.absolutePath();
         return false;
     }
 
@@ -657,13 +664,14 @@ bool ModManager::loadMod(const QDir &directory)
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Error while parsing JSON! Skipping!");
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "json error: " + error.errorString());
-
+        m_unloadableModPaths << directory.absolutePath();
         return false;
     }
 
     if(json.isEmpty())
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "JSON is empty! Skipping!");
+        m_unloadableModPaths << directory.absolutePath();
         return false;
     }
 
@@ -692,6 +700,7 @@ bool ModManager::loadMod(const QDir &directory)
     else
     {
         getLogger().log(Logger::Error, "modmanager", "modmanager", "load-mod", "Could not load mod from JSON!");
+        m_unloadableModPaths << directory.absolutePath();
         return false;
     }
 }
@@ -702,6 +711,7 @@ void ModManager::reloadMods()
     {
         delete mod;
     }
+    m_unloadableModPaths.clear();
     m_mods.clear();
     m_modId.clear();
 

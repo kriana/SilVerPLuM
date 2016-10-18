@@ -102,6 +102,11 @@
     </widget>
    </item>
    <item>
+    <widget class="MessageWidget" name="message" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -118,7 +123,7 @@
         <x>0</x>
         <y>0</y>
         <width>606</width>
-        <height>306</height>
+        <height>288</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -180,6 +185,12 @@
    <class>DependencyCheckerWidget</class>
    <extends>QWidget</extends>
    <header>dependencycheckerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MessageWidget</class>
+   <extends>QWidget</extends>
+   <header>messagewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

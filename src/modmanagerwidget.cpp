@@ -87,6 +87,15 @@ void ModManagerWidget::refreshList()
     search(ui->searchBar->text());
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
+
+    if(m_currentMM->getUnloadableModPaths().isEmpty())
+    {
+        ui->message->hide();
+    }
+    else
+    {
+        ui->message->message(QString("Could not load %1 mods. Check the profile log for more information.").arg(m_currentMM->getUnloadableModPaths().size()));
+    }
 }
 
 void ModManagerWidget::reloadAllMods()

@@ -188,6 +188,12 @@ public:
      */
     QMap<QString, QList<Dependency>> dependencyCheck(bool priorityaware, const QList<Modification*> & modlist);
 
+    /**
+     * @brief Gets list of mod paths that could not be loaded
+     * @return
+     */
+    QStringList getUnloadableModPaths() const;
+
 public slots:
 
     /**
@@ -211,6 +217,8 @@ private:
     QList<Modification*> m_mods;
 
     QMap<QString, QList<Dependency>> m_unsatisfiedDependencies;
+
+    QStringList m_unloadableModPaths;
 
     Logger m_logger;
 
