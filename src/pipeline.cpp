@@ -181,7 +181,8 @@ QMap<QString, QString> Pipeline::resolveInstallables()
                  * rsrc : /home/user/..../testmod/content/Content/Portraits/Abigail.xnb
                  */
 
-                QString rdst = dst + "/" + rsrc.mid(src.length());
+                //QString rdst = dst + "/" + rsrc.mid(src.length());
+                QString rdst = dst + "/" + QDir(src).relativeFilePath(rsrc);
                 rsrc = QFileInfo(rsrc).canonicalFilePath();
                 rdst = QFileInfo(rdst).exists() ? QFileInfo(rdst).canonicalFilePath() : rdst;
 

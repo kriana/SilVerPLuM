@@ -139,6 +139,21 @@ void ModImporterContentItem::setInstallDir(const QString &dir)
     ui->contentInstallTo->setCurrentText(dir);
 }
 
+QString ModImporterContentItem::getInstallDir()
+{
+    return ui->contentInstallTo->currentText();
+}
+
+void ModImporterContentItem::setContentName(const QString &name)
+{
+    ui->contentName->setText(name);
+}
+
+QString ModImporterContentItem::getContentName()
+{
+    return ui->contentName->text();
+}
+
 void ModImporterContentItem::updateInformationLabel()
 {
     QString id = ui->contentId->text().isEmpty() ? "<No ID>" : ui->contentId->text();

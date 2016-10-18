@@ -13,16 +13,31 @@
   <property name="windowTitle">
    <string>Mod Importer</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/icons/application-128.png</normaloff>:/resources/icons/application-128.png</iconset>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="MessageWidget" name="messageWidget" native="true"/>
+   </item>
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="infoPage">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>833</width>
+        <height>400</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Information</string>
       </attribute>
@@ -61,7 +76,8 @@
              <string>Import from *.zip</string>
             </property>
             <property name="icon">
-             <iconset theme="document-import"/>
+             <iconset theme="document-import">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -102,7 +118,8 @@
              <string>Import from directory</string>
             </property>
             <property name="icon">
-             <iconset theme="document-import"/>
+             <iconset theme="document-import">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -143,7 +160,8 @@
              <string>Import manually</string>
             </property>
             <property name="icon">
-             <iconset theme="document-import"/>
+             <iconset theme="document-import">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -469,7 +487,7 @@
         <x>0</x>
         <y>0</y>
         <width>833</width>
-        <height>416</height>
+        <height>400</height>
        </rect>
       </property>
       <attribute name="label">
@@ -564,6 +582,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>MessageWidget</class>
+   <extends>QWidget</extends>
+   <header>messagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>MarkdownTextEditor</class>
    <extends>QPlainTextEdit</extends>
    <header>markdowntexteditor.h</header>
@@ -574,6 +598,8 @@
    <header>identifierlineedit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

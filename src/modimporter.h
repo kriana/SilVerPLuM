@@ -47,6 +47,8 @@ private:
     bool isValid();
 
     void importDirectory(const QDir & dir, QString name);
+
+    ModImporterContentItem * getOrCreateContentWithInstallPath(const QString & installpath);
 };
 
 #endif // MODIMPORTER_H

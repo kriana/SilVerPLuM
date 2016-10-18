@@ -326,7 +326,8 @@ inline void copyDirectoryProgress(const QDir & from, const QDir & to, bool overw
     QObject::connect(&futureWatcher, SIGNAL(progressValueChanged(int)), &dialog, SLOT(setValue(int)));
 
     futureWatcher.setFuture(QtConcurrent::map(files, [&](const QString & src) {
-        QString dst = to.absolutePath() + "/" + src.mid(from.absolutePath().size());
+        //QString dst = to.absolutePath() + "/" + src.mid(from.absolutePath().size());
+        QString dst = to.absolutePath() + "/" + from.relativeFilePath(src);
 
         //QFileInfo srcinfo(src);
         QFileInfo dstinfo(dst);
@@ -376,7 +377,8 @@ inline void copyDirectory(const QDir & from, const QDir & to, bool overwrite)
 
     for(QString src : files)
     {
-        QString dst = to.absolutePath() + "/" + src.mid(from.absolutePath().size());
+        //QString dst = to.absolutePath() + "/" + src.mid(from.absolutePath().size());
+        QString dst = to.absolutePath() + "/" + from.relativeFilePath(src);
 
         //QFileInfo srcinfo(src);
         QFileInfo dstinfo(dst);
@@ -470,7 +472,8 @@ inline bool folderEqual(const QDir & dir1, const QDir & dir2, const QStringList 
 
     for(QString path : dir1_files)
     {
-        QString sub = path.mid(dir1.absolutePath().size() + 1);
+        //QString sub = path.mid(dir1.absolutePath().size() + 1);
+        QString sub = dir1.relativeFilePath(path);
 
         if(excluded.contains(sub))
             continue;

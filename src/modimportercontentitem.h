@@ -31,6 +31,12 @@ public:
 
     void setInstallDir(const QString & dir);
 
+    QString getInstallDir();
+
+    void setContentName(const QString & name);
+
+    QString getContentName();
+
 private:
     Ui::ModImporterContentItem *ui;
     ModImporter * m_importer;

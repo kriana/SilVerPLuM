@@ -226,7 +226,7 @@ void ModImporter::importZipClicked()
                 return;
             }
 
-            importDirectory(tempdir.path(), QFileInfo(dlg.selectedFiles().first()).fileName());
+            importDirectory(tempdir.path(), QFileInfo(dlg.selectedFiles().first()).baseName());
         }
         else
         {
@@ -277,15 +277,82 @@ void ModImporter::importDirectory(const QDir &dir, QString name)
     ui->modLicense->setCurrentText("Unknown");
 
     // Find all mod files
+    QDir contentdir = ProfileManager::instance()->getSelectedProfile()->StardewValleyContentDir();
     QStringList mod_files = utils::findAllFiles(dir);
-    QStringList game_files = utils::findAllFiles(ProfileManager::instance()->getSelectedProfile()->StardewValleyDir());
+    QStringList content_files = utils::findAllFiles(contentdir);
+    QStringList unprocessed = QStringList(mod_files);
 
-    // Find all XNB files
+    // Content replacer mods
     for(QString file : mod_files)
     {
         if(file.endsWith(".xnb"))
         {
+            QString path_in_content = utils::findFileInFileList(QFileInfo(file).fileName(), content_files);
 
+            if(!path_in_content.isEmpty())
+            {
+                QString in_content_dir = QFileInfo(path_in_content).absolutePath();
+                QString install_path = "stardewvalley-content://" + contentdir.relativeFilePath(in_content_dir);
+
+                ModImporterContentItem * item = getOrCreateContentWithInstallPath(install_path);
+                item->addFiles(QStringList() << file);
+                item->setContentName("Installs into Content/" + contentdir.relativeFilePath(in_content_dir));
+
+                unprocessed.removeAll(file);
+            }
         }
     }
+
+    // DLL mods
+    for(QString file : mod_files)
+    {
+        if(file.endsWith(".dll"))
+        {
+            QString name = QFileInfo(file).baseName();
+            QDir containingdir = QFileInfo(file).absolutePath();
+
+            QStringList toadd = utils::findAllFiles(containingdir);
+
+            ModImporterContentItem * item = addContent();
+            item->setInstallDir("stardewvalley://Mods/" + name);
+            item->setContentName("SMAPI-Mod " + name);
+
+            item->addFiles(toadd);
+
+            for(QString f : toadd)
+            {
+                unprocessed.removeAll(f);
+            }
+        }
+    }
+
+    QMessageBox::information(this, "Import automatically", "The files have been inserted into the mod importer. Check if everything is corrent and click 'Import' to finalize the process.");
+
+    if(unprocessed.isEmpty())
+    {
+        ui->messageWidget->hide();
+    }
+    else
+    {
+        ui->messageWidget->message("Could not insert all files. Following files are affected: \n• " + unprocessed.join("\n• "));
+    }
+
+    if(ui->modDescription->document()->toPlainText().isEmpty())
+    {
+        ui->modDescription->document()->setPlainText("Created with SilVerPLuM automatic mod importer.");
+    }
+}
+
+ModImporterContentItem *ModImporter::getOrCreateContentWithInstallPath(const QString &installpath)
+{
+    for(ModImporterContentItem * item : m_contentItems)
+    {
+        if(item->getInstallDir() == installpath)
+            return item;
+    }
+
+    ModImporterContentItem * item = addContent();
+    item->setInstallDir(installpath);
+
+    return item;
 }
