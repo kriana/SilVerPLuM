@@ -11,7 +11,7 @@
             "name": "Lookup Anything",
             "description": "Contains the necessary mod data.",
             "default": true,
-            "platforms": ["linux", "mac", "windows],
+            "platforms": ["linux", "mac", "windows"],
             "priority": 0,
             "pipeline": "compile-dll",
             "nuget-restore": true,
