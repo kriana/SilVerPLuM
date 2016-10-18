@@ -130,6 +130,8 @@ private slots:
 
     void processError(QProcess::ProcessError error);
 
+    void processReadyRead();
+
 signals:
 
     void finished(int retcode);

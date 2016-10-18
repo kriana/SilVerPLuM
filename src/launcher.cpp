@@ -65,7 +65,7 @@ void Launcher::start()
     QFile(path).setPermissions(QFile(path).permissions() | QFile::ExeUser);
 
     if(m_process != nullptr)
-        delete m_process;
+        m_process->deleteLater();
 
     m_process = new QProcess(this);
 
@@ -133,6 +133,7 @@ void Launcher::start()
 
     connect(m_process, SIGNAL(finished(int)), this, SLOT(processFinished(int)));
     connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
+    connect(m_process, SIGNAL(readyRead()), this, SLOT(processReadyRead()));
     m_process->start();
 }
 
@@ -245,8 +246,13 @@ void Launcher::processFinished(int retcode)
 
 void Launcher::processError(QProcess::ProcessError error)
 {
-     getProfile()->getLogger().log(Logger::Info, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "finished-output", QString(m_process->readAllStandardOutput()));
     getProfile()->getLogger().log(Logger::Error, "launcher", id(), "finished", "Process finished with error QProcess::ProcessError::" + QString::number(error));
 
     emit finished(-1);
+}
+
+void Launcher::processReadyRead()
+{
+    getProfile()->getLogger().log(Logger::Info, "launcher", id(), "process-output", QString(m_process->readAllStandardOutput()));
 }
