@@ -7,11 +7,12 @@
     "version": "0.40.1.1",
     "requires": ["stardewvalley==1.1.1"],
     "content": {
-        "smapi": {
+        "smapi-win": {
             "name": "Stardew Valley Modding API",
             "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods.",
             "default": true,
             "platforms": ["windows"],
+            "provides" : ["smapi"],
             "priority": 0,
             "pipeline": "compile-dll",
             "nuget-restore": true,
@@ -44,6 +45,7 @@
             "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods.",
             "default": true,
             "platforms": ["linux"],
+            "provides" : ["smapi"],
             "priority": 0,
             "pipeline": "compile-dll",
             "nuget-restore": true,
