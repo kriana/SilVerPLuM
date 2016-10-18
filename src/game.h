@@ -141,6 +141,12 @@ private:
      */
     QDir sdvSavegameBackupDir();
 
+    /**
+     * @brief The directory where the content is copied before launching
+     * @return
+     */
+    QDir sdvContentBackupDir();
+
 private slots:
 
     void gameFinished(int retcode);
