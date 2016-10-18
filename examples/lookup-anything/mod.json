@@ -25,7 +25,10 @@
                 },
             "location": "file",
             "installables": {
-                "LookupAnything/bin/Release/LookupAnything.dll": "Mods/LookupAnything.dll"
+                "LookupAnything/bin/Release/LookupAnything.dll": "Mods/LookupAnything/LookupAnything.dll",
+                "LookupAnything/config.json": "Mods/LookupAnything/config.json",
+                "LookupAnything/data.json": "Mods/LookupAnything/data.json",
+                "LookupAnything/manifest.json": "Mods/LookupAnything/manifest.json"
             }            
         }
     }
