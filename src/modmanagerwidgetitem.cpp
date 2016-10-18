@@ -83,9 +83,15 @@ void ModManagerWidgetItem::contentEnabledDisabled(const QString &contentid, bool
         ui->btnEnableDefaults->setVisible(enabled_pipelines.empty());
 
         if(enabled_pipelines.empty())
+        {
+            ui->lblIcon->setEnabled(false);
             ui->lblStatus->setText("");
+        }
         else
+        {
+            ui->lblIcon->setEnabled(true);
             ui->lblStatus->setText(QString("%1 modules enabled").arg(enabled_pipelines.size()));
+        }
     }
 }
 
@@ -289,9 +295,15 @@ void ModManagerWidgetItem::updateData()
     ui->btnEnableDefaults->setEnabled(mod->getSupportedDefaultMods() > 0);
 
     if(enabled.empty())
+    {
+        ui->lblIcon->setEnabled(false);
         ui->lblStatus->setText("");
+    }
     else
+    {
+        ui->lblIcon->setEnabled(true);
         ui->lblStatus->setText(QString("%1 modules enabled").arg(enabled.size()));
+    }
 
     // Add pipelines
     utils::clearLayout(ui->grpPipelines->layout());

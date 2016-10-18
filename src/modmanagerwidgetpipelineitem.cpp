@@ -53,6 +53,7 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
         bool enabled = m_currentPipeline->isEnabled();
         ui->btnDisable->setVisible(enabled);
         ui->btnEnable->setVisible(!enabled);
+        ui->lblIcon->setEnabled(enabled);
 
         // Set icon if available
         QString iconfilename = m_currentPipeline->pipelineBaseDir().absoluteFilePath("icon.png");
@@ -79,9 +80,10 @@ void ModManagerWidgetPipelineItem::contentEnabledDisabled(bool enabled)
 {
     if(m_currentPipeline != nullptr)
     {
-        bool enabled = m_currentPipeline->isEnabled();
+        enabled = m_currentPipeline->isEnabled();
         ui->btnDisable->setVisible(enabled);
         ui->btnEnable->setVisible(!enabled);
+        ui->lblIcon->setEnabled(enabled);
     }
 }
 
