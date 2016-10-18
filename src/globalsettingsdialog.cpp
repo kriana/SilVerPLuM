@@ -45,7 +45,7 @@ void GlobalSettingsDialog::discart()
     ui->modsEnableFileGuard->setChecked(GlobalSettings::instance()->getEnableFileGuard());
     ui->modEnableDepCheck->setChecked(GlobalSettings::instance()->getEnableDepencencyCheck());
     ui->modDepCheckPriorityAware->setChecked(GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness());
-    ui->runningBackupSDVSavegames->setChecked(GlobalSettings::instance()->getRunningBackupSDVSavegames());
+    ui->runningBackupSDVSavegames->setChecked(GlobalSettings::instance()->getRestoreOriginalSavegames());
     ui->runningBackupProfileSavegames->setChecked(GlobalSettings::instance()->getRunningBackupProfileSavegames());
 
     m_externalProgramWidgets.clear();
@@ -75,7 +75,7 @@ void GlobalSettingsDialog::save()
     GlobalSettings::instance()->setEnableFileGuard(ui->modsEnableFileGuard->isChecked());
     GlobalSettings::instance()->setEnableDependencyCheck(ui->modEnableDepCheck->isChecked());
     GlobalSettings::instance()->setEnableDepencyCheckPriorityAwareness(ui->modDepCheckPriorityAware->isChecked());
-    GlobalSettings::instance()->setRunningBackupSDVSavegames(ui->runningBackupSDVSavegames->isChecked());
+    GlobalSettings::instance()->setRestoreOriginalSavegames(ui->runningBackupSDVSavegames->isChecked());
     GlobalSettings::instance()->setRunningBackupProfileSavegames(ui->runningBackupProfileSavegames->isChecked());
 
     for(QString id : GlobalSettings::instance()->getExternalProgramIds())

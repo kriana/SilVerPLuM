@@ -134,7 +134,7 @@ void Game::prepareCopySavegames(QDir sdvsavegames)
     sdvSavegameBackupDir().mkpath(".");
     utils::clearDirectory(sdvSavegameBackupDir());
 
-    if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
+    if(GlobalSettings::instance()->getRestoreOriginalSavegames() && !utils::directoryEmpty(sdvsavegames))
     {
         getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + sdvSavegameBackupDir().absolutePath());
         progress(true, 0, 6, 4);
@@ -237,8 +237,7 @@ void Game::postMoveSavegames()
             utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), savegamebackups.path(), true);
         }
 
-        // Don't do this.
-        //utils::clearDirectory(m_Launcher->getProfile()->profileSavegameDir());
+        utils::clearDirectory(m_Launcher->getProfile()->profileSavegameDir());
     }
     else
     {
@@ -248,9 +247,12 @@ void Game::postMoveSavegames()
     progress(true, 0, 5, 4);
     utils::copyDirectory(sdvsavegames, m_Launcher->getProfile()->profileSavegameDir(), true);
 
-    getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Copying Stardew Valley original savegames back ...");
-    utils::clearDirectory(m_Launcher->getProfile()->StardewValleySavegameDir());
-    utils::copyDirectory(sdvSavegameBackupDir(), m_Launcher->getProfile()->StardewValleySavegameDir(), true);
+    if(GlobalSettings::instance()->getRestoreOriginalSavegames())
+    {
+        getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Copying Stardew Valley original savegames back ...");
+        utils::clearDirectory(m_Launcher->getProfile()->StardewValleySavegameDir());
+        utils::copyDirectory(sdvSavegameBackupDir(), m_Launcher->getProfile()->StardewValleySavegameDir(), true);
+    }
 
 
     getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Savegames moved");

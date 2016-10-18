@@ -36,8 +36,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-252</y>
-        <width>543</width>
+        <y>-236</y>
+        <width>554</width>
         <height>570</height>
        </rect>
       </property>
@@ -273,7 +273,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Backup</string>
+             <string>Savegames</string>
             </property>
            </widget>
           </item>
@@ -283,7 +283,7 @@
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, existing savegames will be backed up into a temporary directory before starting the launcher.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Backup savegames in savegame folder</string>
+             <string>Restore savegames after launch</string>
             </property>
            </widget>
           </item>
@@ -293,7 +293,7 @@
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If enabled, savegames in your profile folder are backed up into a temporary directory before moving savegames after launch.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Backup savegames in profile folder</string>
+             <string>Backup profile savegames to temp. folder before overwriting</string>
             </property>
            </widget>
           </item>

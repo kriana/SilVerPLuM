@@ -112,16 +112,16 @@ public:
     void setEnableDepencyCheckPriorityAwareness(bool enabled);
 
     /**
-     * @brief If true, the launcher should backup savegames into temporary directories before copying from the profile
+     * @brief If true, the launcher should backup the original savegames and restore them after launching
      * @return
      */
-    bool getRunningBackupSDVSavegames();
+    bool getRestoreOriginalSavegames();
 
     /**
-     * @brief Enable/disable backup before clearing the game's savegame dir
+     * @brief Enable/disable if launcher should backup the original savegames and restore them after launching
      * @param enabled
      */
-    void setRunningBackupSDVSavegames(bool enabled);
+    void setRestoreOriginalSavegames(bool enabled);
 
     /**
      * @brief If true, the launcher should create a backup of the profile's savegames before copying the savegames after launch

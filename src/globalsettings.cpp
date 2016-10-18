@@ -220,14 +220,14 @@ void GlobalSettings::setEnableDepencyCheckPriorityAwareness(bool enabled)
     m_Settings->sync();
 }
 
-bool GlobalSettings::getRunningBackupSDVSavegames()
+bool GlobalSettings::getRestoreOriginalSavegames()
 {
-    return m_Settings->value("Running/BackupSDVSavegames", true).toBool();
+    return m_Settings->value("Running/RestoreOriginalSavegames", true).toBool();
 }
 
-void GlobalSettings::setRunningBackupSDVSavegames(bool enabled)
+void GlobalSettings::setRestoreOriginalSavegames(bool enabled)
 {
-    m_Settings->setValue("Running/BackupSDVSavegames", enabled);
+    m_Settings->setValue("Running/RestoreOriginalSavegames", enabled);
     m_Settings->sync();
 }
 
