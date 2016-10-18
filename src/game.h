@@ -135,6 +135,12 @@ private:
      */
     void postUninstallMods();
 
+    /**
+     * @brief The directory where the savegames are moved before launching
+     * @return
+     */
+    QDir sdvSavegameBackupDir();
+
 private slots:
 
     void gameFinished(int retcode);

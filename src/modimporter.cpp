@@ -31,6 +31,8 @@ ModImporter::ModImporter(QWidget *parent) :
     connect(ui->btnClose, SIGNAL(clicked(bool)), this, SLOT(close()));
     connect(ui->btnAddContent, SIGNAL(clicked(bool)), this, SLOT(addContent()));
     connect(ui->modName, SIGNAL(textChanged(QString)), this, SLOT(nameChanged(QString)));
+
+    ui->toolBox->setCurrentWidget(ui->modInfoPage);
 }
 
 ModImporter::~ModImporter()

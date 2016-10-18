@@ -20,9 +20,9 @@
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="modInfoPage">
       <property name="geometry">
        <rect>
         <x>0</x>

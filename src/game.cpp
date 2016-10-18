@@ -130,26 +130,19 @@ void Game::prepareCopySavegames(QDir sdvsavegames)
     getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Copying savegames to savegame folder");
 
     progress(true, 0, 6, 3);
-    QTemporaryDir savegamebackups;
 
-    if(savegamebackups.isValid())
+    sdvSavegameBackupDir().mkpath(".");
+    utils::clearDirectory(sdvSavegameBackupDir());
+
+    if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
     {
-        if(GlobalSettings::instance()->getRunningBackupSDVSavegames() && !utils::directoryEmpty(sdvsavegames))
-        {
-            getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + savegamebackups.path());
-            progress(true, 0, 6, 4);
-            utils::copyDirectory(sdvsavegames, savegamebackups.path(), true);
-
-            savegamebackups.setAutoRemove(false);
-        }
-
-        progress(true, 0, 6, 5);
-        utils::clearDirectory(sdvsavegames);
+        getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Existing savegames will be backed up to " + sdvSavegameBackupDir().absolutePath());
+        progress(true, 0, 6, 4);
+        utils::copyDirectory(sdvsavegames, sdvSavegameBackupDir(), true);
     }
-    else
-    {
-        getLogger().log(Logger::Error, "launcher", "prepare", "restore-profile-savegames", "Could not backup savegames. Refusing to clear directory.");
-    }
+
+    progress(true, 0, 6, 5);
+    utils::clearDirectory(sdvsavegames);
 
     progress(true, 0, 6, 6);
     utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), sdvsavegames, true);
@@ -244,7 +237,8 @@ void Game::postMoveSavegames()
             utils::copyDirectory(m_Launcher->getProfile()->profileSavegameDir(), savegamebackups.path(), true);
         }
 
-        utils::clearDirectory(m_Launcher->getProfile()->profileSavegameDir());
+        // Don't do this.
+        //utils::clearDirectory(m_Launcher->getProfile()->profileSavegameDir());
     }
     else
     {
@@ -253,6 +247,11 @@ void Game::postMoveSavegames()
 
     progress(true, 0, 5, 4);
     utils::copyDirectory(sdvsavegames, m_Launcher->getProfile()->profileSavegameDir(), true);
+
+    getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Copying Stardew Valley original savegames back ...");
+    utils::clearDirectory(m_Launcher->getProfile()->StardewValleySavegameDir());
+    utils::copyDirectory(sdvSavegameBackupDir(), m_Launcher->getProfile()->StardewValleySavegameDir(), true);
+
 
     getLogger().log(Logger::Info, "launcher", "post", "move-savegames", "Savegames moved");
 }
@@ -281,6 +280,11 @@ void Game::postUninstallMods()
     getLogger().log(Logger::Info, "launcher", "post", "uninstall-mods", "Beginning to uninstall mods");
     m_Launcher->getProfile()->getModManager()->uninstall();
     getLogger().log(Logger::Info, "launcher", "post", "uninstall-mods", "Mods have been uninstalled");
+}
+
+QDir Game::sdvSavegameBackupDir()
+{
+    return QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("sdv-savegame-backup");
 }
 
 void Game::post()
