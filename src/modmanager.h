@@ -8,6 +8,7 @@
 #include <QSet>
 #include <QSettings>
 #include <QObject>
+#include <QProcessEnvironment>
 #include "modification.h"
 #include "logger.h"
 
@@ -200,6 +201,12 @@ public:
      * @return
      */
     QStringList getUnloadableModPaths() const;
+
+    /**
+     * @brief Builds the environment for the executed tools
+     * @return
+     */
+    QProcessEnvironment processEnvironment();
 
 public slots:
 

@@ -11,6 +11,7 @@
 #include "modmanager.h"
 #include "logger.h"
 #include "savegamemanager.h"
+#include <QProcessEnvironment>
 
 class Profile : public QObject
 {
@@ -247,6 +248,12 @@ public:
      * @brief Fixes some crazy things that are annoying AF
      */
     void fixCrazyness();
+
+    /**
+     * @brief The process environment that is applied to processes started from this pipeline
+     * @return
+     */
+    QProcessEnvironment processEnvironment();
 
 public slots:
 

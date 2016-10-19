@@ -134,6 +134,7 @@ bool ExternalProgram::infuse(QProcess *process, const QString & file, const QStr
 
     process->setProgram(executablePath());
     process->setArguments(procargs);
+    process->setProcessEnvironment(m_environment);
 
     return true;
 }
@@ -160,4 +161,14 @@ bool ExternalProgram::tryToInfuse(QProcess *process, const QString &file, const 
     process->setArguments(args);
 
     return false;
+}
+
+QProcessEnvironment ExternalProgram::environment() const
+{
+    return m_environment;
+}
+
+void ExternalProgram::setEnvironment(const QProcessEnvironment &environment)
+{
+    m_environment = environment;
 }

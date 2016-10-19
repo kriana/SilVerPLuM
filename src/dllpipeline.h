@@ -55,6 +55,19 @@ public:
      */
     QDir pipelineSourceDir();
 
+    /**
+     * @brief The process environment that is applied to processes started from this pipeline
+     * @return
+     */
+    QProcessEnvironment processEnvironment();
+
+    /**
+     * @brief The type of this pipeline
+     * @return
+     */
+    QString pipelineType() const;
+
+
 private:
 
     bool m_enableNugetRestore;

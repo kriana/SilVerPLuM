@@ -19,6 +19,7 @@ ExternalProgramSettingsWidget::ExternalProgramSettingsWidget(QWidget *parent) :
     connect(ui->programExecutable, SIGNAL(changed()), this, SIGNAL(changed()));
     connect(ui->programMimeTypes, SIGNAL(textChanged(QString)), this, SIGNAL(changed()));
     connect(ui->programArguments, SIGNAL(textChanged(QString)), this, SIGNAL(changed()));
+    connect(ui->programEnvironment, SIGNAL(textChanged(QString)), this, SIGNAL(changed()));
     connect(ui->programRunnable, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
 
     connect(ui->programId, SIGNAL(textChanged(QString)), ui->lblIdentifier, SLOT(setText(QString)));
@@ -49,6 +50,7 @@ ExternalProgram ExternalProgramSettingsWidget::getExternalProgram()
     program.setArguments(utils::stringToArgumentList(ui->programArguments->text()));
     program.setRunnable(ui->programRunnable->isChecked());
     program.setRuntimeMimeTypes(utils::stringToArgumentList(ui->programMimeTypes->text()));
+    program.setEnvironment(utils::listToProcessEnv(utils::stringToArgumentList(ui->programEnvironment->text())));
 
     return program;
 }
@@ -73,6 +75,7 @@ void ExternalProgramSettingsWidget::fillWith(const QString &programid)
     ui->programExecutable->setCurrentPath(program.executablePath());
     ui->programArguments->setText(utils::ArgumentListToString(program.arguments()));
     ui->programMimeTypes->setText(utils::ArgumentListToString(program.runtimeMimeTypes()));
+    ui->programEnvironment->setText(utils::ArgumentListToString(utils::processEnvToList(program.environment())));
     ui->programRunnable->setChecked(program.runnable());
 
     ui->lblIdentifier->setText(programid);

@@ -380,6 +380,11 @@ QString Pipeline::id() const
     return m_id;
 }
 
+QString Pipeline::pipelineType() const
+{
+    return "file";
+}
+
 bool Pipeline::isEnabled()
 {
     return m_mod->getModManager()->isEnabled(this);
@@ -551,6 +556,16 @@ void Pipeline::setProvides(const QStringList &provides)
     m_provides = provides;
 }
 
+QProcessEnvironment Pipeline::processEnvironment()
+{
+    QProcessEnvironment env = mod()->processEnvironment();
+
+    env.insert("SILVERPLUM_CURRENT_PIPELINE_DIR", pipelineBaseDir().absolutePath());
+    env.insert("SILVERPLUM_CURRENT_PIPELINE_TYPE", pipelineType());
+
+    return env;
+}
+
 bool Pipeline::isdefault() const
 {
     return m_default;
@@ -560,3 +575,5 @@ void Pipeline::setDefault(bool isdefault)
 {
     m_default = isdefault;
 }
+
+

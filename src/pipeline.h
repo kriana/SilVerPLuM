@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QDir>
 #include "logger.h"
+#include <QProcessEnvironment>
 
 class Modification;
 class Launcher;
@@ -112,6 +113,12 @@ public:
     QString id() const;
 
     /**
+     * @brief The type of this pipeline
+     * @return
+     */
+    virtual QString pipelineType() const;
+
+    /**
      * @brief Returns true if this pipeline was enabled
      * @return
      */
@@ -203,6 +210,12 @@ public:
      * @param provides
      */
     void setProvides(const QStringList &provides);
+
+    /**
+     * @brief Builds the environment for the executed tools
+     * @return
+     */
+    virtual QProcessEnvironment processEnvironment();
 
 protected:
 

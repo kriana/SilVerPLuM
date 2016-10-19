@@ -224,6 +224,21 @@ QDir DllPipeline::pipelineSourceDir()
     return pipelineBaseDir().absolutePath() + "/" + sourceDirectory();
 }
 
+QProcessEnvironment DllPipeline::processEnvironment()
+{
+    QProcessEnvironment env = Pipeline::processEnvironment();
+
+    // Tell that building is done using Silverplum
+    env.insert("MOD_BUILDER", "Silverplum");
+
+    return env;
+}
+
+QString DllPipeline::pipelineType() const
+{
+    return "compile-dll";
+}
+
 bool DllPipeline::alreadyPrimed()
 {
     if(!GlobalSettings::instance()->getEnablePrimeCache())
@@ -272,6 +287,7 @@ int DllPipeline::runNuget()
     ExternalProgram::tryToInfuse(&process, nuget_program.executablePath(), QStringList() << "restore");
     process.setWorkingDirectory(pipelineSourceDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
+    process.setProcessEnvironment(utils::joinEnvironments(processEnvironment(), nuget_program.environment()));
 
     getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();
@@ -306,6 +322,7 @@ int DllPipeline::runMSBuild()
     //utils::wrapMonoExecutable(&process, GlobalSettings::instance()->getProgramMSBuild(), args);
     process.setWorkingDirectory(pipelineSourceDir().absolutePath());
     process.setProcessChannelMode(QProcess::MergedChannels);
+    process.setProcessEnvironment(utils::joinEnvironments(processEnvironment(), msbuild_program.environment()));
 
     getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();

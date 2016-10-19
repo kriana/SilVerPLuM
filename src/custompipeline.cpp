@@ -31,16 +31,7 @@ CustomPipeline *CustomPipeline::loadFromJson(Modification *mod, const QString &i
     for(QString platformid : executables_map.keys())
     {
         Platform::Type platform = Platform::getPlatformFromString(platformid);
-        QString exe = executables_map[platformid].toObject()["executable"].toString();
-        QString wd = executables_map[platformid].toObject()["workdir"].toString();
-        QStringList args;
-
-        for(QJsonValue v : executables_map[platformid].toObject()["arguments"].toArray())
-        {
-            args << v.toString();
-        }
-
-        pip->setScript(platform, LauncherExecutable(exe, args, wd));
+        pip->setScript(platform, LauncherExecutable::loadFromJson(executables_map[platformid].toObject()));
     }
 
     return pip;
@@ -93,7 +84,7 @@ int CustomPipeline::prime(bool is_forced)
 
     process.setWorkingDirectory(workdir_path);
     process.setProcessChannelMode(QProcess::MergedChannels);
-    process.setProcessEnvironment(buildEnvironment(is_forced));
+    process.setProcessEnvironment(utils::joinEnvironments(processEnvironment(is_forced), executable.environment()));
 
     getLogger().log(Logger::Info, "pipeline-custom", id(), "prime", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
 
@@ -112,28 +103,22 @@ void CustomPipeline::setScript(Platform::Type platform, const LauncherExecutable
     m_scripts[platform] = executable;
 }
 
-bool CustomPipeline::alreadyPrimed()
+QProcessEnvironment CustomPipeline::processEnvironment(bool force)
 {
-    return false; // The script is always called
-}
+    QProcessEnvironment env = Pipeline::processEnvironment();
 
-QProcessEnvironment CustomPipeline::buildEnvironment(bool force)
-{
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-
-    env.insert("STARDEWVALLEY_DIR", mod()->getModManager()->profile()->StardewValleyDir().absolutePath());
-    env.insert("STARDEWVALLEY_SAVEGAME_DIR", mod()->getModManager()->profile()->StardewValleySavegameDir().absolutePath());
-    env.insert("STARDEWVALLEY_USERDATA_DIR", mod()->getModManager()->profile()->StardewValleyUserDataDir().absolutePath());
-    env.insert("STARDEWVALLEY_PLATFORM", Platform::getPlatformString());
-    env.insert("STARDEWVALLEY_TECHNOLOGY", mod()->getModManager()->profile()->StardewValleyTechnologyString());
-
-    for(Modification * m : mod()->getModManager()->getModifications())
-    {
-        env.insert("SILVERPLUM_MOD_" + m->id().toUpper() + "_DIR", m->modBasePath().absolutePath());
-    }
-
-    env.insert("SILVERPLUM_FORCE_PRIME", force ? "true" : "false");
+    env.insert("SILVERPLUM_FORCE_PRIME", force ? "1" : "0");
+    env.insert("MOD_BUILDER", "Silverplum");
 
     return env;
 }
 
+QString CustomPipeline::pipelineType() const
+{
+    return "custom";
+}
+
+bool CustomPipeline::alreadyPrimed()
+{
+    return false; // The script is always called
+}

@@ -41,6 +41,15 @@ void Modification::setProvides(const QStringList &provides)
     m_provides = provides;
 }
 
+QProcessEnvironment Modification::processEnvironment()
+{
+    QProcessEnvironment env = getModManager()->processEnvironment();
+
+    env.insert("SILVERPLUM_CURRENT_MOD_DIR", modBasePath().absolutePath());
+
+    return env;
+}
+
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
     connect(modmgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));

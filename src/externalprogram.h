@@ -6,6 +6,7 @@
 #include <QProcess>
 #include <QMimeType>
 #include <QMimeDatabase>
+#include <QProcessEnvironment>
 
 class ExternalProgram
 {
@@ -96,10 +97,23 @@ public:
      */
     static bool tryToInfuse(QProcess * process, const QString & file, const QStringList & args);
 
+    /**
+     * @brief The environment of this external program
+     * @return
+     */
+    QProcessEnvironment environment() const;
+
+    /**
+     * @brief Sets the environment of this external program
+     * @param environment
+     */
+    void setEnvironment(const QProcessEnvironment &environment);
+
 private:
 
     QString m_executablePath;
     QStringList m_arguments;
     QStringList m_runtimeMimeTypes;
+    QProcessEnvironment m_environment;
     bool m_runnable;
 };

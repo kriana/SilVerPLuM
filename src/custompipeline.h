@@ -21,19 +21,21 @@ public:
 
     void setScript(Platform::Type platform, const LauncherExecutable & executable);
 
+    QProcessEnvironment processEnvironment(bool force);
+
+    /**
+     * @brief The type of this pipeline
+     * @return
+     */
+    virtual QString pipelineType() const;
+
 private:
 
     QMap<Platform::Type, LauncherExecutable> m_scripts;
 
     CustomPipeline(Modification * mod, const QString &id);
 
-    bool alreadyPrimed();
-
-    /**
-     * @brief Builds the environment for the executed script
-     * @return
-     */
-    QProcessEnvironment buildEnvironment(bool force);
+    bool alreadyPrimed();    
 };
 
 #endif // CUSTOMPIPELINE_H

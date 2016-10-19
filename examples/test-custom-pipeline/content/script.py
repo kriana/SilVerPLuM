@@ -9,7 +9,7 @@ Ignores the PRIME file if SilVerPLuM forces priming
 """
 def already_primed():
 	
-	forced = (os.environ["SILVERPLUM_FORCE_PRIME"] == "true")
+	forced = (os.environ["SILVERPLUM_FORCE_PRIME"] == "1")
 	platform = os.environ["STARDEWVALLEY_PLATFORM"]
 	
 	print("Priming was forced" if forced else "Priming was not forced")

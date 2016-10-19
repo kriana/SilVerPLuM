@@ -18,9 +18,53 @@
 #include <random>
 #include "platform.h"
 #include <QRegExp>
+#include <QProcessEnvironment>
 
 namespace utils
 {
+
+inline QProcessEnvironment joinEnvironments(QProcessEnvironment env1, QProcessEnvironment env2)
+{
+    for(QString key : env2.keys())
+    {
+        env1.insert(key, env2.value(key));
+    }
+
+    return env1;
+}
+
+inline QStringList processEnvToList(const QProcessEnvironment & env)
+{
+    QStringList list;
+
+    for(QString key : env.keys())
+    {
+        list << key + "=" + env.value(key);
+    }
+
+    return list;
+}
+
+inline QProcessEnvironment listToProcessEnv(const QStringList & values)
+{
+    QProcessEnvironment env;
+
+    for(QString entry : values)
+    {
+        if(entry.contains("="))
+        {
+            QStringList cell = entry.split("=");
+
+            if(cell.size() >= 2)
+            {
+                QString key = cell.takeFirst();
+                env.insert(key, cell.join("="));
+            }
+        }
+    }
+
+    return env;
+}
 
 inline QString findFileInFileList(const QString & filename, const QStringList & filelist)
 {

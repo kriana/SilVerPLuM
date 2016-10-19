@@ -409,6 +409,21 @@ void Profile::fixCrazyness()
     }
 }
 
+QProcessEnvironment Profile::processEnvironment()
+{
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+    env.insert("STARDEWVALLEY_DIR", StardewValleyDir().absolutePath());
+    env.insert("STARDEWVALLEY_SAVEGAME_DIR", StardewValleySavegameDir().absolutePath());
+    env.insert("STARDEWVALLEY_USERDATA_DIR", StardewValleyUserDataDir().absolutePath());
+    env.insert("STARDEWVALLEY_CONTENT_DIR", StardewValleyContentDir().absolutePath());
+    env.insert("STARDEWVALLEY_PLATFORM", Platform::getPlatformString());
+    env.insert("STARDEWVALLEY_TECHNOLOGY", StardewValleyTechnologyString());
+    env.insert("STARDEWVALLEY_TOOL", "Silverplum");
+
+    return env;
+}
+
 Platform::GameTechnology Profile::DefaultStardewValleyTechnology()
 {
     switch(Platform::getCurrentPlatform())

@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QStringList>
+#include <QProcessEnvironment>
+#include <QJsonObject>
 
 class LauncherExecutable
 {
@@ -53,6 +55,25 @@ public:
      */
     void setWorkdir(const QString &workdir);
 
+    /**
+     * @brief Returns specific environment settings
+     * @return
+     */
+    QProcessEnvironment environment() const;
+
+    /**
+     * @brief Set specific environment settings
+     * @param environment
+     */
+    void setEnvironment(const QProcessEnvironment &environment);
+
+    /**
+     * @brief Loads an executable from json
+     * @param definition
+     * @return
+     */
+    static LauncherExecutable loadFromJson(const QJsonObject & definition);
+
 private:
 
     QString m_executable;
@@ -60,6 +81,8 @@ private:
     QStringList m_arguments;
 
     QString m_workdir;
+
+    QProcessEnvironment m_environment;
 };
 
 #endif // LAUNCHEREXECUTABLE_H

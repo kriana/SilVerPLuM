@@ -311,6 +311,18 @@ QStringList ModManager::getUnloadableModPaths() const
     return m_unloadableModPaths;
 }
 
+QProcessEnvironment ModManager::processEnvironment()
+{
+    QProcessEnvironment env = profile()->processEnvironment();
+
+    for(Modification * m : getModifications())
+    {
+        env.insert("SILVERPLUM_MOD_" + m->id().toUpper() + "_DIR", m->modBasePath().absolutePath());
+    }
+
+    return env;
+}
+
 Logger &ModManager::getLogger()
 {
     return m_logger;

@@ -130,6 +130,7 @@ void Launcher::start()
 
     m_process->setWorkingDirectory(m_profile->StardewValleyDir().absolutePath());
     m_process->setProcessChannelMode(QProcess::MergedChannels);
+    m_process->setProcessEnvironment(utils::joinEnvironments(m_profile->processEnvironment(), executable.environment()));
 
     connect(m_process, SIGNAL(finished(int)), this, SLOT(processFinished(int)));
     connect(m_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
@@ -211,16 +212,7 @@ Launcher *Launcher::loadFromJson(Profile * p, Pipeline *pip, const QString &id, 
     for(QString platformid : executables_map.keys())
     {
         Platform::Type platform = Platform::getPlatformFromString(platformid);
-        QString exe = executables_map[platformid].toObject()["executable"].toString();
-        QString wd = executables_map[platformid].toObject()["workdir"].toString();
-        QStringList args;
-
-        for(QJsonValue v : executables_map[platformid].toObject()["arguments"].toArray())
-        {
-            args << v.toString();
-        }
-
-        launcher->setExecutable(platform, LauncherExecutable(exe, args, wd));
+        launcher->setExecutable(platform, LauncherExecutable::loadFromJson(executables_map[platformid].toObject()));
     }
 
     return launcher;

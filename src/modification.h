@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QObject>
 #include <QSet>
+#include <QProcessEnvironment>
 #include "dependency.h"
 #include "pipeline.h"
 #include "logger.h"
@@ -247,6 +248,12 @@ public:
      * @param provides
      */
     void setProvides(const QStringList &provides);
+
+    /**
+     * @brief Builds the environment for the executed tools
+     * @return
+     */
+    QProcessEnvironment processEnvironment();
 
 protected:
 

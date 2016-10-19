@@ -250,12 +250,14 @@ ExternalProgram GlobalSettings::getExternalProgram(const QString &id)
     QString argumentString = m_Settings->value("Programs/" + id + "/ArgumentString", utils::ArgumentListToString(default_program.arguments())).toString();
     QString mimetypeString = m_Settings->value("Programs/" + id + "/MimeTypeString", utils::ArgumentListToString(default_program.runtimeMimeTypes())).toString();
     bool runnable = m_Settings->value("Programs/" + id + "/Runnable", default_program.runnable()).toBool();
+    QString envstring = m_Settings->value("Programs/" + id + "/EnvironmentString", utils::ArgumentListToString(utils::processEnvToList(default_program.environment()))).toString();
 
     ExternalProgram program;
     program.setExecutablePath(executable);
     program.setArguments(utils::stringToArgumentList(argumentString));
     program.setRuntimeMimeTypes(utils::stringToArgumentList(mimetypeString));
     program.setRunnable(runnable);
+    program.setEnvironment(utils::listToProcessEnv(utils::stringToArgumentList(envstring)));
 
     return program;
 }
@@ -277,6 +279,7 @@ void GlobalSettings::setExternalProgram(const QString &id, const ExternalProgram
         m_Settings->setValue("Programs/" + id + "/ArgumentString", utils::ArgumentListToString(program.arguments()));
         m_Settings->setValue("Programs/" + id + "/MimeTypeString", utils::ArgumentListToString(program.runtimeMimeTypes()));
         m_Settings->setValue("Programs/" + id + "/Runnable", program.runnable());
+        m_Settings->setValue("Programs/" + id + "/EnvironmentString", utils::ArgumentListToString(utils::processEnvToList(program.environment())));
         m_Settings->sync();
     }
 }
