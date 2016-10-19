@@ -265,16 +265,20 @@ bool ModImporter::isValid()
 
 void ModImporter::importDirectory(const QDir &dir, QString name)
 {
-    // Clean up
-    while(!m_contentItems.isEmpty())
-        removeContent(m_contentItems.first());
+    // If it's valid, add instead of replace
+    if(isValid())
+    {
+        // Clean up
+        while(!m_contentItems.isEmpty())
+            removeContent(m_contentItems.first());
 
-    // Determine name
-    name = name.replace("-", " ");
-    ui->modName->setText(name);
-    ui->modIdentifier->setText(ProfileManager::instance()->getSelectedProfile()->getModManager()->unifyModId(name));
-    ui->modAuthor->setText("Unknown");
-    ui->modLicense->setCurrentText("Unknown");
+        // Determine name
+        name = name.replace("-", " ");
+        ui->modName->setText(name);
+        ui->modIdentifier->setText(ProfileManager::instance()->getSelectedProfile()->getModManager()->unifyModId(name));
+        ui->modAuthor->setText("Unknown");
+        ui->modLicense->setCurrentText("Unknown");
+    }
 
     // Find all mod files
     QDir contentdir = ProfileManager::instance()->getSelectedProfile()->StardewValleyContentDir();
