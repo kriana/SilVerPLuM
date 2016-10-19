@@ -399,7 +399,7 @@ void Profile::initialize()
 void Profile::fixCrazyness()
 {
     // Fix different executable names between Windows <-> Linux. Thank you.
-    if(QFileInfo(StardewValleyDir().absoluteFilePath("Stardew Valley.exe")).exists())
+    if( Platform::getCurrentPlatform() == Platform::Windows && QFileInfo(StardewValleyDir().absoluteFilePath("Stardew Valley.exe")).exists())
     {
         getLogger().log(Logger::Info, "profile", "fix-crazyness", "inconsistent-executables", "Why is the executable on Windows called 'Stardew Valley.exe' and on other platforms 'StardewValley.exe'? I'll copy it.");
 
