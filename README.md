@@ -1,5 +1,8 @@
 ![Logo](https://rumangerst.github.io/SilVerPLuM/docs/images/logo.png)
 
+|[Download](https://github.com/rumangerst/SilVerPLuM#installation)|[Wiki](https://github.com/rumangerst/SilVerPLuM/wiki)|[Tutorial: Steam overlay & achievements](https://github.com/rumangerst/SilVerPLuM/wiki/Tutorial:-Steam-overlay-and-achievements)|[Tutorial: Import mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Use-the-mod-importer)|[Tutorial: Create mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Create-a-mod)|
+|----|----|----|----|----|
+
 # SilVerPLuM
 **S** tardew **V** alley **P** rofiles, **L** auncher and **M** od-manager
 
