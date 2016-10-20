@@ -182,8 +182,7 @@ void DownloadManager::downloadFinished()
                     .arg(currentDownload->errorString()));
     }
     else
-    {
-        printf("Succeeded.\n");
+    {        
         ++downloadedCount;
     }
 
