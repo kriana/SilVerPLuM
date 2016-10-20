@@ -11,9 +11,23 @@ class ModRepository : public QObject
 public:
     ModRepository(ModManager * mgr);
 
+    /**
+     * @brief Returns true if the repository needs an update
+     * @return
+     */
+    bool needsUpdate() const;
+
 signals:
 
+    void repositoryNeedsUpdate();
+
 public slots:
+
+    void triggerNeedsUpdate();
+
+private:
+
+    bool m_needsUpdate;
 };
 
 #endif // MODREPOSITORY_H

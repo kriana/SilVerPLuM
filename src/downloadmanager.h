@@ -93,6 +93,8 @@ public:
 
     QList<DownloadItem> getDownloadedItems() const;
 
+    void cancelDownloads();
+
 signals:
     void finished();
 
@@ -113,6 +115,7 @@ private:
 
     int downloadedCount;
     int totalCount;
+    bool cancel = false;
 };
 
 #endif

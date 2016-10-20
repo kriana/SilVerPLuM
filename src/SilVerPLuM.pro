@@ -73,7 +73,8 @@ SOURCES += main.cpp\
     modrepository.cpp \
     repositorypipeline.cpp \
     programpipeline.cpp \
-    downloadmanager.cpp
+    downloadmanager.cpp \
+    pipelinelistwidget.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -135,7 +136,8 @@ HEADERS  += mainwindow.h \
     modrepository.h \
     repositorypipeline.h \
     programpipeline.h \
-    downloadmanager.h
+    downloadmanager.h \
+    pipelinelistwidget.h
 
 
 FORMS    += mainwindow.ui \
@@ -160,7 +162,8 @@ FORMS    += mainwindow.ui \
     externalprogramwidget.ui \
     externalprogramsettingswidget.ui \
     messagewidget.ui \
-    modrepositorywindow.ui
+    modrepositorywindow.ui \
+    pipelinelistwidget.ui
 
 RESOURCES += \
     resources.qrc

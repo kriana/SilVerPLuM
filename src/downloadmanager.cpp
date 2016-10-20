@@ -74,7 +74,11 @@ void DownloadManager::append(const DownloadItem &item)
 
 void DownloadManager::startNextDownload()
 {
-    if (downloadQueue.isEmpty()) {
+    if (downloadQueue.isEmpty() || cancel)
+    {
+        downloadQueue.clear();
+        cancel = false;
+
         printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount);
         emit finished();
         return;
@@ -109,6 +113,7 @@ void DownloadManager::startNextDownload()
 
     QNetworkRequest request(url);
     currentDownload = manager.get(request);
+
     connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),
             SLOT(downloadProgress(qint64,qint64)));
     connect(currentDownload, SIGNAL(finished()),
@@ -168,4 +173,14 @@ void DownloadManager::downloadReadyRead()
 QList<DownloadManager::DownloadItem> DownloadManager::getDownloadedItems() const
 {
     return downloadedItems;
+}
+
+void DownloadManager::cancelDownloads()
+{
+    cancel = true;
+
+    if(currentDownload->isRunning())
+    {
+        currentDownload->abort();
+    }
 }
