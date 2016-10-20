@@ -39,7 +39,7 @@
        </rect>
       </property>
       <attribute name="label">
-       <string>Information</string>
+       <string>Overview</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>

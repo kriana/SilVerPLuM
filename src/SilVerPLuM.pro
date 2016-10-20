@@ -68,7 +68,8 @@ SOURCES += main.cpp\
     externalprogramwidget.cpp \
     externalprogramsettingswidget.cpp \
     custompipeline.cpp \
-    messagewidget.cpp
+    messagewidget.cpp \
+    modrepositorywindow.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -125,7 +126,8 @@ HEADERS  += mainwindow.h \
     externalprogramwidget.h \
     externalprogramsettingswidget.h \
     custompipeline.h \
-    messagewidget.h
+    messagewidget.h \
+    modrepositorywindow.h
 
 
 FORMS    += mainwindow.ui \
@@ -149,7 +151,8 @@ FORMS    += mainwindow.ui \
     filestash.ui \
     externalprogramwidget.ui \
     externalprogramsettingswidget.ui \
-    messagewidget.ui
+    messagewidget.ui \
+    modrepositorywindow.ui
 
 RESOURCES += \
     resources.qrc

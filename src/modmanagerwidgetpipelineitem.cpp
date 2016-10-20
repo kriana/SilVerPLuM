@@ -48,12 +48,27 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
                    SLOT(contentEnabledDisabled(bool)));
 
         ui->lblName->setText(m_currentPipeline->name());
-       ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()))));
+        ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()))));
         ui->lblIdentifier->setText(m_currentPipeline->id());
 
-        bool enabled = m_currentPipeline->isEnabled();
-        ui->btnDisable->setVisible(enabled);
-        ui->btnEnable->setVisible(!enabled);
+        bool enabled;
+
+        switch(m_currentPipeline->pipelineMainType())
+        {
+        case Pipeline::ContentPipeline:
+            enabled = m_currentPipeline->isEnabled();
+            ui->btnDisable->setVisible(enabled);
+            ui->btnEnable->setVisible(!enabled);
+            ui->btnRun->hide();
+            break;
+        case Pipeline::ProgramPipeline:
+            enabled = true;
+            ui->btnRun->show();
+            ui->btnEnable->hide();
+            ui->btnDisable->hide();
+            break;
+        }
+
         ui->lblIcon->setEnabled(enabled);
 
         // Set icon if available

@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include "modimporter.h"
+#include "modrepositorywindow.h"
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -16,6 +17,7 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(search(QString)));
     connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(refreshList()));
     connect(ui->btnInstallMod, &QToolButton::clicked, this, &ModManagerWidget::installModClicked);
+    connect(ui->btnDownloadMod, &QToolButton::clicked, this, &ModManagerWidget::repositoryClicked);
     connect(ui->actionReloadMods, &QAction::triggered, this, &ModManagerWidget::reloadAllMods);
     connect(ui->actionImportMod, &QAction::triggered, this, &ModManagerWidget::importModClicked);
 
@@ -143,6 +145,12 @@ void ModManagerWidget::installModClicked()
 
         QApplication::restoreOverrideCursor();
     }
+}
+
+void ModManagerWidget::repositoryClicked()
+{
+    ModRepositoryWindow dlg;
+    dlg.exec();
 }
 
 void ModManagerWidget::search(const QString &searchstring_)

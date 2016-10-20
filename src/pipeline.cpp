@@ -566,6 +566,21 @@ QProcessEnvironment Pipeline::processEnvironment()
     return env;
 }
 
+int Pipeline::runProgram()
+{
+    return 0;
+}
+
+QStringList Pipeline::repositories()
+{
+    return QStringList();
+}
+
+Pipeline::PipelineType Pipeline::pipelineMainType()
+{
+    return ContentPipeline;
+}
+
 bool Pipeline::isdefault() const
 {
     return m_default;

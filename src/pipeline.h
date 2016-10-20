@@ -17,6 +17,16 @@ class Pipeline : public QObject
 public:
 
     /**
+     * @brief A pipeline can be from different types. Content provides mod content. Program lets the user run a script, program, etc. Repository pipelines contain information about mod repositories
+     */
+    enum PipelineType
+    {
+        ContentPipeline,
+        ProgramPipeline,
+        RepositoryPipeline
+    };
+
+    /**
      * @brief Contains information about encrypted content
      */
     struct EncryptionEntry
@@ -216,6 +226,24 @@ public:
      * @return
      */
     virtual QProcessEnvironment processEnvironment();
+
+    /**
+     * @brief Runs the program associated to this pipeline. Used for ProgramPipeline.
+     * @return
+     */
+    virtual int runProgram();
+
+    /**
+     * @brief Returns the repositories associated to this pipeline. Used by RepositoryPipeline.
+     * @return
+     */
+    virtual QStringList repositories();
+
+    /**
+     * @brief The type of this pipeline
+     * @return
+     */
+    virtual PipelineType pipelineMainType();
 
 protected:
 

@@ -375,6 +375,9 @@ bool ModManager::importModFromDirectory(const QDir &dir)
 
     }
 
+    destination.removeRecursively();
+    destination.mkpath(".");
+
     utils::copyDirectoryProgress(dir.absolutePath(), destination.absolutePath(), true);
 
     // Now load mod from destination

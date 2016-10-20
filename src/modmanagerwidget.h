@@ -38,6 +38,8 @@ private slots:
 
     void installModClicked();
 
+    void repositoryClicked();
+
     void search(const QString & searchstring_);
 };
 

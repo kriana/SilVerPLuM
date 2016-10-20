@@ -172,6 +172,16 @@
         </spacer>
        </item>
        <item>
+        <widget class="QPushButton" name="btnRun">
+         <property name="text">
+          <string>Run</string>
+         </property>
+         <property name="icon">
+          <iconset theme="system-run"/>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="btnDisable">
          <property name="toolTip">
           <string>Disables this content.</string>

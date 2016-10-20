@@ -73,6 +73,25 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="btnDownloadMod">
+        <property name="text">
+         <string>Mod repository</string>
+        </property>
+        <property name="icon">
+         <iconset theme="applications-internet"/>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::DelayedPopup</enum>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>

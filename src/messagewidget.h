@@ -2,6 +2,8 @@
 #define MESSAGEWIDGET_H
 
 #include <QWidget>
+#include <QPushButton>
+#include <QToolButton>
 
 namespace Ui {
 class MessageWidget;
@@ -16,6 +18,10 @@ public:
     ~MessageWidget();
 
     void message(const QString & msg);
+
+    QToolButton *getCloseButton();
+
+    QPushButton * getActionButton();
 
 private:
     Ui::MessageWidget *ui;

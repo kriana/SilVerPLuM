@@ -11,6 +11,8 @@ MessageWidget::MessageWidget(QWidget *parent) :
 
     connect(ui->btnCloseMessage, SIGNAL(clicked(bool)), this, SLOT(hide()));
     hide();
+
+    ui->btnAction->hide();
 }
 
 MessageWidget::~MessageWidget()
@@ -22,4 +24,14 @@ void MessageWidget::message(const QString &msg)
 {
     ui->lblMessage->setText(msg);
     show();
+}
+
+QToolButton *MessageWidget::getCloseButton()
+{
+    return ui->btnCloseMessage;
+}
+
+QPushButton *MessageWidget::getActionButton()
+{
+    return ui->btnAction;
 }
