@@ -243,7 +243,7 @@ public:
      * @brief The type of this pipeline
      * @return
      */
-    virtual PipelineType pipelineMainType();
+    virtual PipelineType pipelineMainType() const;
 
 protected:
 

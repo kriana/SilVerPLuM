@@ -5,6 +5,8 @@
 #include <QRegExp>
 #include "dllpipeline.h"
 #include "custompipeline.h"
+#include "programpipeline.h"
+#include "repositorypipeline.h"
 #include "globalsettings.h"
 #include "utils.h"
 #include <JlCompress.h>
@@ -268,6 +270,14 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
         else if(content_json["pipeline"] == "custom")
         {
             pipeline = CustomPipeline::loadFromJson(mod, key, content_json);
+        }
+        else if(content_json["pipeline"] == "program")
+        {
+            pipeline = ProgramPipeline::loadFromJson(mod, key, content_json);
+        }
+        else if(content_json["pipeline"] == "repository")
+        {
+            pipeline = RepositoryPipeline::loadFromJson(mod, key, content_json);
         }
         else
         {

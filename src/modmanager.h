@@ -11,6 +11,7 @@
 #include <QProcessEnvironment>
 #include "modification.h"
 #include "logger.h"
+#include "modrepository.h"
 
 class Profile;
 
@@ -208,6 +209,12 @@ public:
      */
     QProcessEnvironment processEnvironment();
 
+    /**
+     * @brief Gets the mod repository
+     * @return
+     */
+    ModRepository *getModRepository() const;
+
 public slots:
 
     /**
@@ -221,6 +228,8 @@ public slots:
     void issueDependencyCheck();
 
 private:
+
+    ModRepository * m_modRepository;
 
     QSettings * m_config;
 

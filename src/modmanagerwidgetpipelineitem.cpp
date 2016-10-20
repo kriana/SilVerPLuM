@@ -16,6 +16,7 @@ ModManagerWidgetPipelineItem::ModManagerWidgetPipelineItem(QWidget *parent) :
 
     connect(ui->btnEnable, &QPushButton::clicked, this,&ModManagerWidgetPipelineItem::enableClicked);
     connect(ui->btnDisable, &QPushButton::clicked, this, &ModManagerWidgetPipelineItem::disableClicked);
+    connect(ui->btnRun, &QPushButton::clicked, this, &ModManagerWidgetPipelineItem::runClicked);
 }
 
 ModManagerWidgetPipelineItem::~ModManagerWidgetPipelineItem()
@@ -49,13 +50,19 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
 
         ui->lblName->setText(m_currentPipeline->name());
         ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()))));
-        ui->lblIdentifier->setText(m_currentPipeline->id());
+        ui->lblIdentifier->setText(m_currentPipeline->id() + " in " + m_currentPipeline->mod()->id());
 
         bool enabled;
 
         switch(m_currentPipeline->pipelineMainType())
         {
         case Pipeline::ContentPipeline:
+            enabled = m_currentPipeline->isEnabled();
+            ui->btnDisable->setVisible(enabled);
+            ui->btnEnable->setVisible(!enabled);
+            ui->btnRun->hide();
+            break;
+        case Pipeline::RepositoryPipeline:
             enabled = m_currentPipeline->isEnabled();
             ui->btnDisable->setVisible(enabled);
             ui->btnEnable->setVisible(!enabled);
@@ -157,5 +164,29 @@ void ModManagerWidgetPipelineItem::disableClicked()
         m_currentPipeline->setEnabled(false);
 
         QApplication::restoreOverrideCursor();
+    }
+}
+
+void ModManagerWidgetPipelineItem::runClicked()
+{
+    if(m_currentPipeline != nullptr)
+    {
+        int ret = m_currentPipeline->runProgram();
+
+        if(ret != 0)
+        {
+            QMessageBox msg;
+            msg.setText("Running program");
+            msg.setInformativeText("An error happened while running the program. What do you want to do?");
+            msg.setStandardButtons(QMessageBox::Ignore | QMessageBox::Open);
+            msg.setButtonText(QMessageBox::Open, "Open profile log");
+
+            int action = msg.exec();
+
+            if(action == QMessageBox::Open)
+            {
+                LogViewer::execForProfile(m_currentPipeline->mod()->getModManager()->profile());
+            }
+        }
     }
 }

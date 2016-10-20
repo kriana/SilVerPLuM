@@ -576,7 +576,7 @@ QStringList Pipeline::repositories()
     return QStringList();
 }
 
-Pipeline::PipelineType Pipeline::pipelineMainType()
+Pipeline::PipelineType Pipeline::pipelineMainType() const
 {
     return ContentPipeline;
 }

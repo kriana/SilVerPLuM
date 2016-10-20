@@ -69,7 +69,11 @@ SOURCES += main.cpp\
     externalprogramsettingswidget.cpp \
     custompipeline.cpp \
     messagewidget.cpp \
-    modrepositorywindow.cpp
+    modrepositorywindow.cpp \
+    modrepository.cpp \
+    repositorypipeline.cpp \
+    programpipeline.cpp \
+    downloadmanager.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -127,7 +131,11 @@ HEADERS  += mainwindow.h \
     externalprogramsettingswidget.h \
     custompipeline.h \
     messagewidget.h \
-    modrepositorywindow.h
+    modrepositorywindow.h \
+    modrepository.h \
+    repositorypipeline.h \
+    programpipeline.h \
+    downloadmanager.h
 
 
 FORMS    += mainwindow.ui \

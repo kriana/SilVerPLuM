@@ -31,6 +31,8 @@ private slots:
     void enableClicked();
 
     void disableClicked();
+
+    void runClicked();
 };
 
 #endif // MODMANAGERWIDGETPIPELINEITEM_H

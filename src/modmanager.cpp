@@ -15,18 +15,22 @@ ModManager::ModManager(Profile *profile) : m_profile(profile)
 {
     m_config = new QSettings(profile->profileBaseDir().absoluteFilePath("mod-config.ini"), QSettings::IniFormat);
 
+    m_modRepository = new ModRepository(this);
+
     // Issue dependency check if a profile settings changes
     connect(profile, SIGNAL(updatedSettings()), this, SLOT(issueDependencyCheck()));
 }
 
 ModManager::~ModManager()
 {
+    delete m_modRepository;
+
     for(Modification * mod : m_mods)
     {
         delete mod;
     }
 
-    delete m_config;
+    delete m_config;    
 }
 
 Profile *ModManager::profile() const
@@ -304,6 +308,11 @@ void ModManager::issueDependencyCheck()
     }
 
     emit updatedDependencyCheck();
+}
+
+ModRepository *ModManager::getModRepository() const
+{
+    return m_modRepository;
 }
 
 QStringList ModManager::getUnloadableModPaths() const
