@@ -58,6 +58,7 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QList>
+#include "logger.h"
 
 
 class DownloadManager: public QObject
@@ -99,6 +100,14 @@ public:
 
     void cancelDownloads();
 
+    void clearDownloadedItems();
+
+    Logger *getLogger() const;
+
+    void setLogger(Logger *value);
+
+    void logToLogger(Logger::Level level, const QString & message);
+
 signals:
     void finished();
 
@@ -116,6 +125,7 @@ private:
     QFile output;
     QTime downloadTime;
     QList<DownloadItem> downloadedItems;
+    Logger * logger = nullptr;
 
     int downloadedCount;
     int totalCount;

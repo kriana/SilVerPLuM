@@ -3,11 +3,16 @@
 
 #include <QString>
 #include <QUrl>
+#include "modification.h"
+
+class ModRepository;
 
 class ModRepositoryEntry
 {
 public:
-    ModRepositoryEntry();
+    ModRepositoryEntry(ModRepository * repo);
+
+    ~ModRepositoryEntry();
 
     int id() const;
 
@@ -25,7 +30,17 @@ public:
 
     void setModDownloadURL(const QUrl &modDownloadURL);
 
+    void loadModification(const QString & mod_config, const QString & mod_description);
+
+    Modification *modification() const;
+
+    ModRepository *repository() const;
+
 private:
+
+    ModRepository * m_repository;
+
+    Modification * m_modification = nullptr;
 
     int m_id;
 

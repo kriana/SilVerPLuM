@@ -93,7 +93,7 @@ void DownloadManager::startNextDownload()
 {
     if (downloadQueue.isEmpty())
     {
-        printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount);
+        logToLogger(Logger::Info, QString("%1/%2 files downloaded successfully").arg(downloadedCount).arg(totalCount));
         emit finished();
         return;
     }
@@ -116,9 +116,10 @@ void DownloadManager::startNextDownload()
 
         if (!output.open(QIODevice::WriteOnly))
         {
-            fprintf(stderr, "Problem opening save file '%s' for download '%s': %s\n",
-                    qPrintable(filename), url.toEncoded().constData(),
-                    qPrintable(output.errorString()));
+            logToLogger(Logger::Error, QString("Problem opening save file '%1' for download '%2': %3")
+                        .arg(filename)
+                        .arg(QString::fromUtf8(url.toEncoded()))
+                        .arg(output.errorString()));
 
             startNextDownload();
             return;                 // skip this download
@@ -136,24 +137,39 @@ void DownloadManager::startNextDownload()
             SLOT(downloadReadyRead()));
 
     // prepare the output
-    printf("Downloading %s...\n", url.toEncoded().constData());
+    logToLogger(Logger::Info, QString("Downloading %1...")
+                .arg(QString::fromUtf8(url.toEncoded())));
     downloadTime.start();
 }
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
+    if(bytesReceived / (bytesTotal * 100) % 10 != 0)
+        return;
+
     // calculate the download speed
     double speed = bytesReceived * 1000.0 / downloadTime.elapsed();
     QString unit;
-    if (speed < 1024) {
+    if (speed < 1024)
+    {
         unit = "bytes/sec";
-    } else if (speed < 1024*1024) {
+    }
+    else if (speed < 1024*1024)
+    {
         speed /= 1024;
         unit = "kB/s";
-    } else {
+    }
+    else
+    {
         speed /= 1024*1024;
         unit = "MB/s";
     }
+
+    logToLogger(Logger::Info, QString("%1 bytes of %2 with %3 %4")
+                .arg(bytesReceived)
+                .arg(bytesTotal)
+                .arg(speed)
+                .arg(unit));
 }
 
 void DownloadManager::downloadFinished()
@@ -162,9 +178,10 @@ void DownloadManager::downloadFinished()
 
     if (currentDownload->error())
     {
-        // download failed
-        fprintf(stderr, "Failed: %s\n", qPrintable(currentDownload->errorString()));
-    } else
+        logToLogger(Logger::Info, QString("Failed %1...")
+                    .arg(currentDownload->errorString()));
+    }
+    else
     {
         printf("Succeeded.\n");
         ++downloadedCount;
@@ -173,6 +190,7 @@ void DownloadManager::downloadFinished()
     downloadedItems << currentDownloadItem;
 
     currentDownload->deleteLater();
+    currentDownload = nullptr;
     startNextDownload();
 }
 
@@ -182,6 +200,24 @@ void DownloadManager::downloadReadyRead()
         output.write(currentDownload->readAll());
     else
         currentDownloadItem.data.append(currentDownload->readAll());
+}
+
+Logger *DownloadManager::getLogger() const
+{
+    return logger;
+}
+
+void DownloadManager::setLogger(Logger *value)
+{
+    logger = value;
+}
+
+void DownloadManager::logToLogger(Logger::Level level, const QString &message)
+{
+    if(logger != nullptr)
+    {
+        logger->log(level, "download-manager", "download-manager", "download", message);
+    }
 }
 
 QList<DownloadManager::DownloadItem> DownloadManager::getDownloadedItems() const
@@ -197,4 +233,9 @@ void DownloadManager::cancelDownloads()
     {
         currentDownload->abort();
     }
+}
+
+void DownloadManager::clearDownloadedItems()
+{
+    downloadedItems.clear();
 }

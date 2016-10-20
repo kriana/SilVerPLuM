@@ -1,6 +1,11 @@
 #include "modrepositoryentry.h"
 
-ModRepositoryEntry::ModRepositoryEntry()
+ModRepositoryEntry::ModRepositoryEntry(ModRepository *repo) : m_repository(repo)
+{
+
+}
+
+ModRepositoryEntry::~ModRepositoryEntry()
 {
 
 }
@@ -43,4 +48,19 @@ QUrl ModRepositoryEntry::modDownloadURL() const
 void ModRepositoryEntry::setModDownloadURL(const QUrl &modDownloadURL)
 {
     m_modDownloadURL = modDownloadURL;
+}
+
+void ModRepositoryEntry::loadModification(const QString &mod_config, const QString &mod_description)
+{
+
+}
+
+Modification *ModRepositoryEntry::modification() const
+{
+    return m_modification;
+}
+
+ModRepository *ModRepositoryEntry::repository() const
+{
+    return m_repository;
 }

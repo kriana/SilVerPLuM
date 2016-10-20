@@ -2,6 +2,7 @@
 #define MODREPOSITORYWINDOW_H
 
 #include <QDialog>
+#include <QCloseEvent>
 #include "modrepository.h"
 
 namespace Ui {
@@ -18,9 +19,15 @@ public:
 
     ModRepository * getModRepository();
 
+protected:
+
+    void closeEvent(QCloseEvent * event);
+
 private slots:
 
     void updateRepositoryClicked();
+
+    void gotLog(const Logger::Entry &entry);
 
 private:
     Ui::ModRepositoryWindow *ui;

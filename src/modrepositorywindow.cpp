@@ -2,10 +2,13 @@
 #include "ui_modrepositorywindow.h"
 #include <QPushButton>
 #include <QTabWidget>
+#include <QStackedWidget>
 #include "profile.h"
 #include "modification.h"
 #include "modmanager.h"
 #include "profilemanager.h"
+#include <QTreeWidgetItem>
+#include <QScrollBar>
 
 ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     QDialog(parent),
@@ -39,6 +42,15 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     {
         ui->updateMessageWidget->show();
     }
+
+    connect(getModRepository(), &ModRepository::startedWorking, this, [&](){
+       ui->stackedWidget->setCurrentWidget(ui->progressPage);
+    });
+    connect(getModRepository(), &ModRepository::endedWorking, this, [&](){
+       ui->stackedWidget->setCurrentWidget(ui->mainPage);
+    });
+
+    connect(&(getModRepository()->getLogger()), &Logger::logged, this, &ModRepositoryWindow::gotLog);
 }
 
 ModRepositoryWindow::~ModRepositoryWindow()
@@ -51,9 +63,34 @@ ModRepository *ModRepositoryWindow::getModRepository()
     return ProfileManager::instance()->getSelectedProfile()->getModManager()->getModRepository();
 }
 
+void ModRepositoryWindow::closeEvent(QCloseEvent *event)
+{
+    if(getModRepository()->isWorking())
+    {
+        event->setAccepted(false);
+    }
+    else
+    {
+        QDialog::closeEvent(event);
+    }
+}
+
 void ModRepositoryWindow::updateRepositoryClicked()
 {
     getModRepository()->updateRepository();
+}
+
+void ModRepositoryWindow::gotLog(const Logger::Entry &entry)
+{
+    ui->progressLog->addTopLevelItem(new QTreeWidgetItem(ui->progressLog,
+                                                        QStringList() <<
+                                                        entry.levelToString() <<
+                                                        entry.timestamp.toString() <<
+                                                        entry.component <<
+                                                        entry.subcomponent <<
+                                                        entry.operation <<
+                                                        entry.message));
+    ui->progressLog->verticalScrollBar()->setValue(ui->progressLog->verticalScrollBar()->maximum());
 }
 
 void ModRepositoryWindow::updatePipelineList()

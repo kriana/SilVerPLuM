@@ -5,6 +5,7 @@
 #include "downloadmanager.h"
 #include "logger.h"
 #include "modrepositoryentry.h"
+#include <QTemporaryDir>
 
 class ModManager;
 
@@ -20,7 +21,16 @@ public:
         RepositoryDownloadingData
     };
 
+    enum RepositoryEntryDownloadPurpose
+    {
+        DownloadPurposeModConfig,
+        DownloadPurposeModDescription,
+        DownloadPurposeModDownload
+    };
+
     ModRepository(ModManager * mgr);
+
+    ~ModRepository();
 
     /**
      * @brief Returns true if the repository needs an update
@@ -45,6 +55,8 @@ public:
     Logger & getLogger();
 
     void clear();
+
+    QString getModTempDir() const;
 
 signals:
 
@@ -74,9 +86,13 @@ private:
 
     QList<ModRepositoryEntry*> m_entries;
 
+    QTemporaryDir m_modTempDir;
+
     void setStatus(const RepositoryStatus &status);
 
     void repositoryUpdateLoadRepositories();
+
+    void repositoryUpdateLoadData();
 
 private slots:
 

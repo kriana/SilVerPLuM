@@ -7,11 +7,17 @@ ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
     triggerNeedsUpdate();
 
     m_downloadManager = new DownloadManager(this);
+    m_downloadManager->setLogger(&(getLogger()));
 
     connect(mgr, SIGNAL(updatedModList()), this, SLOT(triggerNeedsUpdate()));
     connect(mgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(triggerNeedsUpdate()));
 
     connect(m_downloadManager, SIGNAL(finished()), this, SLOT(downloadsFinished()));
+}
+
+ModRepository::~ModRepository()
+{
+    clear();
 }
 
 bool ModRepository::needsUpdate() const
@@ -23,6 +29,11 @@ void ModRepository::triggerNeedsUpdate()
 {
     m_needsUpdate = true;
     emit repositoryNeedsUpdate();
+}
+
+QString ModRepository::getModTempDir() const
+{
+    return m_modTempDir.path();
 }
 
 ModRepository::RepositoryStatus ModRepository::getStatus() const
@@ -75,12 +86,96 @@ void ModRepository::repositoryUpdateLoadRepositories()
 
         if(repository_config.startsWith("#Silverplum_Repository"))
         {
-            for(QString line : repository_config.split("\n"))
+            for(QString line : repository_config.split(QRegExp("[\r\n]"), QString::SkipEmptyParts))
             {
+                if(line.startsWith("#"))
+                    continue;
 
+                QStringList cell = line.split("\t");
+
+                if(cell.size() < 3)
+                {
+                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Invalid entry: " + line);
+                    continue;
+                }
+
+                ModRepositoryEntry * entry = new ModRepositoryEntry(this);
+                entry->setId(m_entries.size());
+                entry->setModConfigURL(QUrl::fromEncoded(cell[0].toLocal8Bit()));
+                entry->setModDescriptionURL(QUrl::fromEncoded(cell[1].toLocal8Bit()));
+                entry->setModDownloadURL(QUrl::fromEncoded(cell[2].toLocal8Bit()));
+
+                if(!entry->modConfigURL().isValid())
+                {
+                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Entry " + line + " has invalid mod config URL. Skipping.");
+                    delete entry;
+                    continue;
+                }
+
+                if(!entry->modDownloadURL().isValid())
+                {
+                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Entry " + line + " has invalid mod download URL. Skipping.");
+                    delete entry;
+                    continue;
+                }
+
+                m_entries << entry;
             }
         }
     }
+
+    // Start download of entry data
+    m_downloadManager->clearDownloadedItems();
+    QList<DownloadManager::DownloadItem> items;
+
+    for(ModRepositoryEntry * entry : m_entries)
+    {
+        if(entry->modConfigURL().isValid())
+        {
+            DownloadManager::DownloadItem dwn(entry->modConfigURL());
+            dwn.source = entry->id();
+            dwn.purpose = DownloadPurposeModConfig;
+
+            items << dwn;
+        }
+        if(entry->modDescriptionURL().isValid())
+        {
+            DownloadManager::DownloadItem dwn(entry->modConfigURL());
+            dwn.source = entry->id();
+            dwn.purpose = DownloadPurposeModDescription;
+
+            items << dwn;
+        }
+    }
+
+    m_downloadManager->append(items);
+}
+
+void ModRepository::repositoryUpdateLoadData()
+{
+    for(ModRepositoryEntry * entry : m_entries)
+    {
+        QString mod_config;
+        QString mod_description;
+
+        for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
+        {
+            if(item.source == entry->id() && item.purpose == DownloadPurposeModConfig)
+            {
+                mod_config = QString::fromUtf8(item.data);
+            }
+            else if(item.source == entry->id() && item.purpose == DownloadPurposeModDescription)
+            {
+                mod_description = QString::fromUtf8(item.data);
+            }
+
+            entry->loadModification(mod_config, mod_description);
+        }
+    }
+
+    setStatus(RepositoryIdle);
+    m_needsUpdate = false;
+    emit repositoryUpdated(true);
 }
 
 void ModRepository::downloadsFinished()
@@ -89,6 +184,9 @@ void ModRepository::downloadsFinished()
     {
     case RepositoryDownloadingRepositories:
         repositoryUpdateLoadRepositories();
+        break;
+    case RepositoryDownloadingData:
+        repositoryUpdateLoadData();
         break;
     }
 }
