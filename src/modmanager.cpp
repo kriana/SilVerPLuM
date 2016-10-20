@@ -337,7 +337,7 @@ Logger &ModManager::getLogger()
     return m_logger;
 }
 
-bool ModManager::importModFromDirectory(const QDir &dir)
+bool ModManager::importModFromDirectory(const QDir &dir, bool force_overwrite, bool interactive)
 {
     // Check files by loading the config as Modification
     QString mod_config_path = dir.absoluteFilePath("mod.json");
@@ -375,13 +375,22 @@ bool ModManager::importModFromDirectory(const QDir &dir)
 
     if(destination.exists())
     {
-        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Cannot copy: Folder already existing!");
+        getLogger().log(Logger::Warning, "modmanager", "modmanager", "add-mod", "Folder already existing!");
 
-        if(QMessageBox::question(nullptr, "Add mod", "There's already a mod with the same unique identifier! Do you want to replace it?") == QMessageBox::No)
+        if(!force_overwrite)
         {
-            return false;
+            if(interactive)
+            {
+                if(QMessageBox::question(nullptr, "Add mod", "There's already a mod with the same unique identifier! Do you want to replace it?") == QMessageBox::No)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
-
     }
 
     destination.removeRecursively();
@@ -396,7 +405,7 @@ bool ModManager::importModFromDirectory(const QDir &dir)
     return true;
 }
 
-bool ModManager::importModFromZip(const QString &filename)
+bool ModManager::importModFromZip(const QString &filename, bool force_overwrite, bool interactive)
 {
     getLogger().log(Logger::Info, "modmanager", "modmanager", "add-mod", "Trying to add mod " + filename);
 
@@ -412,7 +421,7 @@ bool ModManager::importModFromZip(const QString &filename)
             return false;
         }
 
-        return importModFromDirectory(temp.path());
+        return importModFromDirectory(temp.path(), force_overwrite, interactive);
     }
     else
     {

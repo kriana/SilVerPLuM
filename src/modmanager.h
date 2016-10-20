@@ -167,14 +167,14 @@ public:
      * @param dir
      * @return
      */
-    bool importModFromDirectory(const QDir & dir);
+    bool importModFromDirectory(const QDir & dir, bool force_overwrite = false, bool interactive = true);
 
     /**
      * @brief Imports a mod from a *.zip file
      * @param filename
      * @return
      */
-    bool importModFromZip(const QString & filename);
+    bool importModFromZip(const QString & filename, bool force_overwrite = false, bool interactive = true);
 
     /**
      * @brief Deletes a mod from ID
