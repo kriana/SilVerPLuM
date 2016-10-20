@@ -24,7 +24,7 @@
    <item row="2" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mainPage">
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -356,21 +356,10 @@
           <item>
            <widget class="QPushButton" name="progressStop">
             <property name="text">
-             <string>Force stop</string>
+             <string>Cancel</string>
             </property>
             <property name="icon">
              <iconset theme="dialog-cancel">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="progressClose">
-            <property name="text">
-             <string>Close</string>
-            </property>
-            <property name="icon">
-             <iconset theme="window-close">
               <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>

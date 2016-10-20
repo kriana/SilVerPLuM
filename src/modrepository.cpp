@@ -36,6 +36,25 @@ QString ModRepository::getModTempDir() const
     return m_modTempDir.path();
 }
 
+void ModRepository::cancelCurrentAction()
+{
+    switch(m_status)
+    {
+    case RepositoryDownloadingRepositories:
+        setStatus(RepositoryIdle);
+        m_downloadManager->cancelDownloads();
+        break;
+    case RepositoryDownloadingData:
+        setStatus(RepositoryIdle);
+        m_downloadManager->cancelDownloads();
+        break;
+    case RepositoryDownloadingMod:
+        setStatus(RepositoryIdle);
+        m_downloadManager->cancelDownloads();
+        break;
+    }
+}
+
 ModRepository::RepositoryStatus ModRepository::getStatus() const
 {
     return m_status;

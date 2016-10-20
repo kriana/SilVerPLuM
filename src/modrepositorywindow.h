@@ -25,6 +25,8 @@ protected:
 
 private slots:
 
+    void cancelClicked();
+
     void updateRepositoryClicked();
 
     void gotLog(const Logger::Entry &entry);

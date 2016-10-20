@@ -18,7 +18,8 @@ public:
     {
         RepositoryIdle,
         RepositoryDownloadingRepositories,
-        RepositoryDownloadingData
+        RepositoryDownloadingData,
+        RepositoryDownloadingMod
     };
 
     enum RepositoryEntryDownloadPurpose
@@ -57,6 +58,8 @@ public:
     void clear();
 
     QString getModTempDir() const;
+
+    void cancelCurrentAction();
 
 signals:
 

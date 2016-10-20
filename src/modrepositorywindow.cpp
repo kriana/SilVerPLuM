@@ -35,6 +35,7 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), ui->updateMessageWidget, SLOT(setHidden(bool)));
     connect(getModRepository(), SIGNAL(repositoryNeedsUpdate()), ui->updateMessageWidget, SLOT(show()));
     connect(ui->updateMessageWidget->getActionButton(), SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
+    connect(ui->progressStop, &QPushButton::clicked, this, &ModRepositoryWindow::cancelClicked);
 
     updatePipelineList();
 
@@ -73,6 +74,11 @@ void ModRepositoryWindow::closeEvent(QCloseEvent *event)
     {
         QDialog::closeEvent(event);
     }
+}
+
+void ModRepositoryWindow::cancelClicked()
+{
+    getModRepository()->cancelCurrentAction();
 }
 
 void ModRepositoryWindow::updateRepositoryClicked()
