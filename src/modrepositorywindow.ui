@@ -21,20 +21,32 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="mainPage">
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QTabWidget" name="tabWidget">
          <property name="tabPosition">
           <enum>QTabWidget::South</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="tabWelcome">
           <attribute name="title">
@@ -92,7 +104,8 @@
                  <string>Download</string>
                 </property>
                 <property name="icon">
-                 <iconset theme="edit-download"/>
+                 <iconset theme="edit-download">
+                  <normaloff>.</normaloff>.</iconset>
                 </property>
                </widget>
               </item>
@@ -140,7 +153,8 @@
                  <string>Update</string>
                 </property>
                 <property name="icon">
-                 <iconset theme="update-none"/>
+                 <iconset theme="update-none">
+                  <normaloff>.</normaloff>.</iconset>
                 </property>
                </widget>
               </item>
@@ -188,7 +202,8 @@
                  <string>Configure</string>
                 </property>
                 <property name="icon">
-                 <iconset theme="settings-configure"/>
+                 <iconset theme="settings-configure">
+                  <normaloff>.</normaloff>.</iconset>
                 </property>
                </widget>
               </item>
@@ -224,6 +239,46 @@
           <attribute name="title">
            <string>Configure</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QScrollArea" name="scrollArea">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>703</width>
+                <height>418</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="PipelineListWidget" name="repositorySourcePipelines" native="true"/>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -336,8 +391,25 @@
      </widget>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="MessageWidget" name="updateMessageWidget" native="true"/>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MessageWidget</class>
+   <extends>QWidget</extends>
+   <header>messagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PipelineListWidget</class>
+   <extends>QWidget</extends>
+   <header>pipelinelistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>

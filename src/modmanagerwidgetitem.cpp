@@ -370,7 +370,8 @@ void ModManagerWidgetItem::updateData()
     }
 
     // Add pipelines
-    utils::clearLayout(ui->grpPipelines->layout());
+    ui->pipelineListWidget->setPipelines(mod->getPipelines());
+    /*utils::clearLayout(ui->grpPipelines->layout());
     bool first = true;
     for(QString id : mod->getPipelineIds())
     {
@@ -392,7 +393,7 @@ void ModManagerWidgetItem::updateData()
         widget->setCurrentPipeline(pip);
 
         ui->grpPipelines->layout()->addWidget(widget);
-    }
+    }*/
 
     // Set icon if available
     QString iconfilename = mod->modBasePath().absoluteFilePath("icon.png");

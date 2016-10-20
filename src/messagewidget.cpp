@@ -26,6 +26,11 @@ void MessageWidget::message(const QString &msg)
     show();
 }
 
+void MessageWidget::setText(const QString &text)
+{
+    ui->lblMessage->setText(text);
+}
+
 QToolButton *MessageWidget::getCloseButton()
 {
     return ui->btnCloseMessage;

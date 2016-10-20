@@ -13,13 +13,15 @@ public:
 
     static RepositoryPipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    QStringList Repositories() const;
+    QStringList repositories();
 
     void setRepositories(const QStringList &Repositories);
 
     void install();
 
     void uninstall();
+
+    PipelineType pipelineMainType() const;
 
 protected:
 

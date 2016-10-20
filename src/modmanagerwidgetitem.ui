@@ -321,16 +321,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="grpPipelines" native="true">
-           <layout class="QVBoxLayout" name="verticalLayout_7">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-           </layout>
-          </widget>
+          <widget class="PipelineListWidget" name="pipelineListWidget" native="true"/>
          </item>
          <item>
           <widget class="Line" name="line">
@@ -438,13 +429,22 @@
   </action>
   <action name="actionOpenDirectory">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open mod directory</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PipelineListWidget</class>
+   <extends>QWidget</extends>
+   <header>pipelinelistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>

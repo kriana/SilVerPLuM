@@ -70,6 +70,8 @@ public:
         QUrl url;
         QString filePath;
         QByteArray data;
+        int source;
+        int purpose;
 
         DownloadItem()
         {
@@ -89,6 +91,8 @@ public:
 
     DownloadManager(QObject *parent = 0);
 
+    void append(const QList<DownloadItem> & items);
+
     void append(const DownloadItem &item);
 
     QList<DownloadItem> getDownloadedItems() const;
@@ -107,7 +111,7 @@ private slots:
 private:
     QNetworkAccessManager manager;
     QQueue<DownloadItem> downloadQueue;
-    QNetworkReply *currentDownload;
+    QNetworkReply *currentDownload = nullptr;
     DownloadItem currentDownloadItem;
     QFile output;
     QTime downloadTime;
@@ -115,7 +119,6 @@ private:
 
     int downloadedCount;
     int totalCount;
-    bool cancel = false;
 };
 
 #endif

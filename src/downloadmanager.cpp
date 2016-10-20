@@ -63,22 +63,36 @@ DownloadManager::DownloadManager(QObject *parent)
 {
 }
 
+void DownloadManager::append(const QList<DownloadManager::DownloadItem> &items)
+{
+    bool empty = downloadQueue.isEmpty();
+
+    for(const DownloadItem & item : items)
+    {
+        downloadQueue.enqueue(item);
+    }
+
+    ++totalCount;
+
+    if (empty)
+        QTimer::singleShot(0, this, SLOT(startNextDownload()));
+}
+
 void DownloadManager::append(const DownloadItem &item)
 {
-    if (downloadQueue.isEmpty())
-        QTimer::singleShot(0, this, SLOT(startNextDownload()));
+    bool empty = downloadQueue.isEmpty();
 
     downloadQueue.enqueue(item);
     ++totalCount;
+
+    if (empty)
+        QTimer::singleShot(0, this, SLOT(startNextDownload()));
 }
 
 void DownloadManager::startNextDownload()
 {
-    if (downloadQueue.isEmpty() || cancel)
+    if (downloadQueue.isEmpty())
     {
-        downloadQueue.clear();
-        cancel = false;
-
         printf("%d/%d files downloaded successfully\n", downloadedCount, totalCount);
         emit finished();
         return;
@@ -177,9 +191,9 @@ QList<DownloadManager::DownloadItem> DownloadManager::getDownloadedItems() const
 
 void DownloadManager::cancelDownloads()
 {
-    cancel = true;
+    downloadQueue.clear();
 
-    if(currentDownload->isRunning())
+    if(currentDownload != nullptr && currentDownload->isRunning())
     {
         currentDownload->abort();
     }

@@ -19,6 +19,8 @@ public:
 
     void message(const QString & msg);
 
+    void setText(const QString & text);
+
     QToolButton *getCloseButton();
 
     QPushButton * getActionButton();

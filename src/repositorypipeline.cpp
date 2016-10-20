@@ -36,7 +36,7 @@ RepositoryPipeline *RepositoryPipeline::loadFromJson(Modification *mod, const QS
     return pip;
 }
 
-QStringList RepositoryPipeline::Repositories() const
+QStringList RepositoryPipeline::repositories()
 {
     return m_Repositories;
 }
@@ -54,6 +54,11 @@ void RepositoryPipeline::install()
 void RepositoryPipeline::uninstall()
 {
 
+}
+
+Pipeline::PipelineType RepositoryPipeline::pipelineMainType() const
+{
+    return PipelineType::RepositoryPipeline;
 }
 
 bool RepositoryPipeline::alreadyPrimed()
