@@ -436,6 +436,14 @@
     <string>Creates a distributable *.zip file with the contents of this mod.</string>
    </property>
   </action>
+  <action name="actionOpenDirectory">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
+   <property name="text">
+    <string>Open mod directory</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>

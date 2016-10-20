@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include "utils.h"
+#include "logviewer.h"
 
 ModManagerWidgetPipelineItem::ModManagerWidgetPipelineItem(QWidget *parent) :
     QWidget(parent),
@@ -98,9 +99,35 @@ void ModManagerWidgetPipelineItem::enableClicked()
 
         QApplication::restoreOverrideCursor();
 
-        if(err != 0)
+        while(err != 0)
         {
-            QMessageBox::information(this, "Enable content", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+            QMessageBox msg;
+            msg.setText("Activating content");
+            msg.setInformativeText("An error happened while activating the content. What do you want to do?");
+            msg.setStandardButtons(QMessageBox::Ignore | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Open);
+            msg.setButtonText(QMessageBox::Abort, "Deactivate content");
+            msg.setButtonText(QMessageBox::Open, "Open profile log");
+
+            int action = msg.exec();
+
+            if(action == QMessageBox::Ignore)
+            {
+                return;
+            }
+            else if(action == QMessageBox::Abort)
+            {
+                m_currentPipeline->setEnabled(false);
+                return;
+            }
+            else if(action == QMessageBox::Retry)
+            {
+                m_currentPipeline->setEnabled(false);
+                err = m_currentPipeline->setEnabled(true);
+            }
+            else if(action == QMessageBox::Open)
+            {
+                LogViewer::execForProfile(m_currentPipeline->mod()->getModManager()->profile());
+            }
         }
     }
 }

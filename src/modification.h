@@ -146,6 +146,11 @@ public:
     void disableAll();
 
     /**
+     * @brief Disables default pipelines
+     */
+    void disableDefaults();
+
+    /**
      * @brief Returns the author
      * @return
      */

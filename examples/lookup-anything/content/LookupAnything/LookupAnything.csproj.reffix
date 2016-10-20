@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <Import Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"/>
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>Pathoschild.LookupAnything</RootNamespace>
         <AssemblyName>LookupAnything</AssemblyName>
-        <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,53 +29,6 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
-    <!-- mod build info -->
-    <PropertyGroup>
-        <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
-        <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
-        <GamePath Condition="!Exists('$(GamePath)')">~\Library\Application Support\Steam\steamapps\common\Stardew Valley\Contents\MacOS</GamePath>
-        <StartAction>Program</StartAction>
-        <StartProgram>$(GamePath)\StardewModdingAPI.exe</StartProgram>
-        <StartWorkingDirectory>$(GamePath)</StartWorkingDirectory>
-    </PropertyGroup>
-    <!-- references for Windows -->
-    <ItemGroup Condition="$(OS) == 'Windows_NT'">
-        <Reference Include="MonoGame.Framework">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/MonoGame.Framework.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoGame.Framework">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/MonoGame.Framework.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoGame.Framework">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/MonoGame.Framework.dll</HintPath>
-        </Reference>
-        <Reference Include="Stardew Valley">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/StardewValley.exe</HintPath>
-        </Reference>
-        <Reference Include="StardewModdingAPI">
-            <HintPath>/home/ruman/.local/share/SilVerPLuM/profiles/default/mods/smapi/smapi-linux/src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe</HintPath>
-        </Reference>
-        <Reference Include="xTile">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/xTile.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <!-- references for Linux/Mac -->
-    <ItemGroup Condition="$(OS) == 'Unix'">
-        <Reference Include="MonoGame.Framework">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/MonoGame.Framework.dll</HintPath>
-        </Reference>
-        <Reference Include="StardewValley">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/StardewValley.exe</HintPath>
-        </Reference>
-        <Reference Include="StardewModdingAPI">
-            <HintPath>/home/ruman/.local/share/SilVerPLuM/profiles/default/mods/smapi/smapi-linux/src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe</HintPath>
-        </Reference>
-        <Reference Include="xTile">
-            <HintPath>/home/ruman/.local/share/Steam/steamapps/common/Stardew Valley/xTile.dll</HintPath>
-        </Reference>
-    </ItemGroup>
     <ItemGroup>
         <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
             <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -169,9 +122,12 @@
         <None Include="packages.config"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <!-- Validate game path & automate mod package -->
-    <Target Name="BeforeBuild">
-        <Warning Text="Failed to find the game install path automatically; edit the *.csproj file and manually set the &lt;GamePath> setting to the directory containing the Stardew Valley executable." Condition="!Exists('$(GamePath)')"/>
+    <Import Condition="Exists('..\packages\Pathoschild.Stardew.ModdingBuildConfig.1.0.0-alpha4\build\Pathoschild.Stardew.ModdingBuildConfig.targets')" Project="..\packages\Pathoschild.Stardew.ModdingBuildConfig.1.0.0-alpha4\build\Pathoschild.Stardew.ModdingBuildConfig.targets"/>
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        </PropertyGroup>
+        <Error Text="$([System.String]::Format('$(ErrorText)', '..\packages\Pathoschild.Stardew.ModdingBuildConfig.1.0.0-alpha4\build\Pathoschild.Stardew.ModdingBuildConfig.targets'))" Condition="!Exists('..\packages\Pathoschild.Stardew.ModdingBuildConfig.1.0.0-alpha4\build\Pathoschild.Stardew.ModdingBuildConfig.targets')"/>
     </Target>
     <PropertyGroup Condition="$(OS) == 'Windows_NT'">
         <PostBuildEvent>

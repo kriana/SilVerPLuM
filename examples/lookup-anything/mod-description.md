@@ -13,6 +13,23 @@ The mod works fine out of the box, but you can tweak its settings in the config.
 
 ## Screenshots
 
-<a href="lookup-anything://screenshots/animated.gif"><img src="lookup-anything://screenshots/animated.gif" width="300"></a>
-
-<a href="lookup-anything://screenshots/villager.png"><img src="lookup-anything://screenshots/villager.png" width="300"></a>
+<span>
+<a href="lookup-anything://content/screenshots/animated.gif"><img src="lookup-anything://content/screenshots/animated.gif" width="300"></a>
+<a href="lookup-anything://content/screenshots/cask.png"><img src="lookup-anything://content/screenshots/cask.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/crafting.png"><img src="lookup-anything://content/screenshots/crafting.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/crop.png"><img src="lookup-anything://content/screenshots/crop.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/farm-animal.png"><img src="lookup-anything://content/screenshots/farm-animal.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/fence.png"><img src="lookup-anything://content/screenshots/fence.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/fruit-tree.png"><img src="lookup-anything://content/screenshots/fruit-tree.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/item.png"><img src="lookup-anything://content/screenshots/item.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/mine-gem.png"><img src="lookup-anything://content/screenshots/mine-gem.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/mine-ice.png"><img src="lookup-anything://content/screenshots/mine-ice.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/mine-ore.png"><img src="lookup-anything://content/screenshots/mine-ore.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/mine-stone.png"><img src="lookup-anything://content/screenshots/mine-stone.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/monster.png"><img src="lookup-anything://content/screenshots/monster.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/pet.png"><img src="lookup-anything://content/screenshots/pet.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/player.png"><img src="lookup-anything://content/screenshots/player.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/seeds.png"><img src="lookup-anything://content/screenshots/seeds.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/villager.png"><img src="lookup-anything://content/screenshots/villager.png" width="300"></a>
+<a href="lookup-anything://content/screenshots/wild-tree.png"><img src="lookup-anything://content/screenshots/wild-tree.png" width="300"></a>
+</span>

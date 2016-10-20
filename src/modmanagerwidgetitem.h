@@ -44,6 +44,8 @@ private slots:
 
     void exportClicked();
 
+    void openDirectoryClicked();
+
 private:
     Ui::ModManagerWidgetItem *ui;
 

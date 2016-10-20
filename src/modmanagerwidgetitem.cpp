@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QMenu>
 #include "profilemanager.h"
+#include "logviewer.h"
 
 ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     QWidget(parent),
@@ -14,7 +15,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     ui->setupUi(this);
 
     QMenu *action_menu = new QMenu(ui->btnDelete);
-    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile << ui->actionReinitialize << ui->actionExportMod);
+    action_menu->addActions(QList<QAction*>() << ui->actionCopyToProfile << ui->actionReinitialize << ui->actionExportMod << ui->actionOpenDirectory);
     ui->btnDelete->setMenu(action_menu);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), this, SLOT(showMoreToggled(bool)));
@@ -26,6 +27,7 @@ ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     connect(ui->actionCopyToProfile, &QAction::triggered, this, &ModManagerWidgetItem::copyToProfileClicked);
     connect(ui->actionReinitialize, &QAction::triggered, this, &ModManagerWidgetItem::reprimeClicked);
     connect(ui->actionExportMod, &QAction::triggered, this, &ModManagerWidgetItem::exportClicked);
+    connect(ui->actionOpenDirectory, &QAction::triggered, this, &ModManagerWidgetItem::openDirectoryClicked);
 
     ui->expandWidget->hide();
 }
@@ -106,9 +108,35 @@ void ModManagerWidgetItem::enableClicked()
 
         QApplication::restoreOverrideCursor();
 
-        if(err != 0)
+        while(err != 0)
         {
-            QMessageBox::information(this, "Enable defaults", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+            QMessageBox msg;
+            msg.setText("Enable default modifications");
+            msg.setInformativeText("An error happened while activating the mod. What do you want to do?");
+            msg.setStandardButtons(QMessageBox::Ignore | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Open);
+            msg.setButtonText(QMessageBox::Abort, "Deactivate mod");
+            msg.setButtonText(QMessageBox::Open, "Open profile log");
+
+            int action = msg.exec();
+
+            if(action == QMessageBox::Ignore)
+            {
+                return;
+            }
+            else if(action == QMessageBox::Abort)
+            {
+                m_currentModification->disableDefaults();
+                return;
+            }
+            else if(action == QMessageBox::Retry)
+            {
+                m_currentModification->disableDefaults();
+                err = m_currentModification->enableDefaults();
+            }
+            else if(action == QMessageBox::Open)
+            {
+                LogViewer::execForProfile(m_currentModification->getModManager()->profile());
+            }
         }
     }
 }
@@ -225,6 +253,12 @@ void ModManagerWidgetItem::copyToProfileClicked()
 
 void ModManagerWidgetItem::reprimeClicked()
 {
+    if(m_currentModification->getEnabledPipelines().isEmpty())
+    {
+        QMessageBox::information(this, "Reinitialize modification", "This modification is not enabled. No reinitialization will be done.");
+        return;
+    }
+
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QApplication::processEvents();
 
@@ -232,9 +266,34 @@ void ModManagerWidgetItem::reprimeClicked()
 
     QApplication::restoreOverrideCursor();
 
-    if(err != 0)
+    while(err != 0)
     {
-        QMessageBox::information(this, "Reactivate", "Something went wrong while activating the modification. Open the 'Profile log' at 'Play' to see what happened.");
+        QMessageBox msg;
+        msg.setText("Re-initialize content");
+        msg.setInformativeText("An error happened while reinitializing the mod. What do you want to do?");
+        msg.setStandardButtons(QMessageBox::Ignore | QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Open);
+        msg.setButtonText(QMessageBox::Abort, "Deactivate mod");
+        msg.setButtonText(QMessageBox::Open, "Open profile log");
+
+        int action = msg.exec();
+
+        if(action == QMessageBox::Ignore)
+        {
+            return;
+        }
+        else if(action == QMessageBox::Abort)
+        {
+            m_currentModification->disableAll();
+            return;
+        }
+        else if(action == QMessageBox::Retry)
+        {
+            err = m_currentModification->prime(true);
+        }
+        else if(action == QMessageBox::Open)
+        {
+            LogViewer::execForProfile(m_currentModification->getModManager()->profile());
+        }
     }
 }
 
@@ -271,6 +330,11 @@ void ModManagerWidgetItem::exportClicked()
 
         QApplication::restoreOverrideCursor();
     }
+}
+
+void ModManagerWidgetItem::openDirectoryClicked()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentModification->modBasePath().absolutePath()));
 }
 
 void ModManagerWidgetItem::updateData()

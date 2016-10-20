@@ -401,6 +401,17 @@ void Modification::disableAll()
     }
 }
 
+void Modification::disableDefaults()
+{
+    for(Pipeline * pip : m_Pipelines)
+    {
+        if(pip->isdefault())
+        {
+            pip->setEnabled(false);
+        }
+    }
+}
+
 ModManager *Modification::getModManager() const
 {
     return m_modManager;

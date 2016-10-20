@@ -17,6 +17,9 @@
 
 DllPipeline::DllPipeline(Modification *mod, const QString &id) : Pipeline(mod, id)
 {
+    // Default supported reffix extensions
+    m_reffixExtensions << ".csproj" << ".sln" << ".vbproj" << ".targets";
+
     // Default reference mappings
     setReferenceMapping("MonoGame.Framework", "stardewvalley://MonoGame.Framework.dll");
     setReferenceMapping("StardewValley", "stardewvalley://StardewValley.exe");
@@ -63,6 +66,18 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
         pip->setBuildParameters(platform, args);
     }
 
+    if(json.keys().contains("reffix-extensions"))
+    {
+        QStringList extensions;
+
+        for(QJsonValue v : json["reffix-extensions"].toArray())
+        {
+            extensions << v.toString();
+        }
+
+        pip->setReffixExtensions(extensions);
+    }
+
     return pip;
 }
 
@@ -93,12 +108,20 @@ int DllPipeline::prime(bool is_forced)
     mod()->getModManager()->profile()->fixCrazyness();
 
     // Look for *.csproj files and fix the dependencies
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "reffix", "Following extensions are supported: " + reffixExtensions().join(", "));
     QStringList projectfiles = utils::findAllFiles(pipelineSourceDir());
     for(QString file : projectfiles)
     {
-        if(QFileInfo(file).isFile() && file.endsWith(".csproj"))
+        if(QFileInfo(file).isFile())
         {
-            fixReferences(file);
+            for(QString ext : m_reffixExtensions)
+            {
+                if(file.endsWith(ext))
+                {
+                    fixReferences(file);
+                    break;
+                }
+            }
         }
     }
 
@@ -120,12 +143,19 @@ int DllPipeline::prime(bool is_forced)
     {
         for(QString file : projectfiles)
         {
-            if(QFileInfo(file).isFile() && file.endsWith(".csproj"))
+            if(QFileInfo(file).isFile())
             {
-                QFile(file + ".reffix").remove();
-                QFile::copy(file, file + ".reffix");
-                QFile(file).remove();
-                QFile::copy(file + ".bak", file);
+                for(QString ext : m_reffixExtensions)
+                {
+                    if(file.endsWith(ext))
+                    {
+                        QFile(file + ".reffix").remove();
+                        QFile::copy(file, file + ".reffix");
+                        QFile(file).remove();
+                        QFile::copy(file + ".bak", file);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -237,6 +267,16 @@ QProcessEnvironment DllPipeline::processEnvironment()
 QString DllPipeline::pipelineType() const
 {
     return "compile-dll";
+}
+
+QStringList DllPipeline::reffixExtensions() const
+{
+    return m_reffixExtensions;
+}
+
+void DllPipeline::setReffixExtensions(const QStringList &reffixExtensions)
+{
+    m_reffixExtensions = reffixExtensions;
 }
 
 bool DllPipeline::alreadyPrimed()

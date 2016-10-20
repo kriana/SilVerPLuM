@@ -67,6 +67,17 @@ public:
      */
     QString pipelineType() const;
 
+    /**
+     * @brief The extensions visited by the reference fixer
+     * @return
+     */
+    QStringList reffixExtensions() const;
+
+    /**
+     * @brief Sets the extensions visited by the reference fixer
+     * @param reffixExtensions
+     */
+    void setReffixExtensions(const QStringList &reffixExtensions);
 
 private:
 
@@ -77,6 +88,8 @@ private:
     QMap<QString, QString> m_referenceMap;
 
     QMap<QString, QStringList> m_buildArguments;
+
+    QStringList m_reffixExtensions;
 
     DllPipeline(Modification * mod, const QString &id);
 
