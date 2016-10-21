@@ -22,6 +22,10 @@ public:
 
     void setModConfigURL(const QUrl &modConfigURL);
 
+    QUrl modIconURL() const;
+
+    void setModIconURL(const QUrl &modIconURL);
+
     QUrl modDescriptionURL() const;
 
     void setModDescriptionURL(const QUrl &modDescriptionURL);
@@ -45,6 +49,8 @@ private:
     int m_id;
 
     QUrl m_modConfigURL;
+
+    QUrl m_modIconURL;
 
     QUrl m_modDescriptionURL;
 

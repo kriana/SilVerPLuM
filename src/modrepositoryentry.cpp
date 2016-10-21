@@ -64,3 +64,13 @@ ModRepository *ModRepositoryEntry::repository() const
 {
     return m_repository;
 }
+
+QUrl ModRepositoryEntry::modIconURL() const
+{
+    return m_modIconURL;
+}
+
+void ModRepositoryEntry::setModIconURL(const QUrl &modIconURL)
+{
+    m_modIconURL = modIconURL;
+}

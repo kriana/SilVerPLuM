@@ -112,7 +112,7 @@ void ModRepository::repositoryUpdateLoadRepositories()
 
                 QStringList cell = line.split("\t");
 
-                if(cell.size() < 3)
+                if(cell.size() < 4)
                 {
                     getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Invalid entry: " + line);
                     continue;
@@ -121,8 +121,9 @@ void ModRepository::repositoryUpdateLoadRepositories()
                 ModRepositoryEntry * entry = new ModRepositoryEntry(this);
                 entry->setId(m_entries.size());
                 entry->setModConfigURL(QUrl::fromEncoded(cell[0].toLocal8Bit()));
-                entry->setModDescriptionURL(QUrl::fromEncoded(cell[1].toLocal8Bit()));
-                entry->setModDownloadURL(QUrl::fromEncoded(cell[2].toLocal8Bit()));
+                entry->setModIconURL(QUrl::fromEncoded(cell[1].toLocal8Bit()));
+                entry->setModDescriptionURL(QUrl::fromEncoded(cell[2].toLocal8Bit()));
+                entry->setModDownloadURL(QUrl::fromEncoded(cell[3].toLocal8Bit()));
 
                 if(!entry->modConfigURL().isValid())
                 {

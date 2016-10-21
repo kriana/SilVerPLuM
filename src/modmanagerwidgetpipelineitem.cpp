@@ -49,9 +49,8 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
                    SLOT(contentEnabledDisabled(bool)));
 
         ui->lblName->setText(m_currentPipeline->name());
-        ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()))));
-        ui->lblIdentifier->setText(m_currentPipeline->id() + " in " + m_currentPipeline->mod()->id());
 
+        QString description = utils::markdownToHTML(m_currentPipeline->mod()->getModManager()->autoResolveModUrls(m_currentPipeline->description()));
         bool enabled;
 
         switch(m_currentPipeline->pipelineMainType())
@@ -67,6 +66,15 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
             ui->btnDisable->setVisible(enabled);
             ui->btnEnable->setVisible(!enabled);
             ui->btnRun->hide();
+
+            description += "<h3>Repository sources</h3>";
+            description += "<ul>";
+            for(QString repo : m_currentPipeline->repositories())
+            {
+                description += QString("<li><a href=\"%1\">%2</a></li>").arg(repo).arg(repo);
+            }
+            description += "</ul>";
+
             break;
         case Pipeline::ProgramPipeline:
             enabled = true;
@@ -76,6 +84,8 @@ void ModManagerWidgetPipelineItem::setCurrentPipeline(Pipeline *currentPipeline)
             break;
         }
 
+        ui->lblDescription->setText(utils::makeTextEditHTML(description));
+        ui->lblIdentifier->setText(m_currentPipeline->id() + " in " + m_currentPipeline->mod()->id());
         ui->lblIcon->setEnabled(enabled);
 
         // Set icon if available
