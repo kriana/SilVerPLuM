@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QUrl>
+#include <QPixmap>
 #include "modification.h"
 
 class ModRepository;
@@ -34,17 +35,35 @@ public:
 
     void setModDownloadURL(const QUrl &modDownloadURL);
 
-    void loadModification(const QString & mod_config, const QString & mod_description);
+    bool loadModification(const QString & mod_config, const QString & mod_description);
 
     Modification *modification() const;
 
     ModRepository *repository() const;
+
+    QPixmap icon() const;
+
+    void setIcon(const QPixmap &icon);
+
+    QUrl repositorySourceURL() const;
+
+    void setRepositorySourceURL(const QUrl &repositorySourceURL);
+
+    /**
+     * @brief Returns the modification instance that is actually installed. Otherwise nullptr.
+     * @return
+     */
+    Modification *getInstalledMod();
 
 private:
 
     ModRepository * m_repository;
 
     Modification * m_modification = nullptr;
+
+    QUrl m_repositorySourceURL;
+
+    QPixmap m_icon;
 
     int m_id;
 

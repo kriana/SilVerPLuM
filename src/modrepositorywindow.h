@@ -31,6 +31,8 @@ private slots:
 
     void gotLog(const Logger::Entry &entry);
 
+    void refreshList();
+
 private:
     Ui::ModRepositoryWindow *ui;
 

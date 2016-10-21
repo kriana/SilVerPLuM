@@ -72,7 +72,7 @@ void DownloadManager::append(const QList<DownloadManager::DownloadItem> &items)
         downloadQueue.enqueue(item);
     }
 
-    ++totalCount;
+    totalCount += items.size();
 
     if (empty)
         QTimer::singleShot(0, this, SLOT(startNextDownload()));
@@ -237,4 +237,6 @@ void DownloadManager::cancelDownloads()
 void DownloadManager::clearDownloadedItems()
 {
     downloadedItems.clear();
+    totalCount = 0;
+    downloadedCount = 0;
 }

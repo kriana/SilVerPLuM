@@ -354,8 +354,8 @@ bool ModManager::importModFromDirectory(const QDir &dir, bool force_overwrite, b
     QJsonDocument json = QJsonDocument::fromJson(mod_file.readAll(), &error);
 
     if(error.error != QJsonParseError::NoError)
-    {
-        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading JSON failed!");
+    {        
+        getLogger().log(Logger::Error, "modmanager", "modmanager", "add-mod", "Loading JSON failed: " + error.errorString());
         return false;
     }
 

@@ -1,6 +1,7 @@
 #include "modrepository.h"
 #include "modmanager.h"
 #include <QRegExp>
+#include <QMap>
 
 ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
 {
@@ -10,6 +11,7 @@ ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
     m_downloadManager->setLogger(&(getLogger()));
 
     connect(mgr, SIGNAL(updatedModList()), this, SLOT(triggerNeedsUpdate()));
+    connect(mgr, SIGNAL(updatedModList()), this, SLOT(triggerLookForUpdates()));
     connect(mgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(triggerNeedsUpdate()));
 
     connect(m_downloadManager, SIGNAL(finished()), this, SLOT(downloadsFinished()));
@@ -29,6 +31,27 @@ void ModRepository::triggerNeedsUpdate()
 {
     m_needsUpdate = true;
     emit repositoryNeedsUpdate();
+}
+
+void ModRepository::triggerLookForUpdates()
+{
+    lookForUpdates();
+    emit repositoryUpdated(true);
+}
+
+ModManager *ModRepository::getModManager() const
+{
+    return m_modManager;
+}
+
+QList<ModRepositoryEntry *> ModRepository::getEntries() const
+{
+    return m_entries;
+}
+
+QList<ModRepositoryEntry *> ModRepository::getUpdates() const
+{
+    return m_updates;
 }
 
 QString ModRepository::getModTempDir() const
@@ -73,6 +96,9 @@ void ModRepository::clear()
     }
 
     m_entries.clear();
+    m_updates.clear();
+
+    triggerNeedsUpdate();
 }
 
 void ModRepository::setStatus(const RepositoryStatus &status)
@@ -119,6 +145,7 @@ void ModRepository::repositoryUpdateLoadRepositories()
                 }
 
                 ModRepositoryEntry * entry = new ModRepositoryEntry(this);
+                entry->setRepositorySourceURL(item.url);
                 entry->setId(m_entries.size());
                 entry->setModConfigURL(QUrl::fromEncoded(cell[0].toLocal8Bit()));
                 entry->setModIconURL(QUrl::fromEncoded(cell[1].toLocal8Bit()));
@@ -160,9 +187,17 @@ void ModRepository::repositoryUpdateLoadRepositories()
         }
         if(entry->modDescriptionURL().isValid())
         {
-            DownloadManager::DownloadItem dwn(entry->modConfigURL());
+            DownloadManager::DownloadItem dwn(entry->modDescriptionURL());
             dwn.source = entry->id();
             dwn.purpose = DownloadPurposeModDescription;
+
+            items << dwn;
+        }
+        if(entry->modIconURL().isValid())
+        {
+            DownloadManager::DownloadItem dwn(entry->modIconURL());
+            dwn.source = entry->id();
+            dwn.purpose = DownloadPurposeModIcon;
 
             items << dwn;
         }
@@ -173,10 +208,11 @@ void ModRepository::repositoryUpdateLoadRepositories()
 
 void ModRepository::repositoryUpdateLoadData()
 {
-    for(ModRepositoryEntry * entry : m_entries)
+    for(ModRepositoryEntry * entry : QList<ModRepositoryEntry*>(m_entries))
     {
         QString mod_config;
         QString mod_description;
+        QPixmap mod_icon;
 
         for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
         {
@@ -188,14 +224,52 @@ void ModRepository::repositoryUpdateLoadData()
             {
                 mod_description = QString::fromUtf8(item.data);
             }
+            else if(item.source == entry->id() && item.purpose == DownloadPurposeModIcon)
+            {
+                mod_icon.loadFromData(item.data);
+            }
+        }
 
-            entry->loadModification(mod_config, mod_description);
+        if(!entry->loadModification(mod_config, mod_description))
+        {
+            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-entry-data", "An entry failed to initialize! Skipping it.");
+
+            m_entries.removeAll(entry);
+            delete entry;
         }
     }
+
+    lookForUpdates();
 
     setStatus(RepositoryIdle);
     m_needsUpdate = false;
     emit repositoryUpdated(true);
+}
+
+void ModRepository::lookForUpdates()
+{
+    m_updates.clear();
+
+    QMap<QString, ModRepositoryEntry *> newest;
+
+    for(ModRepositoryEntry * entry : m_entries)
+    {
+        QString id = entry->modification()->id();
+
+        if(!newest.contains(id) || newest[id]->modification()->version() < entry->modification()->version())
+            newest[id] = entry;
+    }
+
+    for(ModRepositoryEntry * entry : newest.values())
+    {
+        Modification * installed = entry->getInstalledMod();
+
+        if(installed != nullptr)
+        {
+            if(entry->modification()->version() > installed->version())
+                m_updates << entry;
+        }
+    }
 }
 
 void ModRepository::downloadsFinished()

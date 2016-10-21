@@ -34,6 +34,7 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     ui->updateMessageWidget->getActionButton()->show();
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), ui->updateMessageWidget, SLOT(setHidden(bool)));
     connect(getModRepository(), SIGNAL(repositoryNeedsUpdate()), ui->updateMessageWidget, SLOT(show()));
+    connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), this, SLOT(refreshList()));
     connect(ui->updateMessageWidget->getActionButton(), SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
     connect(ui->progressStop, &QPushButton::clicked, this, &ModRepositoryWindow::cancelClicked);
 
@@ -97,6 +98,11 @@ void ModRepositoryWindow::gotLog(const Logger::Entry &entry)
                                                         entry.operation <<
                                                         entry.message));
     ui->progressLog->verticalScrollBar()->setValue(ui->progressLog->verticalScrollBar()->maximum());
+}
+
+void ModRepositoryWindow::refreshList()
+{
+    ui->downloadList->setEntryList(getModRepository()->getEntries());
 }
 
 void ModRepositoryWindow::updatePipelineList()

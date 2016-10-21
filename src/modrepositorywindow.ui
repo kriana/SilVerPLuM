@@ -24,7 +24,7 @@
    <item row="2" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="mainPage">
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -37,7 +37,7 @@
           <enum>QTabWidget::South</enum>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabWelcome">
           <attribute name="title">
@@ -220,6 +220,56 @@
           <attribute name="title">
            <string>Download</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QWidget" name="widget" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>482</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="downloadSearch">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="placeholderText">
+                 <string>Search</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="ModRepositoryEntryList" name="downloadList" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="tabUpdate">
           <attribute name="title">
@@ -375,15 +425,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>PipelineListWidget</class>
+   <extends>QWidget</extends>
+   <header>pipelinelistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>MessageWidget</class>
    <extends>QWidget</extends>
    <header>messagewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>PipelineListWidget</class>
+   <class>ModRepositoryEntryList</class>
    <extends>QWidget</extends>
-   <header>pipelinelistwidget.h</header>
+   <header>modrepositoryentrylist.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

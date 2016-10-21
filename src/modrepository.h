@@ -26,6 +26,7 @@ public:
     {
         DownloadPurposeModConfig,
         DownloadPurposeModDescription,
+        DownloadPurposeModIcon,
         DownloadPurposeModDownload
     };
 
@@ -53,13 +54,17 @@ public:
 
     RepositoryStatus getStatus() const;
 
-    Logger & getLogger();
-
-    void clear();
+    Logger & getLogger();    
 
     QString getModTempDir() const;
 
     void cancelCurrentAction();
+
+    QList<ModRepositoryEntry *> getUpdates() const;
+
+    QList<ModRepositoryEntry *> getEntries() const;
+
+    ModManager *getModManager() const;
 
 signals:
 
@@ -73,9 +78,13 @@ signals:
 
 public slots:
 
+    void clear();
+
     void updateRepository();
 
     void triggerNeedsUpdate();
+
+    void triggerLookForUpdates();
 
 private:
 
@@ -89,6 +98,8 @@ private:
 
     QList<ModRepositoryEntry*> m_entries;
 
+    QList<ModRepositoryEntry*> m_updates;
+
     QTemporaryDir m_modTempDir;
 
     void setStatus(const RepositoryStatus &status);
@@ -96,6 +107,8 @@ private:
     void repositoryUpdateLoadRepositories();
 
     void repositoryUpdateLoadData();
+
+    void lookForUpdates();
 
 private slots:
 
