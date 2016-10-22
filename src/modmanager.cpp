@@ -368,7 +368,7 @@ bool ModManager::importModFromDirectory(const QDir &dir, bool force_overwrite, b
     }
 
     QString mod_id = mod->id();
-    delete mod;
+    mod->deleteLater();
 
     // Copy to correct directory
     QDir destination = profile()->profileModDir().absoluteFilePath(mod_id);
@@ -401,6 +401,14 @@ bool ModManager::importModFromDirectory(const QDir &dir, bool force_overwrite, b
     // Now load mod from destination
     loadMod(destination);
     sortMods();
+
+    // Deactivate it
+    getLogger().log(Logger::Info, "modmanager", "modmanager", "add-mod", "Deactivating mod as it was recently installed.");
+    mod = getModification(mod_id);
+    if(mod != nullptr)
+    {
+        mod->disableAll();
+    }
 
     return true;
 }

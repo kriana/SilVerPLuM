@@ -110,6 +110,7 @@ public:
 
 signals:
     void finished();
+    void progress(int _min, int _max, int _value);
 
 private slots:
     void startNextDownload();

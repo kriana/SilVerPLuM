@@ -9,6 +9,7 @@
 #include "profilemanager.h"
 #include <QTreeWidgetItem>
 #include <QScrollBar>
+#include <QProgressBar>
 
 ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     QDialog(parent),
@@ -35,6 +36,7 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), ui->updateMessageWidget, SLOT(setHidden(bool)));
     connect(getModRepository(), SIGNAL(repositoryNeedsUpdate()), ui->updateMessageWidget, SLOT(show()));
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), this, SLOT(refreshList()));
+    connect(getModRepository(), SIGNAL(downloadProgress(int,int,int)), this, SLOT(gotProgress(int,int,int)));
     connect(ui->updateMessageWidget->getActionButton(), SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
     connect(ui->progressStop, &QPushButton::clicked, this, &ModRepositoryWindow::cancelClicked);
 
@@ -103,6 +105,13 @@ void ModRepositoryWindow::gotLog(const Logger::Entry &entry)
 void ModRepositoryWindow::refreshList()
 {
     ui->downloadList->setEntryList(getModRepository()->getEntries());
+}
+
+void ModRepositoryWindow::gotProgress(int _min, int _max, int _value)
+{
+    ui->progressProgress->setMinimum(_min);
+    ui->progressProgress->setMaximum(_max);
+    ui->progressProgress->setValue(_value);
 }
 
 void ModRepositoryWindow::updatePipelineList()

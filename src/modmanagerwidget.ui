@@ -78,7 +78,8 @@
          <string>Mod repository</string>
         </property>
         <property name="icon">
-         <iconset theme="applications-internet"/>
+         <iconset theme="applications-internet">
+          <normaloff>.</normaloff>.</iconset>
         </property>
         <property name="popupMode">
          <enum>QToolButton::DelayedPopup</enum>
@@ -121,9 +122,7 @@
     </widget>
    </item>
    <item>
-    <widget class="MessageWidget" name="message" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-    </widget>
+    <widget class="MessageWidget" name="message" native="true"/>
    </item>
    <item>
     <widget class="QScrollArea" name="scrollArea">
@@ -201,15 +200,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DependencyCheckerWidget</class>
-   <extends>QWidget</extends>
-   <header>dependencycheckerwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>MessageWidget</class>
    <extends>QWidget</extends>
    <header>messagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DependencyCheckerWidget</class>
+   <extends>QWidget</extends>
+   <header>dependencycheckerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

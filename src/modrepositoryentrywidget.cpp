@@ -13,6 +13,7 @@ ModRepositoryEntryWidget::ModRepositoryEntryWidget(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->btnShowMore, SIGNAL(toggled(bool)), ui->expandWidget, SLOT(setVisible(bool)));
+    connect(ui->btnInstall, SIGNAL(clicked(bool)), this, SLOT(installClicked()));
     ui->expandWidget->hide();
 }
 
@@ -32,6 +33,7 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
         ui->btnInstall->setText(tr("Install"));
         ui->btnInstall->setToolTip(tr("Will install this modification. Will download " + entry->modDownloadURL().toEncoded()));
         ui->lblStatus->setText("");
+        m_updatesModification = false;
     }
     else
     {
@@ -40,18 +42,21 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
             ui->btnInstall->setText(tr("Downgrade"));
             ui->btnInstall->setToolTip(tr("Will downgrade this modification to an older version. Will download " + entry->modDownloadURL().toEncoded()));
             ui->lblStatus->setText("");
+            m_updatesModification = false;
         }
         else if(entry->modification()->version() == installed->version())
         {
             ui->btnInstall->setText(tr("Reinstall"));
             ui->btnInstall->setToolTip(tr("Will reinstall this modification. Will download " + entry->modDownloadURL().toEncoded()));
             ui->lblStatus->setText("");
+            m_updatesModification = false;
         }
         else
         {
             ui->btnInstall->setText(tr("Update"));
             ui->btnInstall->setToolTip(tr("Will update this modification to a newer version. Will download " + entry->modDownloadURL().toEncoded()));
             ui->lblStatus->setText(tr("Update found"));
+            m_updatesModification = true;
         }
     }
 
@@ -67,4 +72,9 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
                             .arg(QString::fromUtf8(entry->repositorySourceURL().toEncoded())));
     ui->lblRepositorySource->setToolTip(QString::fromUtf8(entry->repositorySourceURL().toEncoded()));
     ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(entry->repository()->getModManager()->autoResolveModUrls(entry->modification()->description()))));
+}
+
+void ModRepositoryEntryWidget::installClicked()
+{
+    m_currentEntry->repository()->install(QList<ModRepositoryEntry*>() << m_currentEntry, m_updatesModification);
 }

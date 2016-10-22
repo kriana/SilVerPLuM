@@ -144,7 +144,20 @@ void DownloadManager::startNextDownload()
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    if(bytesReceived / (bytesTotal * 100) % 10 != 0)
+    int percent;
+
+    if(bytesTotal <= 0)
+    {
+        percent = 0;
+        emit progress(0, 0, 0);
+    }
+    else
+    {
+        percent = bytesReceived / (bytesTotal / 100);
+        emit progress(0, 100, percent);
+    }
+
+    if(percent % 10 != 0)
         return;
 
     // calculate the download speed

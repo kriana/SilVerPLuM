@@ -21,7 +21,13 @@ public:
 private:
     Ui::ModRepositoryEntryWidget *ui;
 
+    bool m_updatesModification;
+
     ModRepositoryEntry * m_currentEntry = nullptr;
+
+private slots:
+
+    void installClicked();
 };
 
 #endif // MODREPOSITORYENTRYWIDGET_H

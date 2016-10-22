@@ -27,7 +27,8 @@ public:
         DownloadPurposeModConfig,
         DownloadPurposeModDescription,
         DownloadPurposeModIcon,
-        DownloadPurposeModDownload
+        DownloadPurposeModDownloadInstall,
+        DownloadPurposeModDownloadUpdate
     };
 
     ModRepository(ModManager * mgr);
@@ -66,6 +67,13 @@ public:
 
     ModManager *getModManager() const;
 
+    /**
+     * @brief install
+     * @param entries
+     * @param update Will overwrite files silently
+     */
+    void install(QList<ModRepositoryEntry *> entries, bool update);
+
 signals:
 
     void startedWorking();
@@ -75,6 +83,8 @@ signals:
     void repositoryNeedsUpdate();
 
     void repositoryUpdated(bool successful);
+
+    void downloadProgress(int _min, int _max, int _value);
 
 public slots:
 
@@ -107,6 +117,8 @@ private:
     void repositoryUpdateLoadRepositories();
 
     void repositoryUpdateLoadData();
+
+    void repositoryInstallDownloadedMods();
 
     void lookForUpdates();
 

@@ -2,6 +2,7 @@
 #include "modmanager.h"
 #include <QRegExp>
 #include <QMap>
+#include <QTemporaryFile>
 
 ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
 {
@@ -15,6 +16,7 @@ ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
     connect(mgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(triggerNeedsUpdate()));
 
     connect(m_downloadManager, SIGNAL(finished()), this, SLOT(downloadsFinished()));
+    connect(m_downloadManager, SIGNAL(progress(int, int, int)), this, SIGNAL(downloadProgress(int, int, int)));
 }
 
 ModRepository::~ModRepository()
@@ -42,6 +44,46 @@ void ModRepository::triggerLookForUpdates()
 ModManager *ModRepository::getModManager() const
 {
     return m_modManager;
+}
+
+void ModRepository::install(QList<ModRepositoryEntry *> entries, bool update)
+{
+    if(m_status != RepositoryIdle)
+        return;
+
+    QList<DownloadManager::DownloadItem> downloads;
+
+    for(ModRepositoryEntry * entry : entries)
+    {
+        QString filename;
+
+        {
+            QTemporaryFile dst;
+            if(dst.open())
+            {
+                filename = dst.fileName() + ".zip";
+                dst.close();
+            }
+        }
+
+        if(filename.isEmpty())
+        {
+            getLogger().log(Logger::Error, "modrepository", "download-mod", "prepare", "Cannot create temporary file for writing!");
+            continue;
+        }
+
+        DownloadManager::DownloadItem item(entry->modDownloadURL(), filename);
+
+        item.purpose = update ? DownloadPurposeModDownloadUpdate : DownloadPurposeModDownloadInstall;
+        downloads << item;
+    }
+
+    // Start downloads
+    if(!downloads.isEmpty())
+    {
+        setStatus(RepositoryDownloadingMod);
+        m_downloadManager->append(downloads);
+    }
 }
 
 QList<ModRepositoryEntry *> ModRepository::getEntries() const
@@ -74,6 +116,8 @@ void ModRepository::cancelCurrentAction()
     case RepositoryDownloadingMod:
         setStatus(RepositoryIdle);
         m_downloadManager->cancelDownloads();
+        break;
+    default:
         break;
     }
 }
@@ -246,6 +290,30 @@ void ModRepository::repositoryUpdateLoadData()
     emit repositoryUpdated(true);
 }
 
+void ModRepository::repositoryInstallDownloadedMods()
+{
+    // First install updates
+    for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
+    {
+        if(item.purpose == DownloadPurposeModDownloadUpdate)
+        {
+            getModManager()->importModFromZip(item.filePath, true, false);
+        }
+    }
+
+    for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
+    {
+        if(item.purpose == DownloadPurposeModDownloadInstall)
+        {
+            getModManager()->importModFromZip(item.filePath);
+        }
+    }
+
+    m_downloadManager->clearDownloadedItems();
+
+    setStatus(RepositoryIdle);
+}
+
 void ModRepository::lookForUpdates()
 {
     m_updates.clear();
@@ -281,6 +349,11 @@ void ModRepository::downloadsFinished()
         break;
     case RepositoryDownloadingData:
         repositoryUpdateLoadData();
+        break;
+    case RepositoryDownloadingMod:
+        repositoryInstallDownloadedMods();
+        break;
+    default:
         break;
     }
 }

@@ -33,6 +33,8 @@ private slots:
 
     void refreshList();
 
+    void gotProgress(int _min, int _max, int _value);
+
 private:
     Ui::ModRepositoryWindow *ui;
 
