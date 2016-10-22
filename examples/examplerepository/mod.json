@@ -6,6 +6,7 @@
   "url" : "https://github.com/rumangerst/",
   "version" : "1.0.0.0",
   "requires" : [],
+  "categories" : ["Repository sources"],
   "content" : {
     "repository" : {
       "name" : "SilVerPLuM example repository",

@@ -6,6 +6,7 @@
     "url": "https://github.com/demmonic/Storm",
     "version": "1.0.0",
     "requires": ["stardewvalley>=1.1", "stardewvalley<1.2"],
+    "categories" : ["Modding APIs"],
     "content": {
         "storm": {
             "name": "STORM API",

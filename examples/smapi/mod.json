@@ -6,6 +6,7 @@
     "url": "https://github.com/cjsu/SMAPI",
     "version": "0.40.1.1",
     "requires": ["stardewvalley==1.1.1"],
+    "categories" : ["Modding APIs"],
     "content": {
         "smapi-win": {
             "name": "Stardew Valley Modding API",

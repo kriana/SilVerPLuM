@@ -6,6 +6,7 @@
     "url": "https://github.com/rumangerst/",
     "version": "1.0.0",
     "requires": ["stardewvalley>0"],
+    "categories" : ["Test mods"],
     "content": {
         "content": {
             "name": "The content",

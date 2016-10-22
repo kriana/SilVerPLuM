@@ -7,6 +7,7 @@
     "url": "http://community.playstarbound.com/threads/alternate-farms-dried-dehydrated-renovated.125263/",
     "version": "1.0",
     "requires": ["stardewvalley=1.1.1"],
+    "categories" : ["Maps"],
     "content": {
         "renovated-farms": {
             "name": "The content",

@@ -65,6 +65,8 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     });
 
     connect(&(getModRepository()->getLogger()), &Logger::logged, this, &ModRepositoryWindow::gotLog);    
+
+    refreshList();
 }
 
 ModRepositoryWindow::~ModRepositoryWindow()

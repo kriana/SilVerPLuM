@@ -6,6 +6,7 @@
     "url": "https://github.com/Pathoschild/LookupAnything",
     "version": "1.5",
     "requires": ["stardewvalley=1.1.1", "smapi=0.40.1.1"],
+    "categories" : ["User Interface"],
     "content": {
         "content": {
             "name": "Lookup Anything",
