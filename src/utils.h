@@ -23,6 +23,29 @@
 namespace utils
 {
 
+inline QString returnRelativeChildTo(const QDir & directory, const QString & path)
+{
+    QString relative = directory.relativeFilePath(path);
+
+    if(relative == ".")
+        return ".";
+
+    if(relative.startsWith("../") || relative.startsWith("..\\"))
+        return "";
+
+    return relative;
+}
+
+inline QString toModURL(const QDir & directory, const QString & path, const QString & modid)
+{
+    QString relative = returnRelativeChildTo(directory, path);
+
+    if(relative.isEmpty())
+        return "";
+
+    return modid + "://" + relative.replace("\\", "/");
+}
+
 inline QProcessEnvironment joinEnvironments(QProcessEnvironment env1, QProcessEnvironment env2)
 {
     for(QString key : env2.keys())

@@ -34,6 +34,8 @@ public:
 
     void setBlocking(bool blocking);
 
+    QStringList installedFiles();
+
     void install();
 
     void uninstall();

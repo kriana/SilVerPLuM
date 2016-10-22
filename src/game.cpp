@@ -91,7 +91,7 @@ void Game::progress(bool enabled, int _min, int _max, int _val)
 
 void Game::prepareFindUnoverrideableGameFiles()
 {
-    //QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
+    /*//QDir sdvdir = m_Launcher->getProfile()->StardewValleyDir();
     QDir sdvcontentdir = m_Launcher->getProfile()->StardewValleyContentDir();
 
     getLogger().log(Logger::Info, "launcher", "prepare", "find-gamefiles", "Determining unoverrideable files");
@@ -105,12 +105,14 @@ void Game::prepareFindUnoverrideableGameFiles()
 
         getLogger().log(Logger::Info, "launcher", "prepare", "find-gamefiles", "Unoverrideable: " + path);
         m_GameFiles << path;
-    }
+    }*/
+
+    // Removed due to new backup methods, yay!
 }
 
-void Game::prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup)
+void Game::prepareBackupContent()
 {
-    getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Backing up content directory");
+    /*getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Backing up content directory");
 
     progress(true, 0, 6, 1);
     if(sdvcontentbackup.exists())
@@ -122,11 +124,48 @@ void Game::prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup)
     progress(true, 0, 6, 2);
     utils::copyDirectory(sdvcontentdir, sdvcontentbackup , true);
 
-    getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Content folder backup created");
+    getLogger().log(Logger::Info, "launcher", "prepare", "backup-content", "Content folder backup created");*/
+
+    getLogger().log(Logger::Info, "launcher", "prepare", "backup-modded", "Backing up affected files ...");
+    QStringList affected = m_Launcher->getProfile()->getModManager()->installedFiles();
+
+    for(QString file : affected)
+    {
+        QString modurl = m_Launcher->getProfile()->getModManager()->toModUrl(file);
+        QString backup = getBackupPathFor(modurl);
+
+        if(backup.isEmpty())
+        {
+            getLogger().log(Logger::Warning, "launcher", "prepare", "backup-modded", "Cannot build backup destination for " + file);
+            continue;
+        }
+
+        QFileInfo info(backup);
+        if(info.exists())
+        {
+            if(info.isFile())
+                QFile(backup).remove();
+            else
+                QDir(backup).removeRecursively();
+        }
+
+        info.dir().mkpath(".");
+
+        if(!QFile::copy(file, backup))
+        {
+            getLogger().log(Logger::Warning, "launcher", "prepare", "backup-modded", "Cannot copy " + file + " to " + backup);
+        }
+        else
+        {
+            getLogger().log(Logger::Info, "launcher", "prepare", "backup-modded", "Backed up " + file + " to " + backup);
+        }
+    }
 }
 
-void Game::prepareCopySavegames(QDir sdvsavegames)
+void Game::prepareCopySavegames()
 {
+    QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
+
     getLogger().log(Logger::Info, "launcher", "prepare", "restore-profile-savegames", "Copying savegames to savegame folder");
 
     progress(true, 0, 6, 3);
@@ -172,8 +211,6 @@ void Game::prepare()
 {
     getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
 
-    QDir sdvcontentdir =  m_Launcher->getProfile()->StardewValleyContentDir();
-    QDir sdvcontentbackup =  sdvContentBackupDir();
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();
 
     sdvsavegames.mkpath(".");
@@ -187,8 +224,8 @@ void Game::prepare()
     }
 
     prepareFindUnoverrideableGameFiles();
-    prepareBackupContent(sdvcontentdir, sdvcontentbackup);
-    prepareCopySavegames(sdvsavegames);
+    prepareBackupContent();
+    prepareCopySavegames();
     prepareInstallMods();
 
     getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Preparation ended");
@@ -259,7 +296,41 @@ void Game::postMoveSavegames()
 
 void Game::postRestoreContent()
 {
-    getLogger().log(Logger::Info, "launcher", "post", "restore-content", "Starting to restore content directory");
+    getLogger().log(Logger::Info, "launcher", "post", "restore-original-files", "Restoring original files");
+
+    QStringList affected = m_Launcher->getProfile()->getModManager()->installedFiles();
+
+    progress(true, 0, 5, 5);
+
+    for(QString file : affected)
+    {
+        QString modurl = m_Launcher->getProfile()->getModManager()->toModUrl(file);
+        QString backup = getBackupPathFor(modurl);
+
+        if(backup.isEmpty())
+        {
+            continue;
+        }
+
+        if(!QFile(backup).exists())
+        {
+            getLogger().log(Logger::Warning, "launcher", "post", "restore-original-files", "Backup " + backup + " for " + file + " does not exist!");
+            continue;
+        }
+
+        QFile(file).remove();
+
+        if(!QFile::copy(backup, file))
+        {
+            getLogger().log(Logger::Warning, "launcher", "post", "restore-original-files", "No backup " + backup + " for " + file);
+        }
+        else
+        {
+            getLogger().log(Logger::Info, "launcher", "post", "restore-original-files", "Restored " + file + " from " + backup);
+        }
+    }
+
+    /*getLogger().log(Logger::Info, "launcher", "post", "restore-content", "Starting to restore content directory");
 
     QDir sdvcontentdir =  m_Launcher->getProfile()->StardewValleyContentDir();
     QDir sdvcontentbackup =  sdvContentBackupDir();
@@ -273,7 +344,7 @@ void Game::postRestoreContent()
     else
     {
         getLogger().log(Logger::Error, "launcher", "post", "restore-content", "Backup does not exist! Please do not interfere with those processes or you'll lose data!");
-    }
+    }*/
 }
 
 void Game::postUninstallMods()
@@ -288,9 +359,13 @@ QDir Game::sdvSavegameBackupDir()
     return QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("sdv-savegame-backup");
 }
 
-QDir Game::sdvContentBackupDir()
+QString Game::getBackupPathFor(const QString &modurl)
 {
-    return QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("sdv-content-backup");
+    if(modurl.isEmpty())
+        return "";
+
+    QDir base = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("sdv-pre-launch-backup");
+    return base.absoluteFilePath(QString(modurl).replace(":/", ""));
 }
 
 void Game::post()

@@ -151,6 +151,18 @@ bool Modification::search(const QString &searchstring_)
     return false;
 }
 
+QStringList Modification::installedFiles()
+{
+    QStringList result;
+
+    for(Pipeline * p : getEnabledPipelines())
+    {
+        result << p->installedFiles();
+    }
+
+    return result;
+}
+
 void Modification::install()
 {
     for(Pipeline * p : getEnabledPipelines())

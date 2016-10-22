@@ -107,13 +107,13 @@ private:
      * @param sdvcontentdir
      * @param sdvcontentbackup
      */
-    void prepareBackupContent(QDir sdvcontentdir, QDir sdvcontentbackup);
+    void prepareBackupContent();
 
     /**
      * @brief Copies the profile's savegames into the savegame directory
      * @param sdvsavegames
      */
-    void prepareCopySavegames(QDir sdvsavegames);
+    void prepareCopySavegames();
 
     /**
      * @brief Moves the savegames from the savegame dir back to the profile dir
@@ -142,10 +142,11 @@ private:
     QDir sdvSavegameBackupDir();
 
     /**
-     * @brief The directory where the content is copied before launching
+     * @brief Returns the backup path for given mod URL
+     * @param modurl
      * @return
      */
-    QDir sdvContentBackupDir();
+    QString getBackupPathFor(const QString & modurl);
 
 private slots:
 

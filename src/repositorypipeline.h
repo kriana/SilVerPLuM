@@ -17,6 +17,8 @@ public:
 
     void setRepositories(const QStringList &Repositories);
 
+    QStringList installedFiles();
+
     void install();
 
     void uninstall();

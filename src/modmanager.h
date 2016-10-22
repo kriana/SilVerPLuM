@@ -126,6 +126,12 @@ public:
     QString unifyModId(QString id);
 
     /**
+     * @brief Returns list of all installed files
+     * @return
+     */
+    QStringList installedFiles();
+
+    /**
      * @brief Installs all activated mods
      */
     void install();
@@ -155,6 +161,13 @@ public:
      * @return
      */
     bool isValidModUrl(const QString & url);
+
+    /**
+     * @brief Tries to create a mod url from a given file or folder path
+     * @param filepath
+     * @return
+     */
+    QString toModUrl(const QString & filepath);
 
     /**
      * @brief Returns the logger of this modmanager

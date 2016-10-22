@@ -46,6 +46,11 @@ void RepositoryPipeline::setRepositories(const QStringList &Repositories)
     m_Repositories = Repositories;
 }
 
+QStringList RepositoryPipeline::installedFiles()
+{
+    return QStringList();
+}
+
 void RepositoryPipeline::install()
 {
 

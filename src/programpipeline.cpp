@@ -150,6 +150,11 @@ void ProgramPipeline::setBlocking(bool blocking)
     m_blocking = blocking;
 }
 
+QStringList ProgramPipeline::installedFiles()
+{
+    return QStringList();
+}
+
 void ProgramPipeline::install()
 {
 

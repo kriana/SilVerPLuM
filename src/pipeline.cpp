@@ -260,6 +260,13 @@ QList<Launcher *> Pipeline::launchers() const
     return m_launchers.values();
 }
 
+QStringList Pipeline::installedFiles()
+{
+    QMap<QString, QString> resolved_installables = resolveInstallables();
+
+    return resolved_installables.values();
+}
+
 void Pipeline::install()
 {
     getLogger().log(Logger::Info, "pipeline", id(), "install", "Started installation");
@@ -276,21 +283,6 @@ void Pipeline::install()
         // Prevent overwriting files outside Content dir
         if(QFileInfo(dst).exists() && GlobalSettings::instance()->getEnableFileGuard())
         {
-            QDir sdvdir = mod()->getModManager()->profile()->StardewValleyDir();
-
-            //getLogger().log(Logger::DEBUG, "pipeline", id(), "install", dst_file_dir.absolutePath() + " == " + sdvdir.absolutePath());
-
-            /*if(dst_file_dir.absolutePath() == sdvdir.absolutePath() ||
-                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("_MACOSX")).absolutePath() ||
-                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib")).absolutePath() ||
-                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("lib64")).absolutePath() ||
-                    dst_file_dir.absolutePath() == QDir(sdvdir.absoluteFilePath("mono")).absolutePath())
-            {
-                getLogger().log(Logger::Warning, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");
-
-                continue;
-            }*/
-
             if(Game::instance()->getUnoverrideableGameFiles().contains(dst_file_dir.absolutePath()))
             {
                 getLogger().log(Logger::Warning, "pipeline", id(), "install", "Refuse to overwrite source " + src + " into " + dst + " by file guard");

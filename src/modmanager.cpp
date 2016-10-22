@@ -536,6 +536,18 @@ QString ModManager::unifyModId(QString id)
     return id + "-" + as_uid;
 }
 
+QStringList ModManager::installedFiles()
+{
+    QStringList result;
+
+    for(Modification * mod : m_mods)
+    {
+        result << mod->installedFiles();
+    }
+
+    return result;
+}
+
 void ModManager::install()
 {
     for(Modification * mod : m_mods)
@@ -705,6 +717,28 @@ bool ModManager::isValidModUrl(const QString &url)
              return false;
          return true;
     }
+}
+
+QString ModManager::toModUrl(const QString &filepath)
+{
+    QString url;
+
+    if(!(url = utils::toModURL(profile()->StardewValleyContentDir(), filepath, "stardewvalley-content")).isEmpty())
+        return url;
+    if(!(url = utils::toModURL(profile()->StardewValleyDir(), filepath, "stardewvalley")).isEmpty())
+        return url;
+    if(!(url = utils::toModURL(profile()->StardewValleySavegameDir(), filepath, "stardewvalley-savegames")).isEmpty())
+        return url;
+    if(!(url = utils::toModURL(profile()->StardewValleyUserDataDir(), filepath, "stardewvalley-userdata")).isEmpty())
+        return url;
+
+    for(Modification * mod : m_mods)
+    {
+        if(!(url = utils::toModURL(mod->modBasePath(), filepath, mod->id())).isEmpty())
+            return url;
+    }
+
+    return "";
 }
 
 bool ModManager::loadMod(const QDir &directory)

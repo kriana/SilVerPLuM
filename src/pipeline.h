@@ -173,6 +173,12 @@ public:
     QList<Launcher *> launchers() const;
 
     /**
+     * @brief Returns the installed files of this pipeline
+     * @return
+     */
+    QStringList installedFiles();
+
+    /**
      * @brief Installs this pipeline
      */
     virtual void install();

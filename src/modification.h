@@ -206,6 +206,12 @@ public:
     bool search(const QString & searchstring_);
 
     /**
+     * @brief Returns list of all installed files
+     * @return
+     */
+    QStringList installedFiles();
+
+    /**
      * @brief Installs this mod
      */
     void install();
