@@ -18,6 +18,8 @@ public:
 
     void setRepositoryEntry(ModRepositoryEntry * entry);
 
+    ModRepositoryEntry *currentEntry() const;
+
 private:
     Ui::ModRepositoryEntryWidget *ui;
 

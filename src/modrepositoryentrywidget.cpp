@@ -74,6 +74,11 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
     ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(entry->repository()->getModManager()->autoResolveModUrls(entry->modification()->description()))));
 }
 
+ModRepositoryEntry *ModRepositoryEntryWidget::currentEntry() const
+{
+    return m_currentEntry;
+}
+
 void ModRepositoryEntryWidget::installClicked()
 {
     m_currentEntry->repository()->install(QList<ModRepositoryEntry*>() << m_currentEntry, m_updatesModification);

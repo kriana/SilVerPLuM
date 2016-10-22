@@ -10,6 +10,8 @@
 #include <QTreeWidgetItem>
 #include <QScrollBar>
 #include <QProgressBar>
+#include <QLineEdit>
+#include "categoryfilterwidget.h"
 
 ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     QDialog(parent),
@@ -30,8 +32,8 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     });
 
     ui->updateMessageWidget->setText(tr("You might need to fetch the list of available mods online. Click on 'Fetch' to do this now."));
-    ui->updateMessageWidget->getActionButton()->setText(tr("Fetch"));
-    ui->updateMessageWidget->getActionButton()->setIcon(QIcon::fromTheme("update-none"));
+    ui->updateMessageWidget->getActionButton()->setText(tr("Fetch repository sources"));
+    ui->updateMessageWidget->getActionButton()->setIcon(QIcon::fromTheme("view-refresh"));
     ui->updateMessageWidget->getActionButton()->show();
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), ui->updateMessageWidget, SLOT(setHidden(bool)));
     connect(getModRepository(), SIGNAL(repositoryNeedsUpdate()), ui->updateMessageWidget, SLOT(show()));
@@ -39,6 +41,14 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     connect(getModRepository(), SIGNAL(downloadProgress(int,int,int)), this, SLOT(gotProgress(int,int,int)));
     connect(ui->updateMessageWidget->getActionButton(), SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
     connect(ui->progressStop, &QPushButton::clicked, this, &ModRepositoryWindow::cancelClicked);
+    connect(ui->btnFetchSources_download, SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
+    connect(ui->btnFetchSources_update, SIGNAL(clicked(bool)), this, SLOT(updateRepositoryClicked()));
+    connect(ui->btnUpgradeAll, SIGNAL(clicked(bool)), this, SLOT(upgradeAllClicked()));
+
+    connect(ui->downloadSearch, SIGNAL(textChanged(QString)), ui->downloadList, SLOT(search(QString)));
+    connect(ui->updateSearch, SIGNAL(textChanged(QString)), ui->updateList, SLOT(search(QString)));
+    connect(ui->downloadCategoryFilter, SIGNAL(selectedCategory(QString)), ui->downloadList, SLOT(filterCategory(QString)));
+    connect(ui->updateCategoryFilter, SIGNAL(selectedCategory(QString)), ui->updateList, SLOT(filterCategory(QString)));
 
     updatePipelineList();
 
@@ -54,7 +64,7 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
        ui->stackedWidget->setCurrentWidget(ui->mainPage);
     });
 
-    connect(&(getModRepository()->getLogger()), &Logger::logged, this, &ModRepositoryWindow::gotLog);
+    connect(&(getModRepository()->getLogger()), &Logger::logged, this, &ModRepositoryWindow::gotLog);    
 }
 
 ModRepositoryWindow::~ModRepositoryWindow()
@@ -89,6 +99,11 @@ void ModRepositoryWindow::updateRepositoryClicked()
     getModRepository()->updateRepository();
 }
 
+void ModRepositoryWindow::upgradeAllClicked()
+{
+    getModRepository()->install(getModRepository()->getUpdates(), true);
+}
+
 void ModRepositoryWindow::gotLog(const Logger::Entry &entry)
 {
     ui->progressLog->addTopLevelItem(new QTreeWidgetItem(ui->progressLog,
@@ -105,6 +120,22 @@ void ModRepositoryWindow::gotLog(const Logger::Entry &entry)
 void ModRepositoryWindow::refreshList()
 {
     ui->downloadList->setEntryList(getModRepository()->getEntries());
+    ui->updateList->setEntryList(getModRepository()->getUpdates());
+
+    QList<Modification*> download_mods;
+    QList<Modification*> update_mods;
+
+    for(ModRepositoryEntry * e : getModRepository()->getEntries())
+    {
+        download_mods << e->modification();
+    }
+    for(ModRepositoryEntry * e : getModRepository()->getUpdates())
+    {
+        update_mods << e->modification();
+    }
+
+    ui->downloadCategoryFilter->fillWith(download_mods);
+    ui->updateCategoryFilter->fillWith(update_mods);
 }
 
 void ModRepositoryWindow::gotProgress(int _min, int _max, int _value)
@@ -119,6 +150,7 @@ void ModRepositoryWindow::updatePipelineList()
     Profile * p = ProfileManager::instance()->getSelectedProfile();
 
     QList<Pipeline*> sourcepipelines;
+    bool some_enabled = false;
 
     for(Modification * mod : p->getModManager()->getModifications())
     {
@@ -127,9 +159,21 @@ void ModRepositoryWindow::updatePipelineList()
             if(pip->pipelineMainType() == Pipeline::RepositoryPipeline)
             {
                 sourcepipelines << pip;
+
+                if(pip->isEnabled())
+                    some_enabled = true;
             }
         }
     }
 
     ui->repositorySourcePipelines->setPipelines(sourcepipelines);
+
+    if(sourcepipelines.isEmpty())
+    {
+        ui->generalMessageWidget->message(tr("There are no repository sources installed. You won't be able to get mods."));
+    }
+    else if(!some_enabled)
+    {
+        ui->generalMessageWidget->message(tr("There is no repository source enabled. Go to 'Configure' and enable one to be able to get mods."));
+    }
 }

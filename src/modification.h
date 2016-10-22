@@ -35,6 +35,7 @@ private:
     QSet<QString> m_PipelineIds;
     Logger m_logger;
     QStringList m_provides;
+    QStringList m_categories;
 
 public:
     Modification(ModManager * modmgr, const QString & id);
@@ -265,6 +266,12 @@ public:
      * @return
      */
     QProcessEnvironment processEnvironment();
+
+    QStringList getCategories() const;
+
+    void setCategories(const QStringList &categories);
+
+    bool isInCategory(QString querycategory);
 
 protected:
 

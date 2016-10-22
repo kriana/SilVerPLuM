@@ -140,6 +140,8 @@ void DownloadManager::startNextDownload()
     logToLogger(Logger::Info, QString("Downloading %1...")
                 .arg(QString::fromUtf8(url.toEncoded())));
     downloadTime.start();
+
+    emit progress(0, 0, 0);
 }
 
 void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)

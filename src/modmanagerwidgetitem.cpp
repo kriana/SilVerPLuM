@@ -65,9 +65,20 @@ void ModManagerWidgetItem::setCollapsed(bool enabled)
     ui->mainWidget->setVisible(!enabled);
 }
 
-void ModManagerWidgetItem::search(const QString &searchstring)
+void ModManagerWidgetItem::searchFilter(const QString &searchstring, const QString &category)
 {
-    setCollapsed(!(searchstring.isEmpty() || m_currentModification->search(searchstring)));
+    bool visible = true;
+
+    if(!searchstring.isEmpty())
+    {
+        visible &= m_currentModification->search(searchstring);
+    }
+    if(!category.isEmpty())
+    {
+        visible &= m_currentModification->isInCategory(category);
+    }
+
+    setCollapsed(!visible);
 }
 
 void ModManagerWidgetItem::showMoreToggled(bool toggle)

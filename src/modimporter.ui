@@ -27,7 +27,7 @@
    <item>
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="infoPage">
       <property name="geometry">
@@ -189,79 +189,13 @@
         <x>0</x>
         <y>0</y>
         <width>813</width>
-        <height>484</height>
+        <height>516</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Mod information</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="minimumSize">
-          <size>
-           <width>140</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Identifier</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="IdentifierLineEdit" name="modIdentifier">
-         <property name="toolTip">
-          <string>The identifier of this modification.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="minimumSize">
-          <size>
-           <width>140</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Description</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="MarkdownTextEditor" name="modDescription">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>200</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="label_8">
-         <property name="minimumSize">
-          <size>
-           <width>140</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Stardew Valley version</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QComboBox" name="modRequiresStardewValley">
-         <property name="toolTip">
-          <string>The Stardew Valley version this mod is intended to run.</string>
-         </property>
-         <property name="editable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
          <property name="minimumSize">
@@ -279,6 +213,26 @@
         <widget class="QLineEdit" name="modName">
          <property name="toolTip">
           <string>The name of this modification</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>140</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Identifier</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="IdentifierLineEdit" name="modIdentifier">
+         <property name="toolTip">
+          <string>The identifier of this modification.</string>
          </property>
         </widget>
        </item>
@@ -476,6 +430,72 @@
         <widget class="QLineEdit" name="modWebsite">
          <property name="toolTip">
           <string>The website URL of this mod.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="minimumSize">
+          <size>
+           <width>140</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Description</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="MarkdownTextEditor" name="modDescription">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>200</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="minimumSize">
+          <size>
+           <width>140</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Stardew Valley version</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="modRequiresStardewValley">
+         <property name="toolTip">
+          <string>The Stardew Valley version this mod is intended to run.</string>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="minimumSize">
+          <size>
+           <width>140</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Categories</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="modCategories">
+         <property name="toolTip">
+          <string>Separate entries with a space</string>
          </property>
         </widget>
        </item>

@@ -52,6 +52,30 @@ QProcessEnvironment Modification::processEnvironment()
     return env;
 }
 
+QStringList Modification::getCategories() const
+{
+    return m_categories;
+}
+
+void Modification::setCategories(const QStringList &categories)
+{
+    m_categories = categories;
+}
+
+bool Modification::isInCategory(QString querycategory)
+{
+    if(querycategory.isEmpty())
+        return true;
+
+    for(QString cat : m_categories)
+    {
+        if(cat.toLower() == querycategory.toLower())
+            return true;
+    }
+
+    return false;
+}
+
 Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager(modmgr), m_Id(id)
 {
     connect(modmgr, SIGNAL(updatedModStatus(QString,QString,bool)), this, SLOT(modEnabledDisabled(QString,QString,bool)));
@@ -238,6 +262,13 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
     {
         mod->addDependency(new Dependency(req.toString()));
     }
+
+    QStringList categories;
+    for(QJsonValue req : json["categories"].toArray())
+    {
+        categories << req.toString().trimmed();
+    }
+    mod->setCategories(categories);
 
     // Provides identifiers
     QStringList provides;

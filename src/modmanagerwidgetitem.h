@@ -20,7 +20,7 @@ public:
 
     void setCollapsed(bool enabled);
 
-    void search(const QString & searchstring);
+    void searchFilter(const QString & searchstring, const QString & category);
 
 private slots:
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>735</width>
-    <height>493</height>
+    <width>773</width>
+    <height>549</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,12 +32,15 @@
         <widget class="MessageWidget" name="updateMessageWidget" native="true"/>
        </item>
        <item>
+        <widget class="MessageWidget" name="generalMessageWidget" native="true"/>
+       </item>
+       <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="tabPosition">
           <enum>QTabWidget::South</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="tabWelcome">
           <attribute name="title">
@@ -47,7 +50,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Mod repository&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The mod repository allows you to update your mods and download new ones. The SilVerPLuM developers do not maintain their own list of downloadable mods due to flexibility, security and maintainability. Instead mods can add repository sources to SilVerPLuM.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Mod repository&lt;/span&gt;&lt;/p&gt;&lt;p&gt;With the mod repository you can download new mods and update, downgrade or just reinstall mods you already have installed.&lt;/p&gt;&lt;p&gt;Mod authors can create their own repository sources to keep their mods updated or just to create a collection of several mods that you can easily install from within SilVerPLuM.&lt;/p&gt;&lt;p&gt;If you did not already get one of those mods, check out the Stardew Valley forums, Discord or Nexus Mods for such repository sources.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -225,6 +228,20 @@
             <widget class="QWidget" name="widget" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
+               <widget class="QPushButton" name="btnFetchSources_download">
+                <property name="text">
+                 <string>Fetch repository sources</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="view-refresh">
+                  <normaloff>.</normaloff>.</iconset>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -236,6 +253,16 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="CategoryFilterWidget" name="downloadCategoryFilter" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QLineEdit" name="downloadSearch">
@@ -275,6 +302,94 @@
           <attribute name="title">
            <string>Update</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QWidget" name="widget_3" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QPushButton" name="btnFetchSources_update">
+                <property name="text">
+                 <string>Fetch repository sources</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="view-refresh">
+                  <normaloff>.</normaloff>.</iconset>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnUpgradeAll">
+                <property name="text">
+                 <string>Update all</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="edit-download">
+                  <normaloff>.</normaloff>.</iconset>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>211</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="CategoryFilterWidget" name="updateCategoryFilter" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="updateSearch">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="placeholderText">
+                 <string>Search ...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="ModRepositoryEntryList" name="updateList" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
          <widget class="QWidget" name="tabRepositories">
           <attribute name="title">
@@ -294,8 +409,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>691</width>
-                <height>406</height>
+                <width>729</width>
+                <height>446</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -440,6 +555,12 @@
    <class>ModRepositoryEntryList</class>
    <extends>QWidget</extends>
    <header>modrepositoryentrylist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CategoryFilterWidget</class>
+   <extends>QWidget</extends>
+   <header>categoryfilterwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

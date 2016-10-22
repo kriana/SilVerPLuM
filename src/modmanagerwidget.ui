@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>638</width>
-    <height>384</height>
+    <width>815</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -106,6 +106,16 @@
        </spacer>
       </item>
       <item>
+       <widget class="CategoryFilterWidget" name="categoryFilter" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="searchBar">
         <property name="minimumSize">
          <size>
@@ -140,8 +150,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>606</width>
-        <height>288</height>
+        <width>783</width>
+        <height>350</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -209,6 +219,12 @@
    <class>DependencyCheckerWidget</class>
    <extends>QWidget</extends>
    <header>dependencycheckerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CategoryFilterWidget</class>
+   <extends>QWidget</extends>
+   <header>categoryfilterwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

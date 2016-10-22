@@ -32,6 +32,8 @@ private:
 
     ModManager * m_currentMM = nullptr;
 
+    void searchFilter(const QString &searchstring_, const QString & _filter);
+
 private slots:
 
     void importModClicked();
@@ -40,7 +42,7 @@ private slots:
 
     void repositoryClicked();
 
-    void search(const QString & searchstring_);
+    void triggerSearchFilter();
 };
 
 #endif // MODMANAGERWIDGET_H

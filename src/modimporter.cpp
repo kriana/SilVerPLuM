@@ -144,6 +144,18 @@ void ModImporter::import()
         root["version"] = QVersionNumber::fromString(ui->modVersion->text()).toString();
         root["requires"] = QJsonArray({"stardewvalley=" + ui->modRequiresStardewValley->currentText()});
 
+        QJsonArray categories;
+
+        for(QString cat : utils::stringToArgumentList(ui->modCategories->text()))
+        {
+            if(!cat.isEmpty())
+            {
+                categories << cat;
+            }
+        }
+
+        root["categories"] = categories;
+
         QJsonObject content_list;
 
         for(ModImporterContentItem * content : m_contentItems)
@@ -266,7 +278,7 @@ bool ModImporter::isValid()
 void ModImporter::importDirectory(const QDir &dir, QString name)
 {
     // If it's valid, add instead of replace
-    if(isValid())
+    if(!isValid())
     {
         // Clean up
         while(!m_contentItems.isEmpty())

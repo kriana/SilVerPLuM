@@ -130,6 +130,26 @@ Modification * ModRepositoryEntry::getInstalledMod()
     return nullptr;
 }
 
+bool ModRepositoryEntry::searchFilter(const QString &searchstring, const QString & category)
+{
+    if(!searchstring.isEmpty())
+    {
+        bool search = false;
+
+        search |= (m_modDownloadURL.toDisplayString().toLower().contains(searchstring));
+        search |= (m_repositorySourceURL.toDisplayString().toLower().contains(searchstring));
+        search |= modification()->search(searchstring);
+
+        if(!search)
+            return false;
+    }
+
+    if(!category.isEmpty())
+        return modification()->isInCategory(category);
+
+    return true;
+}
+
 QUrl ModRepositoryEntry::modIconURL() const
 {
     return m_modIconURL;

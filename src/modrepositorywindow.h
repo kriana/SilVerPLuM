@@ -29,6 +29,8 @@ private slots:
 
     void updateRepositoryClicked();
 
+    void upgradeAllClicked();
+
     void gotLog(const Logger::Entry &entry);
 
     void refreshList();

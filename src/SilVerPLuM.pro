@@ -77,7 +77,8 @@ SOURCES += main.cpp\
     pipelinelistwidget.cpp \
     modrepositoryentry.cpp \
     modrepositoryentrywidget.cpp \
-    modrepositoryentrylist.cpp
+    modrepositoryentrylist.cpp \
+    categoryfilterwidget.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -143,7 +144,8 @@ HEADERS  += mainwindow.h \
     pipelinelistwidget.h \
     modrepositoryentry.h \
     modrepositoryentrywidget.h \
-    modrepositoryentrylist.h
+    modrepositoryentrylist.h \
+    categoryfilterwidget.h
 
 
 FORMS    += mainwindow.ui \
@@ -171,7 +173,8 @@ FORMS    += mainwindow.ui \
     modrepositorywindow.ui \
     pipelinelistwidget.ui \
     modrepositoryentrywidget.ui \
-    modrepositoryentrylist.ui
+    modrepositoryentrylist.ui \
+    categoryfilterwidget.ui
 
 RESOURCES += \
     resources.qrc

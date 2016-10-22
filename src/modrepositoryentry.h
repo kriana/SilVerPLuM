@@ -55,6 +55,8 @@ public:
      */
     Modification *getInstalledMod();
 
+    bool searchFilter(const QString & searchstring, const QString &category);
+
 private:
 
     ModRepository * m_repository;

@@ -14,7 +14,8 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(search(QString)));
+    connect(ui->searchBar, SIGNAL(textChanged(QString)), this, SLOT(triggerSearchFilter()));
+    connect(ui->categoryFilter, SIGNAL(selectedCategory(QString)), this, SLOT(triggerSearchFilter()));
     connect(ui->btnRefresh, SIGNAL(clicked(bool)), this, SLOT(refreshList()));
     connect(ui->btnInstallMod, &QToolButton::clicked, this, &ModManagerWidget::installModClicked);
     connect(ui->btnDownloadMod, &QToolButton::clicked, this, &ModManagerWidget::repositoryClicked);
@@ -86,7 +87,7 @@ void ModManagerWidget::refreshList()
     layout->addStretch(1);
 
 
-    search(ui->searchBar->text());
+    triggerSearchFilter();
     ui->scrollArea->horizontalScrollBar()->setValue(scrollh);
     ui->scrollArea->verticalScrollBar()->setValue(scrollv);
 
@@ -98,6 +99,8 @@ void ModManagerWidget::refreshList()
     {
         ui->message->message(QString("Could not load %1 mods. Check the profile log for more information.").arg(m_currentMM->getUnloadableModPaths().size()));
     }
+
+    ui->categoryFilter->fillWith(m_currentMM->getModifications());
 }
 
 void ModManagerWidget::reloadAllMods()
@@ -153,7 +156,12 @@ void ModManagerWidget::repositoryClicked()
     dlg.exec();
 }
 
-void ModManagerWidget::search(const QString &searchstring_)
+void ModManagerWidget::triggerSearchFilter()
+{
+    searchFilter(ui->searchBar->text(), ui->categoryFilter->currentCategory());
+}
+
+void ModManagerWidget::searchFilter(const QString &searchstring_, const QString & _filter)
 {
     QString searchstring = searchstring_.trimmed();
 
@@ -169,7 +177,7 @@ void ModManagerWidget::search(const QString &searchstring_)
 
             if(mitem != nullptr)
             {
-                mitem->search(searchstring);
+                mitem->searchFilter(searchstring, _filter);
             }
         }
     }
