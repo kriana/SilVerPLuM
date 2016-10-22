@@ -106,12 +106,24 @@
        </spacer>
       </item>
       <item>
-       <widget class="CategoryFilterWidget" name="categoryFilter" native="true">
+       <widget class="CategoryComboBox" name="categoryFilter">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>120</width>
           <height>0</height>
          </size>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -222,10 +234,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>CategoryFilterWidget</class>
-   <extends>QWidget</extends>
-   <header>categoryfilterwidget.h</header>
-   <container>1</container>
+   <class>CategoryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>categorycombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

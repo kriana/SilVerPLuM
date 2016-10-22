@@ -2,26 +2,22 @@
 #define CATEGORYFILTERWIDGET_H
 
 #include <QWidget>
+#include <QComboBox>
 #include "modification.h"
 
-namespace Ui {
-class CategoryFilterWidget;
-}
-
-class CategoryFilterWidget : public QWidget
+class CategoryComboBox : public QComboBox
 {
     Q_OBJECT
 
 public:
-    explicit CategoryFilterWidget(QWidget *parent = 0);
-    ~CategoryFilterWidget();
+    explicit CategoryComboBox(QWidget *parent = 0);
+    ~CategoryComboBox();
 
     void fillWith(const QList<Modification*> mods);
 
     QString currentCategory();
 
 private:
-    Ui::CategoryFilterWidget *ui;
 
 private slots:
 

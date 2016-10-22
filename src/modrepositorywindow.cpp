@@ -11,7 +11,7 @@
 #include <QScrollBar>
 #include <QProgressBar>
 #include <QLineEdit>
-#include "categoryfilterwidget.h"
+#include "categorycombobox.h"
 
 ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     QDialog(parent),
@@ -31,7 +31,7 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
        ui->tabWidget->setCurrentWidget(ui->tabUpdate);
     });
 
-    ui->updateMessageWidget->setText(tr("You might need to fetch the list of available mods online. Click on 'Fetch' to do this now."));
+    ui->updateMessageWidget->setText(tr("You might need to fetch the list of available mods online. Click on the button right next to this message to do this now."));
     ui->updateMessageWidget->getActionButton()->setText(tr("Fetch repository sources"));
     ui->updateMessageWidget->getActionButton()->setIcon(QIcon::fromTheme("view-refresh"));
     ui->updateMessageWidget->getActionButton()->show();

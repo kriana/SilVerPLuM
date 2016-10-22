@@ -14,22 +14,22 @@ The mod works fine out of the box, but you can tweak its settings in the config.
 ## Screenshots
 
 <span>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/animated.gif"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/animated.gif" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/cask.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/cask.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crafting.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crafting.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crop.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crop.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/farm-animal.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/farm-animal.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fence.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fence.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fruit-tree.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fruit-tree.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/item.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/item.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-gem.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-gem.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ice.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ice.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ore.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ore.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-stone.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-stone.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/monster.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/monster.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/pet.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/pet.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/player.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/player.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/seeds.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/seeds.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/villager.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/villager.png" width="300"></a>
-<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/wild-tree.png"><img src="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/wild-tree.png" width="300"></a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/animated.gif">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/cask.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crafting.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/crop.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/farm-animal.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fence.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/fruit-tree.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/item.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-gem.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ice.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-ore.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/mine-stone.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/monster.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/pet.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/player.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/seeds.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/villager.png">Open screenshot</a>
+<a href="https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/content/screenshots/wild-tree.png">Open screenshot</a>
 </span>
