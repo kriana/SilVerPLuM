@@ -397,9 +397,14 @@ void ModRepository::updateRepository()
     m_downloadManager->cancelDownloads();
 
     QList<DownloadManager::DownloadItem> items;
+    QStringList visited;
 
     for(QString str : getRepositoryURLs())
     {
+        if(visited.contains(str))
+            continue;
+        visited << str;
+
         QUrl url = QUrl::fromEncoded(str.toLocal8Bit());
 
         if(url.isValid())
