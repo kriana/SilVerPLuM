@@ -281,6 +281,8 @@ void ModRepository::repositoryUpdateLoadData()
             m_entries.removeAll(entry);
             delete entry;
         }
+
+        entry->setIcon(mod_icon);
     }
 
     lookForUpdates();

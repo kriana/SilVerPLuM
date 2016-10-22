@@ -40,7 +40,7 @@
           <enum>QTabWidget::South</enum>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tabWelcome">
           <attribute name="title">
@@ -258,7 +258,7 @@
                <widget class="CategoryFilterWidget" name="downloadCategoryFilter" native="true">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>120</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -351,7 +351,7 @@
                <widget class="CategoryFilterWidget" name="updateCategoryFilter" native="true">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>120</width>
                   <height>0</height>
                  </size>
                 </property>
