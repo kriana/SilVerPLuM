@@ -201,6 +201,9 @@ win32 {
 
     INCLUDEPATH += C:/GnuWin32/include/
     LIBS += -LC:/GnuWin32/bin/ -lz
+
+    # OpenSSL
+    LIBS += -LC:/Qt/Qt5.7.0/Tools/mingw530_32/opt/bin/ -llibeay32 -lssleay32
 }
 
 # Make the windows executable have an icon
