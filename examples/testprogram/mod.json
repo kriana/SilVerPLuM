@@ -1,0 +1,24 @@
+{
+  "id" : "testprogram",
+  "name" : "Test for Program content",
+  "author" : "mrboese",
+  "license" : "GPLv3",
+  "url" : "https://github.com/rumangerst/",
+  "version" : "1.0.0",
+  "requires" : [ "stardewvalley>0" ],
+  "content" : {
+    "program" : {
+      "name" : "Some program",
+      "description" : "Starts a test program.",
+      "default" : true,
+      "platforms" : ["windows", "linux", "mac"],
+      "priority" : 0,
+      "pipeline" : "program",
+      "program" : {
+        "windows" : { "executable" : "TestLauncher.exe", "arguments" : [], "workdir" : "stardewvalley://" },
+        "mac" : { "executable" : "TestLauncher.exe", "arguments" : [], "workdir" : "stardewvalley://" },
+        "linux" : { "executable" : "TestLauncher.exe", "arguments" : [], "workdir" : "stardewvalley://" }
+      }
+    }
+  }
+}

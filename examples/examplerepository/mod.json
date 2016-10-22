@@ -1,0 +1,20 @@
+{
+  "id" : "examplerepository",
+  "name" : "SilVerPLuM example repository",
+  "author" : "mrboese",
+  "license" : "GPLv3",
+  "url" : "https://github.com/rumangerst/",
+  "version" : "1.0.0.0",
+  "requires" : [],
+  "content" : {
+    "repository" : {
+      "name" : "SilVerPLuM example repository",
+      "description" : "Provides access to the SilVerPLuM example repository.",
+      "default" : true,
+      "platforms" : ["windows", "linux", "mac"],
+      "priority" : 0,
+      "pipeline" : "repository",
+      "repositories" : ["https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/repository/repository.csv"]
+    }
+  }
+}
