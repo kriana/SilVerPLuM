@@ -89,6 +89,12 @@ int CustomPipeline::prime(bool is_forced)
     getLogger().log(Logger::Info, "pipeline-custom", id(), "prime", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
 
     process.start();
+    process.waitForStarted(-1);
+    if(process.state() != QProcess::Running)
+    {
+        getLogger().log(Logger::Error, "pipeline-custom", id(), "prime", "Failed to start process!");
+        return -1;
+    }
     process.waitForFinished(-1);
 
     QString output(process.readAllStandardOutput());

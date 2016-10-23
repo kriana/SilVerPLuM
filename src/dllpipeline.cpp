@@ -329,8 +329,14 @@ int DllPipeline::runNuget()
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.setProcessEnvironment(utils::joinEnvironments(processEnvironment(), nuget_program.environment()));
 
-    getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-nuget", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();
+    process.waitForStarted(-1);
+    if(process.state() != QProcess::Running)
+    {
+        getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-nuget", "Failed to start process!");
+        return -1;
+    }
     process.waitForFinished(-1);
 
     QString output(process.readAllStandardOutput());
@@ -364,8 +370,14 @@ int DllPipeline::runMSBuild()
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.setProcessEnvironment(utils::joinEnvironments(processEnvironment(), msbuild_program.environment()));
 
-    getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
+    getLogger().log(Logger::Info, "pipeline-dll-compile", id(), "prime-msbuild", "Running " + process.program() + " " + process.arguments().join(" ") + " in " + process.workingDirectory());
     process.start();
+    process.waitForStarted(-1);
+    if(process.state() != QProcess::Running)
+    {
+        getLogger().log(Logger::Error, "pipeline-dll-compile", id(), "prime-msbuild", "Failed to start process!");
+        return -1;
+    }
     process.waitForFinished(-1);
 
     QString output(process.readAllStandardOutput());

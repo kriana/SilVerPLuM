@@ -83,6 +83,7 @@ void ActivateModDialog::setIsWorking(bool isWorking)
 {
     m_isWorking = isWorking;
     ui->buttonBox->setVisible(!isWorking);
+    ui->progressProgress->setVisible(isWorking);
 }
 
 void ActivateModDialog::finishedWorking()
@@ -229,5 +230,7 @@ void ActivateModDialog::activationRetryClicked()
 
 void ActivateModDialog::activationCancelClicked()
 {
+    Pipeline * pip = m_pipelinesToActivate.takeLast();
+    pip->setEnabled(false);
     reject();
 }
