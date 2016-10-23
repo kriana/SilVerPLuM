@@ -252,7 +252,7 @@ Pipeline *Pipeline::loadFromJson(Modification *mod, const QString &id, const QJs
 
 Logger &Pipeline::getLogger()
 {
-    return m_logger;
+    return m_mod->getLogger();
 }
 
 QList<Launcher *> Pipeline::launchers() const

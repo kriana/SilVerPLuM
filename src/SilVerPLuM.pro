@@ -65,7 +65,6 @@ SOURCES += main.cpp\
     identifierlineedit.cpp \
     filestash.cpp \
     externalprogram.cpp \
-    externalprogramwidget.cpp \
     externalprogramsettingswidget.cpp \
     custompipeline.cpp \
     messagewidget.cpp \
@@ -78,7 +77,8 @@ SOURCES += main.cpp\
     modrepositoryentry.cpp \
     modrepositoryentrywidget.cpp \
     modrepositoryentrylist.cpp \
-    categorycombobox.cpp
+    categorycombobox.cpp \
+    activatemoddialog.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -132,7 +132,6 @@ HEADERS  += mainwindow.h \
     identifierlineedit.h \
     filestash.h \
     externalprogram.h \
-    externalprogramwidget.h \
     externalprogramsettingswidget.h \
     custompipeline.h \
     messagewidget.h \
@@ -145,7 +144,8 @@ HEADERS  += mainwindow.h \
     modrepositoryentry.h \
     modrepositoryentrywidget.h \
     modrepositoryentrylist.h \
-    categorycombobox.h
+    categorycombobox.h \
+    activatemoddialog.h
 
 
 FORMS    += mainwindow.ui \
@@ -167,13 +167,13 @@ FORMS    += mainwindow.ui \
     modimporter.ui \
     modimportercontentitem.ui \
     filestash.ui \
-    externalprogramwidget.ui \
     externalprogramsettingswidget.ui \
     messagewidget.ui \
     modrepositorywindow.ui \
     pipelinelistwidget.ui \
     modrepositoryentrywidget.ui \
-    modrepositoryentrylist.ui
+    modrepositoryentrylist.ui \
+    activatemoddialog.ui
 
 RESOURCES += \
     resources.qrc

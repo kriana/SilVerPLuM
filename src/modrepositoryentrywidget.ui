@@ -162,12 +162,6 @@
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QToolButton" name="btnInstall">
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>0</height>
-                </size>
-               </property>
                <property name="toolTip">
                 <string>Installs/updates this mod.</string>
                </property>

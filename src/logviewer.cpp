@@ -58,11 +58,6 @@ void LogViewer::execForProfile(Profile *p)
     for(Modification * mod : p->getModManager()->getModifications())
     {
         joined.insert(mod->getLogger());
-
-        for(Pipeline * pip : mod->getPipelines())
-        {
-            joined.insert(pip->getLogger());
-        }
     }
 
     QApplication::restoreOverrideCursor();

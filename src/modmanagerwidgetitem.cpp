@@ -7,6 +7,7 @@
 #include <QMenu>
 #include "profilemanager.h"
 #include "logviewer.h"
+#include "activatemoddialog.h"
 
 ModManagerWidgetItem::ModManagerWidgetItem(QWidget *parent) :
     QWidget(parent),
@@ -112,7 +113,10 @@ void ModManagerWidgetItem::enableClicked()
 {
     if(m_currentModification != nullptr)
     {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
+        ActivateModDialog dlg;
+        dlg.activateModification(m_currentModification);
+
+        /*QApplication::setOverrideCursor(Qt::WaitCursor);
         QApplication::processEvents();
 
         int err = m_currentModification->enableDefaults();
@@ -148,7 +152,7 @@ void ModManagerWidgetItem::enableClicked()
             {
                 LogViewer::execForProfile(m_currentModification->getModManager()->profile());
             }
-        }
+        }*/
     }
 }
 
@@ -270,7 +274,10 @@ void ModManagerWidgetItem::reprimeClicked()
         return;
     }
 
-    QApplication::setOverrideCursor(Qt::WaitCursor);
+    ActivateModDialog dlg;
+    dlg.reininitializeModification(m_currentModification);
+
+    /*QApplication::setOverrideCursor(Qt::WaitCursor);
     QApplication::processEvents();
 
     int err = m_currentModification->prime(true);
@@ -305,7 +312,7 @@ void ModManagerWidgetItem::reprimeClicked()
         {
             LogViewer::execForProfile(m_currentModification->getModManager()->profile());
         }
-    }
+    }*/
 }
 
 void ModManagerWidgetItem::exportClicked()

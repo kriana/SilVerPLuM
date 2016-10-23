@@ -645,6 +645,9 @@ QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
     {
          Modification * mod = getModification(modid);
 
+         if(mod == nullptr)
+             return emptyoninvalid ? "" : url;
+
          //Resolve path provides
          if(path.startsWith("@"))
          {
@@ -663,8 +666,6 @@ QString ModManager::resolveModUrl(const QString &url, bool emptyoninvalid)
              }
          }
 
-         if(mod == nullptr)
-             return emptyoninvalid ? "" : url;
          return mod->modBasePath().absolutePath() + "/" + path;
     }
 }

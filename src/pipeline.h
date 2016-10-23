@@ -283,8 +283,6 @@ private:
 
     QMap<QString, Launcher *> m_launchers;
 
-    Logger m_logger;
-
     QSet<QString> m_fgInstalledFiles;
 
     QStringList m_provides;
