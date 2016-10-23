@@ -73,7 +73,7 @@ public:
      * @param enabled
      * @return exitcode
      */
-    int setEnabled(Pipeline * pip, bool enabled);
+    int setEnabled(Pipeline * pip, bool enabled, bool prime = true);
 
     /**
      * @brief Returns true if the pipeline is enabled

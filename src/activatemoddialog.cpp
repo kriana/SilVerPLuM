@@ -2,7 +2,10 @@
 #include "ui_activatemoddialog.h"
 #include "modmanager.h"
 #include "profile.h"
+#include "globalsettings.h"
 #include <QScrollBar>
+#include <QStackedWidget>
+#include <QPushButton>
 
 ActivateModDialog::ActivateModDialog(QWidget *parent) :
     QDialog(parent),
@@ -11,6 +14,7 @@ ActivateModDialog::ActivateModDialog(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(finishedWorking()));
+    connect(ui->btnDependencyCancel, &QPushButton::clicked, this, &ActivateModDialog::reject);
 }
 
 ActivateModDialog::~ActivateModDialog()
@@ -18,40 +22,34 @@ ActivateModDialog::~ActivateModDialog()
     delete ui;
 }
 
-void ActivateModDialog::reininitializeModification(Modification *mod)
+int ActivateModDialog::reininitializeModification(Modification *mod)
 {
-    setIsWorking(true);
-    m_operation = ReinitializeMod;
-    m_currentModification = mod;
-    connect(&mod->getLogger(), &Logger::logged, this , &ActivateModDialog::gotLog);
+    m_pipelinesToActivate << mod->getEnabledPipelines();
+    m_modManager = mod->getModManager();
 
-    runWorkload();
+    runPreparation();
 
-    exec();
+    return exec();
 }
 
-void ActivateModDialog::activateModification(Modification *mod)
+int ActivateModDialog::activateModification(Modification *mod)
 {
-    setIsWorking(true);
-    m_operation = ActivateMod;
-    m_currentModification = mod;
-    connect(&mod->getLogger(), &Logger::logged, this , &ActivateModDialog::gotLog);
+    m_pipelinesToActivate << mod->getSupportedDefaultMods();
+    m_modManager = mod->getModManager();
 
-    runWorkload();
+    runPreparation();
 
-    exec();
+    return exec();
 }
 
-void ActivateModDialog::activatePipeline(Pipeline *pip)
+int ActivateModDialog::activatePipeline(Pipeline *pip)
 {
-    setIsWorking(true);
-    m_operation = ActivatePipeline;
-    m_currentPipeline = pip;
-    connect(&pip->getLogger(), &Logger::logged, this , &ActivateModDialog::gotLog);
+    m_pipelinesToActivate << pip;
+    m_modManager = pip->mod()->getModManager();
 
-    runWorkload();
+    runPreparation();
 
-    exec();
+    return exec();
 }
 
 void ActivateModDialog::closeEvent(QCloseEvent *event)
@@ -74,7 +72,7 @@ bool ActivateModDialog::isWorking() const
 void ActivateModDialog::setIsWorking(bool isWorking)
 {
     m_isWorking = isWorking;
-    ui->buttonBox->setEnabled(!isWorking);
+    ui->buttonBox->setVisible(!isWorking);
 }
 
 void ActivateModDialog::finishedWorking()
@@ -83,8 +81,14 @@ void ActivateModDialog::finishedWorking()
     int result = m_watcher.result();
 
     if(result == 0)
-    {
-        close();
+    {        
+        Pipeline * pip = m_pipelinesToActivate.takeLast();
+        pip->setEnabled(true, false);
+
+        if(m_pipelinesToActivate.isEmpty())
+            accept();
+        else
+            runWorkload();
     }
     else
     {
@@ -92,28 +96,70 @@ void ActivateModDialog::finishedWorking()
     }
 }
 
+void ActivateModDialog::runPreparation()
+{
+    Modification * mod = m_pipelinesToActivate.first()->mod();
+    DependencyTree::DependencyCheckResult result = m_modManager->getDependencyTree()->dependenciesFulfilled(mod,
+                                                                                                            false,
+                                                                                                            true);
+    if(result.satisfied())
+    {
+        ui->stackedWidget->setCurrentWidget(ui->pageActivation);
+        runWorkload();
+    }
+    else
+    {
+        ui->stackedWidget->setCurrentWidget(ui->pageDependencyInfo);
+
+        QString html;
+
+        html += "<html><body>";
+
+        html += "<h2>" + mod->name() + " (" + mod->id() + ")" + "</h2>";
+
+        if(!result.missing.isEmpty())
+        {
+            html += "<h3>Need to be activated</h3>";
+
+            html += "<ul>";
+
+            for(Modification * m : result.missing)
+            {
+                html += QString("<li>%1 (%2)</li>").arg(m->name()).arg(m->id());
+            }
+
+            html += "</ul>";
+        }
+
+        if(!result.unresolved.isEmpty())
+        {
+            html += "<h3>Missing dependencies</h3>";
+
+            html += "<ul>";
+
+            for(Dependency dep : result.unresolved)
+            {
+                html += QString("<li>%1</li>").arg(dep.toPrettyString());
+            }
+
+
+            html += "</ul>";
+        }
+
+        html += "</body></html>";
+
+        ui->lblDependencyInfo->document()->setHtml(html);
+        ui->btnDependencyActivateDependencies->setVisible(!result.missing.isEmpty());
+    }
+}
+
 void ActivateModDialog::runWorkload()
 {
-    QFuture<int> workload;
+    setIsWorking(true);
 
-    switch(m_operation)
-    {
-    case ActivateMod:
-        workload = QtConcurrent::run([&]() {
-               return m_currentModification->enableDefaults();
-            });
-        break;
-    case ReinitializeMod:
-        workload = QtConcurrent::run([&]() {
-               return m_currentModification->prime(true);
-            });
-        break;
-    case ActivatePipeline:
-        workload = QtConcurrent::run([&]() {
-               return m_currentPipeline->setEnabled(true);
-            });
-        break;
-    }
+    QFuture<int> workload = QtConcurrent::run([&]() {
+        return m_pipelinesToActivate.last()->primePipeline(m_reinitialize);
+     });
 
     m_watcher.setFuture(workload);
 }

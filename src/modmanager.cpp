@@ -85,7 +85,7 @@ Modification *ModManager::getModification(const QString &id)
     return nullptr;
 }
 
-int ModManager::setEnabled(Pipeline *pip, bool enabled)
+int ModManager::setEnabled(Pipeline *pip, bool enabled, bool prime)
 {
     // If not supported by platform, skip mod
     if(enabled && pip->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
@@ -95,7 +95,7 @@ int ModManager::setEnabled(Pipeline *pip, bool enabled)
 
     int err = 0;
 
-    if(enabled)
+    if(enabled && prime)
     {
         err = pip->primePipeline(false);
     }
@@ -639,6 +639,7 @@ bool ModManager::loadMod(const QDir &directory)
 
         m_mods.append(mod);
         m_modId.insert(mod->id());
+        m_dependencyTree->rebuildTree();
         emit updatedModList();
 
         return true;

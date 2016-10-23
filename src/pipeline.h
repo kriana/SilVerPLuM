@@ -139,7 +139,7 @@ public:
      * @param enabled
      * @return exitcode
      */
-    int setEnabled(bool enabled);
+    int setEnabled(bool enabled, bool prime = true);
 
     /**
      * @brief Returns the directory of this pipeline

@@ -16,21 +16,14 @@ class ActivateModDialog : public QDialog
 
 public:
 
-    enum ActivateOperation
-    {
-        ReinitializeMod,
-        ActivateMod,
-        ActivatePipeline
-    };
-
     explicit ActivateModDialog(QWidget *parent = 0);
     ~ActivateModDialog();
 
-    void reininitializeModification(Modification * mod);
+    int reininitializeModification(Modification * mod);
 
-    void activateModification(Modification * mod);
+    int activateModification(Modification * mod);
 
-    void activatePipeline(Pipeline * pip);
+    int activatePipeline(Pipeline * pip);
 
     bool isWorking() const;
 
@@ -43,19 +36,21 @@ private:
 
     bool m_isWorking;
 
-    ActivateOperation m_operation;
+    bool m_reinitialize;
 
     QFutureWatcher<int> m_watcher;
 
-    Modification * m_currentModification = nullptr;
+    ModManager * m_modManager = nullptr;
 
-    Pipeline * m_currentPipeline = nullptr;
+    QList<Pipeline*> m_pipelinesToActivate;
 
     void setIsWorking(bool isWorking);
 
 private slots:
 
     void finishedWorking();
+
+    void runPreparation();
 
     void runWorkload();
 

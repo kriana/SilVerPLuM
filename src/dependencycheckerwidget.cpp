@@ -53,6 +53,9 @@ void DependencyCheckerWidget::dependencyCheck()
 
     for(Modification * mod : m_currentMM->getModifications())
     {
+        if(!mod->isPartiallyEnabled())
+            continue;
+
         DependencyTree::DependencyCheckResult result = m_currentMM->getDependencyTree()->dependenciesFulfilled(mod,
                                                                                                                GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness(),
                                                                                                                false);

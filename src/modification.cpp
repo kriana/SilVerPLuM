@@ -426,19 +426,19 @@ int Modification::enableDefaults()
     return err;
 }
 
-int Modification::getSupportedDefaultMods()
+QList<Pipeline *> Modification::getSupportedDefaultMods()
 {
-    int c = 0;
+    QList<Pipeline *> result;
 
     for(Pipeline * pip : m_Pipelines)
     {
         if(pip->isdefault() &&(GlobalSettings::instance()->getForceUnsupported() || !pip->unsupported()))
         {
-           ++c;
+           result << pip;
         }
     }
 
-    return c;
+    return result;
 }
 
 void Modification::disableAll()

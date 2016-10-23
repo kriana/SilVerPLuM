@@ -382,7 +382,7 @@ bool Pipeline::isEnabled()
     return m_mod->getModManager()->isEnabled(this);
 }
 
-int Pipeline::setEnabled(bool enabled)
+int Pipeline::setEnabled(bool enabled, bool prime)
 {
     return m_mod->getModManager()->setEnabled(this, enabled);
 }
