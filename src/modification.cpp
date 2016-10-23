@@ -426,7 +426,7 @@ int Modification::enableDefaults()
     return err;
 }
 
-QList<Pipeline *> Modification::getSupportedDefaultMods()
+QList<Pipeline *> Modification::getSupportedDefaultPipelines()
 {
     QList<Pipeline *> result;
 

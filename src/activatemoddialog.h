@@ -55,6 +55,16 @@ private slots:
     void runWorkload();
 
     void gotLog(const Logger::Entry &entry);
+
+    void dependcencyActivateClicked();
+
+    void dependcencyIgnoreClicked();
+
+    void activationIgnoreClicked();
+
+    void activationRetryClicked();
+
+    void activationCancelClicked();
 };
 
 #endif // ACTIVATEMODDIALOG_H

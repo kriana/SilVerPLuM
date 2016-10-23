@@ -374,7 +374,7 @@ void ModManagerWidgetItem::updateData()
     ui->btnDisableAll->setVisible(enabled.size() > 0);
     ui->btnEnableDefaults->setVisible(enabled.empty());
 
-    ui->btnEnableDefaults->setEnabled(mod->getSupportedDefaultMods().size() > 0);
+    ui->btnEnableDefaults->setEnabled(mod->getSupportedDefaultPipelines().size() > 0);
 
     if(enabled.empty())
     {

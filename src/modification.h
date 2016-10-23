@@ -139,7 +139,7 @@ public:
      * @brief Returns count of supported default mods
      * @return
      */
-    QList<Pipeline*> getSupportedDefaultMods();
+    QList<Pipeline*> getSupportedDefaultPipelines();
 
     /**
      * @brief Disables this mod

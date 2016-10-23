@@ -14,7 +14,14 @@ ActivateModDialog::ActivateModDialog(QWidget *parent) :
     ui->setupUi(this);
 
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(finishedWorking()));
+
+    connect(ui->btnDependencyIgnore, &QPushButton::clicked, this, &ActivateModDialog::dependcencyIgnoreClicked);
+    connect(ui->btnDependencyActivateDependencies, &QPushButton::clicked, &ActivateModDialog::dependcencyActivateClicked);
     connect(ui->btnDependencyCancel, &QPushButton::clicked, this, &ActivateModDialog::reject);
+
+    connect(ui->btnActivationCancel, &QPushButton::clicked, this, &ActivateModDialog::activationCancelClicked);
+    connect(ui->btnActivationIgnore, &QPushButton::clicked, this, &ActivateModDialog::activationIgnoreClicked);
+    connect(ui->btnActivationRetry, &QPushButton::clicked, this, &ActivateModDialog::activationRetryClicked);
 }
 
 ActivateModDialog::~ActivateModDialog()
@@ -34,7 +41,7 @@ int ActivateModDialog::reininitializeModification(Modification *mod)
 
 int ActivateModDialog::activateModification(Modification *mod)
 {
-    m_pipelinesToActivate << mod->getSupportedDefaultMods();
+    m_pipelinesToActivate << mod->getSupportedDefaultPipelines();
     m_modManager = mod->getModManager();
 
     runPreparation();
@@ -175,4 +182,44 @@ void ActivateModDialog::gotLog(const Logger::Entry &entry)
                                                         entry.operation <<
                                                         entry.message));
     ui->progressLog->verticalScrollBar()->setValue(ui->progressLog->verticalScrollBar()->maximum());
+}
+
+void ActivateModDialog::dependcencyActivateClicked()
+{
+    Modification * mod = m_pipelinesToActivate.first()->mod();
+    DependencyTree::DependencyCheckResult result = m_modManager->getDependencyTree()->dependenciesFulfilled(mod,
+                                                                                                            false,
+                                                                                                            true);
+    for(Modification * m : result.missing)
+    {
+        m_pipelinesToActivate << m->getSupportedDefaultPipelines();
+    }
+
+    runWorkload();
+}
+
+void ActivateModDialog::dependcencyIgnoreClicked()
+{
+    runWorkload();
+}
+
+void ActivateModDialog::activationIgnoreClicked()
+{
+    Pipeline * pip = m_pipelinesToActivate.takeLast();
+    pip->setEnabled(true, false);
+
+    if(m_pipelinesToActivate.isEmpty())
+        accept();
+    else
+        runWorkload();
+}
+
+void ActivateModDialog::activationRetryClicked()
+{
+    runWorkload();
+}
+
+void ActivateModDialog::activationCancelClicked()
+{
+    reject();
 }
