@@ -78,7 +78,8 @@ SOURCES += main.cpp\
     modrepositoryentrywidget.cpp \
     modrepositoryentrylist.cpp \
     categorycombobox.cpp \
-    activatemoddialog.cpp
+    activatemoddialog.cpp \
+    dependencytree.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -145,7 +146,8 @@ HEADERS  += mainwindow.h \
     modrepositoryentrywidget.h \
     modrepositoryentrylist.h \
     categorycombobox.h \
-    activatemoddialog.h
+    activatemoddialog.h \
+    dependencytree.h
 
 
 FORMS    += mainwindow.ui \

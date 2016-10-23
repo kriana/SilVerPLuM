@@ -20,7 +20,7 @@ public:
 
 public slots:
 
-    void updateData();
+    void dependencyCheck();
 
 private:
     Ui::DependencyCheckerWidget *ui;

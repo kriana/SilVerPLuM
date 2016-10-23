@@ -30,7 +30,7 @@ private:
     QString m_License;
     QVersionNumber m_Version;
     QString m_Description;
-    QList<Dependency*> m_Dependencies;
+    QList<Dependency> m_Dependencies;
     QList<Pipeline*> m_Pipelines;
     QSet<QString> m_PipelineIds;
     Logger m_logger;
@@ -89,13 +89,13 @@ public:
      * @brief Adds a dependency
      * @param dep
      */
-    void addDependency(Dependency * dep);
+    void addDependency(const Dependency &dep);
 
     /**
      * @brief Gets the list of depencencies
      * @return
      */
-    QList<Dependency *> dependencies();
+    QList<Dependency> dependencies();
 
     /**
      * @brief Adds a pipeline

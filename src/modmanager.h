@@ -12,6 +12,7 @@
 #include "modification.h"
 #include "logger.h"
 #include "modrepository.h"
+#include "dependencytree.h"
 
 class Profile;
 
@@ -94,29 +95,7 @@ public:
      * @param mod
      * @return
      */
-    bool priotizeDown(Modification * mod);
-
-    /**
-     * @brief Returns a mod that satisfied the dependency
-     * @param dep
-     * @return
-     */
-    Modification * getSatisfyingMod(const Dependency & dep, const QList<Modification*> modlist, Modification *requester, bool priorityaware);
-
-    /**
-     * @brief Returns true if the dependency satisfies one of the mod's dependencies
-     * @param dep
-     * @param requester
-     * @param priorityaware
-     * @return
-     */
-    bool dependencySatisfied(const Dependency & dep, Modification *requester, bool priorityaware);
-
-    /**
-     * @brief Returns a map of all unsatisfied dependencies based on mod id
-     * @return
-     */
-    QMap<QString, QList<Dependency> > getUnsatisfiedDependencies() const;
+    bool priotizeDown(Modification * mod);      
 
     /**
      * @brief Creates an unique mod-id from the ID
@@ -228,17 +207,18 @@ public:
      */
     ModRepository *getModRepository() const;
 
+    /**
+     * @brief Return the dependency tree
+     * @return
+     */
+    DependencyTree *getDependencyTree() const;
+
 public slots:
 
     /**
      * @brief Reloads all mods
      */
     void reloadMods();
-
-    /**
-     * @brief Issues a dependency check. It will signal when it's finished
-     */
-    void issueDependencyCheck();
 
 private:
 
@@ -252,11 +232,11 @@ private:
 
     QList<Modification*> m_mods;
 
-    QMap<QString, QList<Dependency>> m_unsatisfiedDependencies;
-
     QStringList m_unloadableModPaths;
 
     Logger m_logger;
+
+    DependencyTree * m_dependencyTree;
 
     /**
      * @brief Priority used for sorting the mod list
@@ -276,8 +256,6 @@ signals:
     void updatedModList();
 
     void updatedModStatus(const QString & modid, const QString & contentid, bool enabled);
-
-    void updatedDependencyCheck();
 
 };
 

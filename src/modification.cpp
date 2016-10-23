@@ -83,11 +83,6 @@ Modification::Modification(ModManager *modmgr, const QString &id) : m_modManager
 
 Modification::~Modification()
 {
-    for(Dependency * dep : m_Dependencies)
-    {
-        delete dep;
-    }
-
     for(Pipeline * p : m_Pipelines)
     {
         p->deleteLater();
@@ -260,7 +255,7 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
 
     for(QJsonValue req : json["requires"].toArray())
     {
-        mod->addDependency(new Dependency(req.toString()));
+        mod->addDependency(Dependency(req.toString()));
     }
 
     QStringList categories;
@@ -374,14 +369,14 @@ void Modification::setDescription(const QString &Description)
     m_Description = Description;
 }
 
-void Modification::addDependency(Dependency *dep)
+void Modification::addDependency(const Dependency & dep)
 {
     m_Dependencies.append(dep);
 }
 
-QList<Dependency*> Modification::dependencies()
+QList<Dependency> Modification::dependencies()
 {
-    return QList<Dependency*>(m_Dependencies);
+    return QList<Dependency>(m_Dependencies);
 }
 
 void Modification::addPipeline(const QString &id, Pipeline *p)
