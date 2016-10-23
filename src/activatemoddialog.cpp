@@ -15,13 +15,13 @@ ActivateModDialog::ActivateModDialog(QWidget *parent) :
 
     connect(&m_watcher, SIGNAL(finished()), this, SLOT(finishedWorking()));
 
-    connect(ui->btnDependencyIgnore, &QPushButton::clicked, this, &ActivateModDialog::dependcencyIgnoreClicked);
-    connect(ui->btnDependencyActivateDependencies, &QPushButton::clicked, &ActivateModDialog::dependcencyActivateClicked);
-    connect(ui->btnDependencyCancel, &QPushButton::clicked, this, &ActivateModDialog::reject);
+    connect(ui->btnDependencyIgnore, SIGNAL(clicked(bool)), this, SLOT(dependencyIgnoreClicked()));
+    connect(ui->btnDependencyActivateDependencies, SIGNAL(clicked(bool)), SLOT(dependencyActivateClicked()));
+    connect(ui->btnDependencyCancel, SIGNAL(clicked(bool)), this, SLOT(reject()));
 
-    connect(ui->btnActivationCancel, &QPushButton::clicked, this, &ActivateModDialog::activationCancelClicked);
-    connect(ui->btnActivationIgnore, &QPushButton::clicked, this, &ActivateModDialog::activationIgnoreClicked);
-    connect(ui->btnActivationRetry, &QPushButton::clicked, this, &ActivateModDialog::activationRetryClicked);
+    connect(ui->btnActivationCancel, SIGNAL(clicked(bool)), this, SLOT(activationCancelClicked()));
+    connect(ui->btnActivationIgnore, SIGNAL(clicked(bool)), this, SLOT(activationIgnoreClicked()));
+    connect(ui->btnActivationRetry, SIGNAL(clicked(bool)), this, SLOT(activationRetryClicked()));
 }
 
 ActivateModDialog::~ActivateModDialog()
@@ -33,6 +33,7 @@ int ActivateModDialog::reininitializeModification(Modification *mod)
 {
     m_pipelinesToActivate << mod->getEnabledPipelines();
     m_modManager = mod->getModManager();
+    m_reinitialize = true;
 
     runPreparation();
 
@@ -43,6 +44,7 @@ int ActivateModDialog::activateModification(Modification *mod)
 {
     m_pipelinesToActivate << mod->getSupportedDefaultPipelines();
     m_modManager = mod->getModManager();
+    m_reinitialize = false;
 
     runPreparation();
 
@@ -53,6 +55,7 @@ int ActivateModDialog::activatePipeline(Pipeline *pip)
 {
     m_pipelinesToActivate << pip;
     m_modManager = pip->mod()->getModManager();
+    m_reinitialize = false;
 
     runPreparation();
 
@@ -162,7 +165,12 @@ void ActivateModDialog::runPreparation()
 
 void ActivateModDialog::runWorkload()
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageActivation);
     setIsWorking(true);
+
+    Pipeline * pip = m_pipelinesToActivate.last();
+    qRegisterMetaType<Logger::Entry>("Entry");
+    connect(&pip->getLogger(), &Logger::logged, this, &ActivateModDialog::gotLog, static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
 
     QFuture<int> workload = QtConcurrent::run([&]() {
         return m_pipelinesToActivate.last()->primePipeline(m_reinitialize);
@@ -184,7 +192,7 @@ void ActivateModDialog::gotLog(const Logger::Entry &entry)
     ui->progressLog->verticalScrollBar()->setValue(ui->progressLog->verticalScrollBar()->maximum());
 }
 
-void ActivateModDialog::dependcencyActivateClicked()
+void ActivateModDialog::dependencyActivateClicked()
 {
     Modification * mod = m_pipelinesToActivate.first()->mod();
     DependencyTree::DependencyCheckResult result = m_modManager->getDependencyTree()->dependenciesFulfilled(mod,
@@ -198,7 +206,7 @@ void ActivateModDialog::dependcencyActivateClicked()
     runWorkload();
 }
 
-void ActivateModDialog::dependcencyIgnoreClicked()
+void ActivateModDialog::dependencyIgnoreClicked()
 {
     runWorkload();
 }

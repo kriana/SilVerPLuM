@@ -56,9 +56,9 @@ private slots:
 
     void gotLog(const Logger::Entry &entry);
 
-    void dependcencyActivateClicked();
+    void dependencyActivateClicked();
 
-    void dependcencyIgnoreClicked();
+    void dependencyIgnoreClicked();
 
     void activationIgnoreClicked();
 
