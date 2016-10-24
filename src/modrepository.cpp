@@ -237,6 +237,7 @@ void ModRepository::repositoryUpdateLoadRepositories()
             {
                 QJsonObject obj = entry.toObject();
                 ModRepositoryEntry* e = ModRepositoryEntry::loadConfigFromJson(this, obj, json);
+                e->setId(m_entries.size());
 
                 if(e != nullptr)
                 {
@@ -292,6 +293,8 @@ void ModRepository::repositoryUpdateLoadData()
 
         for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
         {
+            qDebug() << item.url.toDisplayString() << QString::number(item.source) << QString::number(item.purpose);
+
             if(item.source == entry->id() && item.purpose == DownloadPurposeModConfig)
             {
                 mod_config = QString::fromUtf8(item.data);
@@ -308,7 +311,7 @@ void ModRepository::repositoryUpdateLoadData()
 
         if(!entry->loadModification(mod_config, mod_description))
         {
-            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-entry-data", "An entry failed to initialize! Skipping it.");
+            //getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-entry-data", "An entry failed to initialize! Skipping it.");
 
             m_entries.removeAll(entry);
             delete entry;
