@@ -24,7 +24,7 @@
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/smapi",
 		"config" : "mod.json",
 		"download" : "../smapi.zip",
-		"description" : "mod-description.md",
+		"description" : "mod-description.md"
 	},
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/test-custom-pipeline",

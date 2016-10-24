@@ -53,6 +53,8 @@ void ModRepository::install(QList<ModRepositoryEntry *> entries, bool update)
     if(m_status != RepositoryIdle)
         return;
 
+    m_somethingFailed = false;
+
     QList<DownloadManager::DownloadItem> downloads;
 
     for(ModRepositoryEntry * entry : entries)
@@ -319,7 +321,7 @@ void ModRepository::repositoryUpdateLoadData()
 
     setStatus(RepositoryIdle);
     m_needsUpdate = false;
-    emit repositoryUpdated(true);
+    emit repositoryUpdated(!m_somethingFailed);
 }
 
 void ModRepository::repositoryInstallDownloadedMods()
@@ -344,6 +346,8 @@ void ModRepository::repositoryInstallDownloadedMods()
     m_downloadManager->clearDownloadedItems();
 
     setStatus(RepositoryIdle);
+
+    emit modDownloaded(!m_somethingFailed);
 }
 
 void ModRepository::lookForUpdates()
@@ -374,6 +378,8 @@ void ModRepository::lookForUpdates()
 
 void ModRepository::downloadsFinished()
 {
+    m_somethingFailed |= !m_downloadManager->everythingSuccessful();
+
     switch (m_status)
     {
     case RepositoryDownloadingRepositories:
@@ -417,6 +423,8 @@ void ModRepository::updateRepository()
 {
     if(m_status != RepositoryIdle)
         return;
+
+    m_somethingFailed = false;
 
     clear();
 

@@ -238,6 +238,11 @@ void DownloadManager::logToLogger(Logger::Level level, const QString &message)
     }
 }
 
+bool DownloadManager::everythingSuccessful()
+{
+    return downloadedCount == totalCount;
+}
+
 QList<DownloadManager::DownloadItem> DownloadManager::getDownloadedItems() const
 {
     return downloadedItems;

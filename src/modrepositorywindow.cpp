@@ -67,6 +67,9 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     connect(&(getModRepository()->getLogger()), &Logger::logged, this, &ModRepositoryWindow::gotLog);    
     connect(getModRepository()->getModManager(), &ModManager::updatedModList, this, &ModRepositoryWindow::updatePipelineList);
 
+    connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), this, SLOT(showDownloadFailMessage(bool)));
+    connect(getModRepository(), SIGNAL(modDownloaded(bool)), this, SLOT(showDownloadFailMessage(bool)));
+
     refreshList();
 }
 
@@ -146,6 +149,14 @@ void ModRepositoryWindow::gotProgress(int _min, int _max, int _value)
     ui->progressProgress->setMinimum(_min);
     ui->progressProgress->setMaximum(_max);
     ui->progressProgress->setValue(_value);
+}
+
+void ModRepositoryWindow::showDownloadFailMessage(bool hide)
+{
+    if(!hide)
+    {
+        ui->generalMessageWidget->message("Not all downloads were successful. You can find more information in the profile log.");
+    }
 }
 
 void ModRepositoryWindow::updatePipelineList()

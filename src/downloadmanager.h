@@ -108,6 +108,8 @@ public:
 
     void logToLogger(Logger::Level level, const QString & message);
 
+    bool everythingSuccessful();
+
 signals:
     void finished();
     void progress(int _min, int _max, int _value);

@@ -37,6 +37,8 @@ private slots:
 
     void gotProgress(int _min, int _max, int _value);
 
+    void showDownloadFailMessage(bool hide);
+
 private:
     Ui::ModRepositoryWindow *ui;
 

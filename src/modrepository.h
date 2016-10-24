@@ -84,6 +84,8 @@ signals:
 
     void repositoryUpdated(bool successful);
 
+    void modDownloaded(bool successful);
+
     void downloadProgress(int _min, int _max, int _value);
 
 public slots:
@@ -111,6 +113,8 @@ private:
     QList<ModRepositoryEntry*> m_updates;
 
     QTemporaryDir m_modTempDir;
+
+    bool m_somethingFailed;
 
     void setStatus(const RepositoryStatus &status);
 
