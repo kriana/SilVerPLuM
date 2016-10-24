@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "modrepositoryentry.h"
 #include <QTemporaryDir>
+#include "modrepositorysource.h"
 
 class ModManager;
 
@@ -107,6 +108,8 @@ private:
     bool m_needsUpdate;
 
     DownloadManager * m_downloadManager;
+
+    QList<ModRepositorySource*> m_sources;
 
     QList<ModRepositoryEntry*> m_entries;
 

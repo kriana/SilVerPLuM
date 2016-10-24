@@ -68,9 +68,11 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
     ui->lblWebsite->setText(QString("<html><head/><body><p><a href=\"%1\"><span style=\" text-decoration: underline; color:#4c6b8a;\">Website</span></a></p></body></html>")
                             .arg(entry->modification()->url()));
     ui->lblWebsite->setToolTip(entry->modification()->url());
-    ui->lblRepositorySource->setText(QString("<html><head/><body><p><a href=\"%1\"><span style=\" text-decoration: underline; color:#4c6b8a;\">Repository source</span></a></p></body></html>")
-                            .arg(QString::fromUtf8(entry->repositorySourceURL().toEncoded())));
-    ui->lblRepositorySource->setToolTip(QString::fromUtf8(entry->repositorySourceURL().toEncoded()));
+    ui->lblRepositoryWebsite->setText(QString("<html><head/><body><p><a href=\"%1\"><span style=\" text-decoration: underline; color:#4c6b8a;\">Repository source</span></a></p></body></html>")
+                            .arg(QString::fromUtf8(entry->getRepositorySource()->repositoryURL().toEncoded())));
+    ui->lblRepositoryWebsite->setToolTip(QString::fromUtf8(entry->getRepositorySource()->repositoryURL().toEncoded()));
+    ui->lblRepositoryInfo->setText(QString("In '%1' maintained by %2").arg(entry->getRepositorySource()->repositoryName()).arg(entry->getRepositorySource()->maintainer()));
+    ui->lblRepositoryInfo->setToolTip(entry->getRepositorySource()->repositoryDescription());
     ui->lblDescription->setText(utils::makeTextEditHTML(utils::markdownToHTML(entry->repository()->getModManager()->autoResolveModUrls(entry->modification()->description()))));
 }
 

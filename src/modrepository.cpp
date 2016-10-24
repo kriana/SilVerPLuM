@@ -146,6 +146,12 @@ void ModRepository::clear()
     m_entries.clear();
     m_updates.clear();
 
+    for(ModRepositorySource * src : m_sources)
+    {
+        delete src;
+    }
+    m_sources.clear();
+
     triggerNeedsUpdate();
 }
 
@@ -177,74 +183,39 @@ void ModRepository::repositoryUpdateLoadRepositories()
     {
         QString repository_config = QString::fromUtf8(item.data).trimmed();
 
-        if(repository_config.startsWith("#Silverplum_Repository"))
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(repository_config.toUtf8(), &error);
+        QJsonObject json = doc.object();
+
+        if(error.error != QJsonParseError::NoError)
         {
-            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "This repository source is using a deprecated repository format!");
-
-            for(QString line : repository_config.split(QRegExp("[\r\n]"), QString::SkipEmptyParts))
-            {
-                if(line.startsWith("#"))
-                    continue;
-
-                QStringList cell = line.split("\t");
-
-                if(cell.size() < 4)
-                {
-                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Invalid entry: " + line);
-                    continue;
-                }
-
-                ModRepositoryEntry * entry = new ModRepositoryEntry(this);
-                entry->setRepositorySourceURL(item.url);
-                entry->setId(m_entries.size());
-                entry->setModConfigURL(QUrl::fromEncoded(cell[0].toLocal8Bit()));
-                entry->setModIconURL(QUrl::fromEncoded(cell[1].toLocal8Bit()));
-                entry->setModDescriptionURL(QUrl::fromEncoded(cell[2].toLocal8Bit()));
-                entry->setModDownloadURL(QUrl::fromEncoded(cell[3].toLocal8Bit()));
-
-                if(!entry->modConfigURL().isValid())
-                {
-                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Entry " + line + " has invalid mod config URL. Skipping.");
-                    delete entry;
-                    continue;
-                }
-
-                if(!entry->modDownloadURL().isValid())
-                {
-                    getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Entry " + line + " has invalid mod download URL. Skipping.");
-                    delete entry;
-                    continue;
-                }
-
-                m_entries << entry;
-            }
+            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot parse entry! Skipping!");
+            continue;
         }
-        else
+
+        ModRepositorySource * src = ModRepositorySource::loadFromJson(this, json);
+
+        if(src == nullptr)
         {
-            QJsonParseError error;
-            QJsonDocument doc = QJsonDocument::fromJson(repository_config.toUtf8(), &error);
-            QJsonObject json = doc.object();
+            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot load source information! Skipping!");
+            continue;
+        }
 
-            if(error.error != QJsonParseError::NoError)
+        src->setRepositoryURL(item.url);
+
+        QJsonArray mods = json["mods"].toArray();
+
+        for(QJsonValue entry : mods)
+        {
+            QJsonObject obj = entry.toObject();
+            ModRepositoryEntry* e = ModRepositoryEntry::loadConfigFromJson(this, obj, json);
+
+            if(e != nullptr)
             {
-                getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot parse entry! Skipping!");
-                continue;
-            }
-
-            QJsonArray mods = json["mods"].toArray();
-
-            for(QJsonValue entry : mods)
-            {
-                QJsonObject obj = entry.toObject();
-                ModRepositoryEntry* e = ModRepositoryEntry::loadConfigFromJson(this, obj, json);
                 e->setId(m_entries.size());
-
-                if(e != nullptr)
-                {
-                    m_entries << e;
-                }
+                e->setRepositorySource(src);
+                m_entries << e;
             }
-
         }
     }
 

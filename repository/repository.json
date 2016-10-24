@@ -1,6 +1,8 @@
 {
 	"name" : "SilVerPLuM repository list",
 	"description" : "Contains mods that allow access to other repositories",
+	"maintainer" : "mrboese",
+	"website" : "https://github.com/rumangerst/SilVerPLuM",
 	"mods" : [
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/repository/",

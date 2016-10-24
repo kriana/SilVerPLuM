@@ -106,16 +106,6 @@ void ModRepositoryEntry::setIcon(const QPixmap &icon)
         m_icon = icon;
 }
 
-QUrl ModRepositoryEntry::repositorySourceURL() const
-{
-    return m_repositorySourceURL;
-}
-
-void ModRepositoryEntry::setRepositorySourceURL(const QUrl &repositorySourceURL)
-{
-    m_repositorySourceURL = repositorySourceURL;
-}
-
 Modification * ModRepositoryEntry::getInstalledMod()
 {
     if(m_modification != nullptr)
@@ -137,7 +127,8 @@ bool ModRepositoryEntry::searchFilter(const QString &searchstring, const QString
         bool search = false;
 
         search |= (m_modDownloadURL.toDisplayString().toLower().contains(searchstring));
-        search |= (m_repositorySourceURL.toDisplayString().toLower().contains(searchstring));
+        search |= (m_repositorySource->repositoryName().toLower().contains(searchstring));
+        search |= (m_repositorySource->repositoryDescription().toLower().contains(searchstring));
         search |= modification()->search(searchstring);
 
         if(!search)
@@ -170,6 +161,16 @@ ModRepositoryEntry *ModRepositoryEntry::loadConfigFromJson(ModRepository * paren
     result->setModDownloadURL(modDownloadURL);
 
     return result;
+}
+
+ModRepositorySource *ModRepositoryEntry::getRepositorySource() const
+{
+    return m_repositorySource;
+}
+
+void ModRepositoryEntry::setRepositorySource(ModRepositorySource *repositorySource)
+{
+    m_repositorySource = repositorySource;
 }
 
 QUrl ModRepositoryEntry::modIconURL() const

@@ -1,6 +1,8 @@
 {
 	"name" : "SilVerPLuM example repository list",
 	"description" : "Contains some example mods",
+	"maintainer" : "mrboese",
+	"website" : "https://github.com/rumangerst/SilVerPLuM",
 	"mods" : [
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/",

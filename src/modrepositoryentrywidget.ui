@@ -130,6 +130,18 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QLabel" name="lblRepositoryInfo">
+              <property name="font">
+               <font>
+                <italic>true</italic>
+               </font>
+              </property>
+              <property name="text">
+               <string>In &lt;Repository&gt; maintained by &lt;maintainer&gt;</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -280,9 +292,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="lblRepositorySource">
+            <widget class="QLabel" name="lblRepositoryWebsite">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#4c6b8a;&quot;&gt;Repository source&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#4c6b8a;&quot;&gt;Repository website&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="openExternalLinks">
               <bool>true</bool>

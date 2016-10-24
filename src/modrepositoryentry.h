@@ -8,6 +8,7 @@
 #include "modification.h"
 
 class ModRepository;
+class ModRepositorySource;
 
 class ModRepositoryEntry
 {
@@ -46,10 +47,6 @@ public:
 
     void setIcon(const QPixmap &icon);
 
-    QUrl repositorySourceURL() const;
-
-    void setRepositorySourceURL(const QUrl &repositorySourceURL);
-
     /**
      * @brief Returns the modification instance that is actually installed. Otherwise nullptr.
      * @return
@@ -60,13 +57,17 @@ public:
 
     static ModRepositoryEntry * loadConfigFromJson(ModRepository *parent, const QJsonObject & json, const QJsonObject & repojson);
 
+    ModRepositorySource *getRepositorySource() const;
+
+    void setRepositorySource(ModRepositorySource *repositorySource);
+
 private:
 
     ModRepository * m_repository;
 
     Modification * m_modification = nullptr;
 
-    QUrl m_repositorySourceURL;
+    ModRepositorySource * m_repositorySource = nullptr;
 
     QPixmap m_icon;
 
