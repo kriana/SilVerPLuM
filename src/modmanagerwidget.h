@@ -36,6 +36,8 @@ private:
 
 private slots:
 
+    void addDefaultModsClicked();
+
     void importModClicked();
 
     void installModClicked();

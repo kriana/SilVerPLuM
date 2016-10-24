@@ -36,9 +36,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-232</y>
+        <y>-65</y>
         <width>614</width>
-        <height>570</height>
+        <height>598</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -252,6 +252,26 @@
             </property>
             <property name="text">
              <string>Always rebuild mods on activation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Modmanager</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QCheckBox" name="modAutoAddDefaultMods">
+            <property name="text">
+             <string>Add default mods on profile creation</string>
             </property>
            </widget>
           </item>

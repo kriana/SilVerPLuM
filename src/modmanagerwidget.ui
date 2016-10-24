@@ -219,6 +219,17 @@
     <string>Imports a mod from mods that are not compatible with SilVerPLuM</string>
    </property>
   </action>
+  <action name="actionAddDefaultMods">
+   <property name="icon">
+    <iconset theme="list-add"/>
+   </property>
+   <property name="text">
+    <string>Add default mods</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds the mods coming by default with SilVerPLuM</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -135,6 +135,18 @@ public:
      */
     void setRunningBackupProfileSavegames(bool enabled);
 
+    /**
+     * @brief If enabled, defaults mods will be added automatically
+     * @return
+     */
+    bool getAutoAddDefaultMods();
+
+    /**
+     * @brief Enable/disable automatic adding of default mods
+     * @param enabled
+     */
+    void setAutoAddDefaultMods(bool enabled);
+
     ExternalProgram getExternalProgram(const QString & id);
 
     void removeExternalProgram(const QString & id);

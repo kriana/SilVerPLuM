@@ -42,6 +42,12 @@ cp ../LICENSE linux
 cp ../README.md linux
 cp ../src/resources/icons/application-128.png linux/icon.png
 
+# Default mods
+mkdir linux/defaultmods
+mkdir windows/defaultmods
+cp ../repository/repositorylist.zip linux/defaultmods
+cp ../repository/repositorylist.zip windows/defaultmods
+
 # Package
 
 rm SilVerPLuM_windows.zip 

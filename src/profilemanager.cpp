@@ -117,6 +117,11 @@ Profile *ProfileManager::createOrLoadProfile(const QString &id, const QString &n
     emit updated();
     emit updatedProfileList();
 
+    if(!load && GlobalSettings::instance()->getAutoAddDefaultMods())
+    {
+        p->getModManager()->importDefaultMods(false, false);
+    }
+
     return p;
 }
 

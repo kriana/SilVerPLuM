@@ -17,7 +17,7 @@
             "pipeline": "compile-dll",
             "nuget-restore": true,
             "references": {
-                "StardewModdingAPI" : "smapi://@smapi/src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe"
+                "StardewModdingAPI" : "smapi://@smapi/StardewModdingAPI.exe"
                 },
             "build-parameters" : {
                 "windows" : ["/p:Configuration=Release"],

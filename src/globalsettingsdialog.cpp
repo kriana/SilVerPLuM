@@ -20,6 +20,7 @@ GlobalSettingsDialog::GlobalSettingsDialog(QWidget *parent) :
     connect(ui->modDisablePrimeCache, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modEnableDepCheck, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->modDepCheckPriorityAware, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
+    connect(ui->modAutoAddDefaultMods, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->runningBackupSDVSavegames, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
     connect(ui->runningBackupProfileSavegames, SIGNAL(toggled(bool)), ui->buttonBox, SLOT(show()));
 
@@ -47,6 +48,7 @@ void GlobalSettingsDialog::discart()
     ui->modDepCheckPriorityAware->setChecked(GlobalSettings::instance()->getEnableDepencyCheckPriorityAwareness());
     ui->runningBackupSDVSavegames->setChecked(GlobalSettings::instance()->getRestoreOriginalSavegames());
     ui->runningBackupProfileSavegames->setChecked(GlobalSettings::instance()->getRunningBackupProfileSavegames());
+    ui->modAutoAddDefaultMods->setChecked(GlobalSettings::instance()->getAutoAddDefaultMods());
 
     m_externalProgramWidgets.clear();
     utils::clearLayout(ui->externalProgramsList->layout());
@@ -77,6 +79,7 @@ void GlobalSettingsDialog::save()
     GlobalSettings::instance()->setEnableDepencyCheckPriorityAwareness(ui->modDepCheckPriorityAware->isChecked());
     GlobalSettings::instance()->setRestoreOriginalSavegames(ui->runningBackupSDVSavegames->isChecked());
     GlobalSettings::instance()->setRunningBackupProfileSavegames(ui->runningBackupProfileSavegames->isChecked());
+    GlobalSettings::instance()->setAutoAddDefaultMods(ui->modAutoAddDefaultMods->isChecked());
 
     for(QString id : GlobalSettings::instance()->getExternalProgramIds())
     {

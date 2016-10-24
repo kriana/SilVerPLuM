@@ -150,6 +150,28 @@ bool ModRepositoryEntry::searchFilter(const QString &searchstring, const QString
     return true;
 }
 
+ModRepositoryEntry *ModRepositoryEntry::loadConfigFromJson(ModRepository * parent, const QJsonObject &json, const QJsonObject &repojson)
+{
+    QString prefix = json["url-prefix"].toString();
+    QUrl modConfigURL = QUrl::fromEncoded((prefix + json["config"].toString()).toLocal8Bit());
+    QUrl modDescriptionURL = QUrl::fromEncoded((prefix + json["description"].toString()).toLocal8Bit());
+    QUrl modIconURL = QUrl::fromEncoded((prefix + json["icon"].toString()).toLocal8Bit());
+    QUrl modDownloadURL = QUrl::fromEncoded((prefix + json["download"].toString()).toLocal8Bit());
+
+    if(!modConfigURL.isValid() || !modDownloadURL.isValid())
+    {
+        return nullptr;
+    }
+
+    ModRepositoryEntry * result = new ModRepositoryEntry(parent);
+    result->setModConfigURL(modConfigURL);
+    result->setModDescriptionURL(modDescriptionURL);
+    result->setModIconURL(modIconURL);
+    result->setModDownloadURL(modDownloadURL);
+
+    return result;
+}
+
 QUrl ModRepositoryEntry::modIconURL() const
 {
     return m_modIconURL;

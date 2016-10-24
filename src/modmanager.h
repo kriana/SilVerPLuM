@@ -169,6 +169,14 @@ public:
     bool importModFromZip(const QString & filename, bool force_overwrite = false, bool interactive = true);
 
     /**
+     * @brief Adds the default mods to the mod list
+     * @param force_overwrite
+     * @param interactive
+     * @return
+     */
+    bool importDefaultMods(bool force_overwrite = false, bool interactive = true);
+
+    /**
      * @brief Deletes a mod from ID
      * @param modid
      */

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QUrl>
 #include <QPixmap>
+#include <QJsonObject>
 #include "modification.h"
 
 class ModRepository;
@@ -56,6 +57,8 @@ public:
     Modification *getInstalledMod();
 
     bool searchFilter(const QString & searchstring, const QString &category);
+
+    static ModRepositoryEntry * loadConfigFromJson(ModRepository *parent, const QJsonObject & json, const QJsonObject & repojson);
 
 private:
 

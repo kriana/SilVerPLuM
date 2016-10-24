@@ -1,0 +1,90 @@
+{
+    "id": "smapi",
+    "name": "SMAPI",
+    "author": "ClxS, MacLeek, vizv",
+    "license": "LGPL",
+    "url": "https://github.com/cjsu/SMAPI",
+    "version": "0.40.1.1",
+    "provides" : ["smapi"],
+    "requires": ["stardewvalley==1.1.1"],
+    "categories" : ["Modding APIs"],
+    "content": {
+        "smapi-win": {
+            "name": "Stardew Valley Modding API",
+            "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods.",
+            "default": true,
+            "platforms": ["windows"],
+            "provides" : ["smapi"],
+            "priority": 0,
+            "pipeline": "file",
+            "installables": {
+                "StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+            },
+            "launchers": {
+                "smapi-launcher": {
+                    "name": "Stardew Valley SMAPI",
+                    "description": "Runs Stardew Valley with SMAPI mods.",
+                    "executables": {
+                        "windows": {
+                            "executable": "stardewvalley://StardewModdingAPI.exe",
+                            "arguments": []
+                        }
+                    }
+                }
+            }
+        },
+        "smapi-linux": {
+            "name": "Stardew Valley Modding API",
+            "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods. Build provided by [vizv](https://github.com/vizv/SMAPI/releases).",
+            "default": true,
+            "platforms": ["linux"],
+            "provides" : ["smapi"],
+            "priority": 0,
+            "pipeline": "file",
+            "installables": {
+                "StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "StardewModdingAPI": "StardewModdingAPI",
+                "Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+            },
+            "launchers": {
+                "smapi-launcher": {
+                    "name": "Stardew Valley SMAPI",
+                    "description": "Runs Stardew Valley with SMAPI mods.",
+                    "executables": {
+                        "linux": {
+                            "executable": "stardewvalley://StardewModdingAPI",
+                            "arguments": []
+                        }
+                    }
+                }
+            }
+        },
+        "smapi-mac": {
+            "name": "Stardew Valley Modding API",
+            "description": "Contains the DLL and a launcher. You need to activate the launcher in the configuration tab to be able to use SMAPI mods. Build provided by [MacLeek](https://github.com/MacLeek/SMAPI/releases).",
+            "default": true,
+            "platforms": ["mac"],
+            "provides" : ["smapi"],
+            "priority": 0,
+            "pipeline": "file",
+            "installables": {
+                "StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "StardewModdingAPI": "StardewModdingAPI",
+                "Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+            },
+            "launchers": {
+                "smapi-launcher": {
+                    "name": "Stardew Valley SMAPI",
+                    "description": "Runs Stardew Valley with SMAPI mods.",
+                    "executables": {
+                        "mac": {
+                            "executable": "stardewvalley://StardewModdingAPI",
+                            "arguments": []
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

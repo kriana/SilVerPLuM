@@ -3,6 +3,8 @@
 #include <QRegExp>
 #include <QMap>
 #include <QTemporaryFile>
+#include <QJsonArray>
+#include <QJsonObject>
 
 ModRepository::ModRepository(ModManager *mgr) : QObject(mgr), m_modManager(mgr)
 {
@@ -175,6 +177,8 @@ void ModRepository::repositoryUpdateLoadRepositories()
 
         if(repository_config.startsWith("#Silverplum_Repository"))
         {
+            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "This repository source is using a deprecated repository format!");
+
             for(QString line : repository_config.split(QRegExp("[\r\n]"), QString::SkipEmptyParts))
             {
                 if(line.startsWith("#"))
@@ -212,6 +216,32 @@ void ModRepository::repositoryUpdateLoadRepositories()
 
                 m_entries << entry;
             }
+        }
+        else
+        {
+            QJsonParseError error;
+            QJsonDocument doc = QJsonDocument::fromJson(repository_config.toUtf8(), &error);
+            QJsonObject json = doc.object();
+
+            if(error.error != QJsonParseError::NoError)
+            {
+                getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot parse entry! Skipping!");
+                continue;
+            }
+
+            QJsonArray mods = json["mods"].toArray();
+
+            for(QJsonValue entry : mods)
+            {
+                QJsonObject obj = entry.toObject();
+                ModRepositoryEntry* e = ModRepositoryEntry::loadConfigFromJson(this, obj, json);
+
+                if(e != nullptr)
+                {
+                    m_entries << e;
+                }
+            }
+
         }
     }
 

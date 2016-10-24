@@ -242,6 +242,17 @@ void GlobalSettings::setRunningBackupProfileSavegames(bool enabled)
     m_Settings->sync();
 }
 
+bool GlobalSettings::getAutoAddDefaultMods()
+{
+    return m_Settings->value("General/AutoAddDefaultMods", true).toBool();
+}
+
+void GlobalSettings::setAutoAddDefaultMods(bool enabled)
+{
+    m_Settings->setValue("General/AutoAddDefaultMods", enabled);
+    m_Settings->sync();
+}
+
 ExternalProgram GlobalSettings::getExternalProgram(const QString &id)
 {
     ExternalProgram default_program = m_DefaultExternalPrograms[id];

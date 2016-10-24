@@ -302,6 +302,35 @@ bool ModManager::importModFromZip(const QString &filename, bool force_overwrite,
     }
 }
 
+bool ModManager::importDefaultMods(bool force_overwrite, bool interactive)
+{
+    // Fetch default mod list
+    QStringList files;
+
+    for(QFileInfo info : QDir( QApplication::applicationDirPath() + "/defaultmods").entryList(QDir::Files))
+    {
+        if(info.fileName().endsWith(".zip"))
+        {
+            files << info.absoluteFilePath();
+        }
+    }
+
+    if(files.isEmpty() && interactive)
+    {
+        QMessageBox::information(nullptr, "Add default mods", "No default mods found.");
+        return false;
+    }
+
+    bool ret = true;
+
+    for(QString f : files)
+    {
+        ret &= importModFromZip(f, force_overwrite, interactive);
+    }
+
+    return ret;
+}
+
 void ModManager::deleteMod(Modification *mod)
 {
     if(mod == nullptr)

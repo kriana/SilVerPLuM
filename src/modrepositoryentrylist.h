@@ -20,6 +20,7 @@ public:
 
     void setEntryList(QList<ModRepositoryEntry*> entries);
 
+
 public slots:
 
     void search(const QString & searchstring);

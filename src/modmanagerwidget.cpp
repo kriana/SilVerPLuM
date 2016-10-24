@@ -21,6 +21,7 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     connect(ui->btnDownloadMod, &QToolButton::clicked, this, &ModManagerWidget::repositoryClicked);
     connect(ui->actionReloadMods, &QAction::triggered, this, &ModManagerWidget::reloadAllMods);
     connect(ui->actionImportMod, &QAction::triggered, this, &ModManagerWidget::importModClicked);
+    connect(ui->actionAddDefaultMods, &QAction::triggered, this, &ModManagerWidget::addDefaultModsClicked);
 
     QMenu * refresh_menu = new QMenu(ui->btnRefresh);
     refresh_menu->addAction(ui->actionReloadMods);
@@ -28,6 +29,7 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
 
     QMenu * add_menu = new QMenu(ui->btnInstallMod);
     add_menu->addAction(ui->actionImportMod);
+    add_menu->addAction(ui->actionAddDefaultMods);
     ui->btnInstallMod->setMenu(add_menu);
 }
 
@@ -181,4 +183,14 @@ void ModManagerWidget::searchFilter(const QString &searchstring_, const QString 
             }
         }
     }
+}
+
+void ModManagerWidget::addDefaultModsClicked()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+
+    m_currentMM->importDefaultMods();
+
+    QApplication::restoreOverrideCursor();
 }
