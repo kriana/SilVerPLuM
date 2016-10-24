@@ -25,8 +25,12 @@
                 },
             "location": "file",
             "installables": {
-                "StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
-                "StardewModdingAPI/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+                "StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+            },
+            "postprime-copy" : {
+                "src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "src/StardewModdingAPI/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
             },
             "launchers": {
                 "smapi-launcher": {
@@ -59,8 +63,12 @@
                 },
             "location": "file",
             "installables": {
-                "src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
+                "StardewModdingAPI.exe": "StardewModdingAPI.exe",
                 "StardewModdingAPI" : "StardewModdingAPI",
+                "Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
+            },
+            "postprime-copy" : {
+                "src/StardewModdingAPI/bin/Release/StardewModdingAPI.exe": "StardewModdingAPI.exe",
                 "src/StardewModdingAPI/bin/Release/Newtonsoft.Json.dll": "Newtonsoft.Json.dll"
             },
             "launchers": {

@@ -251,15 +251,29 @@ public:
      */
     virtual PipelineType pipelineMainType() const;
 
+    /**
+     * @brief Gets files that should be copied across the pipeline directory
+     * @return
+     */
+    QMap<QString, QString> getPostprimeCopy() const;
+
+    /**
+     * @brief Sets files that should be copied across the pipeline directory
+     * @param postprimeCopy
+     */
+    void setPostprimeCopy(const QMap<QString, QString> &postprimeCopy);
+
 protected:
 
     static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
 
-    virtual QMap<QString, QString> resolveInstallables();
+    virtual QMap<QString, QString> resolveInstallables(const QMap<QString, QString> & input, const QString &default_destination);
 
     virtual bool alreadyPrimed();
 
     virtual int prime(bool is_forced);
+
+    virtual void postprimeCopy();
 
 private:
 
@@ -280,6 +294,8 @@ private:
     QList<EncryptionEntry> m_encryptionEntries;
 
     QMap<QString, QString> m_installables;
+
+    QMap<QString, QString> m_postprimeCopy;
 
     QMap<QString, Launcher *> m_launchers;
 

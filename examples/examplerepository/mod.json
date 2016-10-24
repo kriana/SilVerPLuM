@@ -15,7 +15,7 @@
       "platforms" : ["windows", "linux", "mac"],
       "priority" : 0,
       "pipeline" : "repository",
-      "repositories" : ["https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/repository/repository.csv"]
+      "repositories" : ["https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/repository.json"]
     }
   }
 }

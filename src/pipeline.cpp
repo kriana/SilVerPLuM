@@ -89,6 +89,18 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
         pip->addEncryptionEntry(entry);
     }
 
+    // Post prime copy
+    QMap<QString, QString> postprime_copy_result;
+    QJsonObject postprime_copy_map = json["postprime-copy"].toObject();
+
+    for(QString src : postprime_copy_map.keys())
+    {
+        QString dst = postprime_copy_map[src].toString();
+        postprime_copy_result[src] = dst;
+    }
+
+    pip->setPostprimeCopy(postprime_copy_result);
+
     // Provides identifiers
     QStringList provides;
 
@@ -109,13 +121,13 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
     return true;
 }
 
-QMap<QString, QString> Pipeline::resolveInstallables()
+QMap<QString, QString> Pipeline::resolveInstallables(const QMap<QString, QString> &input, const QString & default_destination)
 {
     QMap<QString, QString> result;
 
-    for(const QString & key : m_installables.keys())
+    for(const QString & key : input.keys())
     {
-        QString dst = m_installables[key];
+        QString dst = input[key];
 
         // New addition: Support mod URLs
         if(mod()->getModManager()->isValidModUrl(dst))
@@ -124,7 +136,7 @@ QMap<QString, QString> Pipeline::resolveInstallables()
         }
         else
         {
-            getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "No valid mod URL in installable. Assuming stardewvalley://");
+            getLogger().log(Logger::Warning, "pipeline", id(), "resolve-installables", "No valid mod URL in installable. Assuming default.");
 
             /*
              * Support content dir override
@@ -143,7 +155,7 @@ QMap<QString, QString> Pipeline::resolveInstallables()
             }
             else
             {
-                dst = mod()->getModManager()->profile()->StardewValleyDir().absolutePath() + "/" + dst;
+                dst = default_destination + "/" + dst;
             }
         }
 
@@ -262,7 +274,7 @@ QList<Launcher *> Pipeline::launchers() const
 
 QStringList Pipeline::installedFiles()
 {
-    QMap<QString, QString> resolved_installables = resolveInstallables();
+    QMap<QString, QString> resolved_installables = resolveInstallables(m_installables, m_mod->getModManager()->profile()->StardewValleyDir().absolutePath());
 
     return resolved_installables.values();
 }
@@ -272,7 +284,7 @@ void Pipeline::install()
     getLogger().log(Logger::Info, "pipeline", id(), "install", "Started installation");
 
     m_fgInstalledFiles.clear();
-    QMap<QString, QString> resolved_installables = resolveInstallables();
+    QMap<QString, QString> resolved_installables = resolveInstallables(m_installables, m_mod->getModManager()->profile()->StardewValleyDir().absolutePath());
 
     for(QString src : resolved_installables.keys())
     {
@@ -493,6 +505,9 @@ int Pipeline::primePipeline(bool force)
         getLogger().log(Logger::Error, "pipeline-prime", id(), "prime", "Could not extract encrypted folders!");
     }
 
+    // Post-prime copy
+    postprimeCopy();
+
     // Resolve kept files
     QStringList keep;
 
@@ -536,6 +551,54 @@ int Pipeline::primePipeline(bool force)
 int Pipeline::prime(bool is_forced)
 {
     return 0;
+}
+
+void Pipeline::postprimeCopy()
+{
+    getLogger().log(Logger::Info, "pipeline", id(), "postprime-copy", "Started");
+
+    QMap<QString, QString> resolved_installables = resolveInstallables(m_postprimeCopy, pipelineBaseDir().absolutePath());
+
+    for(QString src : resolved_installables.keys())
+    {
+        QString dst = resolved_installables[src];
+
+        QDir dst_file_dir = QFileInfo(dst).absoluteDir();
+
+        // Install
+        dst_file_dir.mkpath(".");
+
+        if(QFileInfo(dst).exists())
+        {
+            if(!QFile(dst).remove())
+            {
+                getLogger().log(Logger::Warning, "pipeline", id(), "postprime-copy", "Could not replace " + dst);
+            }
+            else
+            {
+                getLogger().log(Logger::Info, "pipeline", id(), "postprime-copy", "Successfully replaced " + dst);
+            }
+        }
+
+        if(QFile::copy(src, dst))
+        {
+            getLogger().log(Logger::Info, "pipeline", id(), "postprime-copy", "Successfully copied " + src + " to " + dst);
+        }
+        else
+        {
+            getLogger().log(Logger::Warning, "pipeline", id(), "postprime-copy", "Could not copied " + src + " to " + dst);
+        }
+    }
+}
+
+QMap<QString, QString> Pipeline::getPostprimeCopy() const
+{
+    return m_postprimeCopy;
+}
+
+void Pipeline::setPostprimeCopy(const QMap<QString, QString> &postprimeCopy)
+{
+    m_postprimeCopy = postprimeCopy;
 }
 
 QStringList Pipeline::getProvides() const
