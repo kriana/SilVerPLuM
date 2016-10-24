@@ -21,31 +21,31 @@
 		"download" : "../lookup-anything.zip"
 	},
 	{
-		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/smapi",
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/smapi/",
 		"config" : "mod.json",
 		"download" : "../smapi.zip",
 		"description" : "mod-description.md"
 	},
 	{
-		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/test-custom-pipeline",
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/test-custom-pipeline/",
 		"config" : "mod.json",
 		"download" : "../test-custom-pipeline.zip"
 	}
 	,
 	{
-		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher",
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher/",
 		"config" : "mod.json",
 		"download" : "../testlauncher.zip"
 	}
 	,
 	{
-		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher-encrypted",
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher-encrypted/",
 		"config" : "mod.json",
 		"download" : "../testlauncher-encrypted.zip"
 	}
 	,
 	{
-		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testprogram",
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testprogram/",
 		"config" : "mod.json",
 		"download" : "../testprogram.zip"
 	}
