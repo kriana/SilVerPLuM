@@ -153,10 +153,14 @@ void DownloadManager::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
         percent = 0;
         emit progress(0, 0, 0);
     }
-    else
+    else if(bytesTotal >= 100)
     {
         percent = bytesReceived / (bytesTotal / 100);
         emit progress(0, 100, percent);
+    }
+    else
+    {
+        percent = 0;
     }
 
     if(percent % 10 != 0)

@@ -307,7 +307,7 @@ bool ModManager::importDefaultMods(bool force_overwrite, bool interactive)
     // Fetch default mod list
     QStringList files;
 
-    for(QFileInfo info : QDir( QApplication::applicationDirPath() + "/defaultmods").entryList(QDir::Files))
+    for(QFileInfo info : QDir( QApplication::applicationDirPath() + "/defaultmods").entryInfoList(QDir::Files))
     {
         if(info.fileName().endsWith(".zip"))
         {
