@@ -6,17 +6,17 @@
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/repository/",
 		"config" : "smapi-bin/mod.json",
 		"description" : "smapi-bin/mod-description.md",
-		"download" : "smapi-bin.zip",
+		"download" : "smapi-bin.zip"
 	},
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/",
 		"config" : "examplerepository/mod.json",
-		"download" : "examplerepository.zip",
+		"download" : "examplerepository.zip"
 	},
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/repository/",
 		"config" : "repositorylist/mod.json",
-		"download" : "repositorylist.zip",
+		"download" : "repositorylist.zip"
 	}
 	]
 } 
