@@ -1,0 +1,53 @@
+{
+	"name" : "SilVerPLuM example repository list",
+	"description" : "Contains some example mods",
+	"mods" : [
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/",
+		"config" : "examplerepository/mod.json",
+		"download" : "examplerepository.zip"
+	},
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/renovated-farms/",
+		"config" : "mod.json",
+		"icon" : "icon.png",
+		"description" : "mod-description_repository.md",
+		"download" : "../renovated-farms.zip"
+	},
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/lookup-anything/",
+		"config" : "mod.json",
+		"description" : "mod-description_repository.md",
+		"download" : "../lookup-anything.zip"
+	},
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/smapi",
+		"config" : "mod.json",
+		"download" : "../smapi.zip",
+		"description" : "mod-description.md",
+	},
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/test-custom-pipeline",
+		"config" : "mod.json",
+		"download" : "../test-custom-pipeline.zip"
+	}
+	,
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher",
+		"config" : "mod.json",
+		"download" : "../testlauncher.zip"
+	}
+	,
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testlauncher-encrypted",
+		"config" : "mod.json",
+		"download" : "../testlauncher-encrypted.zip"
+	}
+	,
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testprogram",
+		"config" : "mod.json",
+		"download" : "../testprogram.zip"
+	}
+	]
+} 
