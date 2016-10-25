@@ -80,6 +80,8 @@ private:
     QUrl m_modDescriptionURL;
 
     QUrl m_modDownloadURL;
+
+    static QString insertPrefix(const QString & url, const QString & prefix);
 };
 
 #endif // MODREPOSITORYENTRY_H

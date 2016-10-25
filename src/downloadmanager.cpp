@@ -127,6 +127,7 @@ void DownloadManager::startNextDownload()
     }
 
     QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
     currentDownload = manager.get(request);
 
     connect(currentDownload, SIGNAL(downloadProgress(qint64,qint64)),

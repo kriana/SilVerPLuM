@@ -144,10 +144,10 @@ bool ModRepositoryEntry::searchFilter(const QString &searchstring, const QString
 ModRepositoryEntry *ModRepositoryEntry::loadConfigFromJson(ModRepository * parent, const QJsonObject &json, const QJsonObject &repojson)
 {
     QString prefix = json["url-prefix"].toString();
-    QUrl modConfigURL = json["config"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded((prefix + json["config"].toString()).toLocal8Bit());
-    QUrl modDescriptionURL = json["description"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded((prefix + json["description"].toString()).toLocal8Bit());
-    QUrl modIconURL = json["icon"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded((prefix + json["icon"].toString()).toLocal8Bit());
-    QUrl modDownloadURL = json["download"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded((prefix + json["download"].toString()).toLocal8Bit());
+    QUrl modConfigURL = json["config"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded(insertPrefix(json["config"].toString(), prefix).toLocal8Bit());
+    QUrl modDescriptionURL = json["description"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded(insertPrefix(json["description"].toString(), prefix).toLocal8Bit());
+    QUrl modIconURL = json["icon"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded(insertPrefix(json["icon"].toString(), prefix).toLocal8Bit());
+    QUrl modDownloadURL = json["download"].toString().isEmpty() ? QUrl() : QUrl::fromEncoded(insertPrefix(json["download"].toString(), prefix).toLocal8Bit());
 
     if(!modConfigURL.isValid() || !modDownloadURL.isValid())
     {
@@ -171,6 +171,13 @@ ModRepositorySource *ModRepositoryEntry::getRepositorySource() const
 void ModRepositoryEntry::setRepositorySource(ModRepositorySource *repositorySource)
 {
     m_repositorySource = repositorySource;
+}
+
+QString ModRepositoryEntry::insertPrefix(const QString &url, const QString &prefix)
+{
+    if(url.contains("://"))
+        return url;
+    return prefix + url;
 }
 
 QUrl ModRepositoryEntry::modIconURL() const
