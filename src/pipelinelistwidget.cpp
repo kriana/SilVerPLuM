@@ -35,6 +35,7 @@ void PipelineListWidget::setPipelines(QList<Pipeline *> pipelines)
 
         ModManagerWidgetPipelineItem * widget = new ModManagerWidgetPipelineItem(ui->pipelineList);
         widget->setCurrentPipeline(pip);
+        widget->setMinimumHeight(230);
 
         ui->pipelineList->layout()->addWidget(widget);
     }
