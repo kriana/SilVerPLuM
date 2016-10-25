@@ -64,6 +64,7 @@ void ModRepositoryEntryWidget::setRepositoryEntry(ModRepositoryEntry *entry)
     ui->lblAuthor->setText("by " + entry->modification()->author());
     ui->lblIcon->setPixmap(entry->icon());
     ui->lblIdentifier->setText(entry->modification()->id());
+    ui->lblVersion->setText("Version " + entry->modification()->version().toString());
     ui->lblLicense->setText(entry->modification()->license());
     ui->lblWebsite->setText(QString("<html><head/><body><p><a href=\"%1\"><span style=\" text-decoration: underline; color:#4c6b8a;\">Website</span></a></p></body></html>")
                             .arg(entry->modification()->url()));
