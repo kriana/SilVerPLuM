@@ -17,7 +17,7 @@
 	{
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM-ported-repository/master/silverplum-ported-repository/",
 		"config" : "mod.json",
-		"download" : "silverplum-ported-repository.zip"
+		"download" : "https://github.com/rumangerst/SilVerPLuM-ported-repository/releases/download/silverplum-ported-repository-1.0.0.0/silverplum-ported-repository.zip"
 	}
 	]
 } 

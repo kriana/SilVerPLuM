@@ -190,6 +190,7 @@ void ModRepository::repositoryUpdateLoadRepositories()
         if(error.error != QJsonParseError::NoError)
         {
             getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot parse entry! Skipping!");
+            m_somethingFailed = true;
             continue;
         }
 
@@ -198,6 +199,7 @@ void ModRepository::repositoryUpdateLoadRepositories()
         if(src == nullptr)
         {
             getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-repository-source", "Cannot load source information! Skipping!");
+            m_somethingFailed = true;
             continue;
         }
 
@@ -264,7 +266,7 @@ void ModRepository::repositoryUpdateLoadData()
 
         for(const DownloadManager::DownloadItem & item : m_downloadManager->getDownloadedItems())
         {
-            qDebug() << item.url.toDisplayString() << QString::number(item.source) << QString::number(item.purpose);
+            //qDebug() << item.url.toDisplayString() << QString::number(item.source) << QString::number(item.purpose);
 
             if(item.source == entry->id() && item.purpose == DownloadPurposeModConfig)
             {
@@ -282,7 +284,8 @@ void ModRepository::repositoryUpdateLoadData()
 
         if(!entry->loadModification(mod_config, mod_description))
         {
-            //getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-entry-data", "An entry failed to initialize! Skipping it.");
+            getLogger().log(Logger::Warning, "modrepository", "update-repository", "load-entry-data", "An entry failed to initialize! Skipping it.");
+            m_somethingFailed = true;
 
             m_entries.removeAll(entry);
             delete entry;
