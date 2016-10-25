@@ -35,6 +35,9 @@
         <widget class="MessageWidget" name="generalMessageWidget" native="true"/>
        </item>
        <item>
+        <widget class="MessageWidget" name="errorMessageWidget" native="true"/>
+       </item>
+       <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="tabPosition">
           <enum>QTabWidget::South</enum>
@@ -437,7 +440,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>802</width>
-                <height>478</height>
+                <height>462</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -567,15 +570,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PipelineListWidget</class>
-   <extends>QWidget</extends>
-   <header>pipelinelistwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>MessageWidget</class>
    <extends>QWidget</extends>
    <header>messagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CategoryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>categorycombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PipelineListWidget</class>
+   <extends>QWidget</extends>
+   <header>pipelinelistwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -583,11 +591,6 @@
    <extends>QWidget</extends>
    <header>modrepositoryentrylist.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CategoryComboBox</class>
-   <extends>QComboBox</extends>
-   <header>categorycombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

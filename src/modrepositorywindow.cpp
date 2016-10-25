@@ -12,6 +12,7 @@
 #include <QProgressBar>
 #include <QLineEdit>
 #include "categorycombobox.h"
+#include "logviewer.h"
 
 ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     QDialog(parent),
@@ -35,6 +36,13 @@ ModRepositoryWindow::ModRepositoryWindow(QWidget *parent) :
     ui->updateMessageWidget->getActionButton()->setText(tr("Fetch repository sources"));
     ui->updateMessageWidget->getActionButton()->setIcon(QIcon::fromTheme("view-refresh"));
     ui->updateMessageWidget->getActionButton()->show();
+
+    ui->errorMessageWidget->setText(tr("An error happened while downloading or loading data."));
+    ui->errorMessageWidget->getActionButton()->setText(tr("View profile log"));
+    ui->errorMessageWidget->getActionButton()->setIcon(QIcon::fromTheme("view-history"));
+    ui->errorMessageWidget->getActionButton()->show();
+    connect(ui->errorMessageWidget->getActionButton(), &QPushButton::clicked, this, &ModRepositoryWindow::showProfileLogClicked);
+
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), ui->updateMessageWidget, SLOT(setHidden(bool)));
     connect(getModRepository(), SIGNAL(repositoryNeedsUpdate()), ui->updateMessageWidget, SLOT(show()));
     connect(getModRepository(), SIGNAL(repositoryUpdated(bool)), this, SLOT(refreshList()));
@@ -105,6 +113,11 @@ void ModRepositoryWindow::updateRepositoryClicked()
     getModRepository()->updateRepository();
 }
 
+void ModRepositoryWindow::showProfileLogClicked()
+{
+    LogViewer::execForProfile(getModRepository()->getModManager()->profile());
+}
+
 void ModRepositoryWindow::upgradeAllClicked()
 {
     getModRepository()->install(getModRepository()->getUpdates(), true);
@@ -153,10 +166,7 @@ void ModRepositoryWindow::gotProgress(int _min, int _max, int _value)
 
 void ModRepositoryWindow::showDownloadFailMessage(bool hide)
 {
-    if(!hide)
-    {
-        ui->generalMessageWidget->message("Not all downloads were successful. You can find more information in the profile log.");
-    }
+    ui->errorMessageWidget->setVisible(!hide);
 }
 
 void ModRepositoryWindow::updatePipelineList()

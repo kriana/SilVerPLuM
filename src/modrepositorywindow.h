@@ -29,6 +29,8 @@ private slots:
 
     void updateRepositoryClicked();
 
+    void showProfileLogClicked();
+
     void upgradeAllClicked();
 
     void gotLog(const Logger::Entry &entry);
