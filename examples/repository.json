@@ -50,6 +50,11 @@
 		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/testprogram/",
 		"config" : "mod.json",
 		"download" : "../testprogram.zip"
+	},
+	{
+		"url-prefix" : "https://raw.githubusercontent.com/rumangerst/SilVerPLuM/master/examples/test-xnbmerge/",
+		"config" : "mod.json",
+		"download" : "../test-xnbmerge.zip"
 	}
 	]
 } 

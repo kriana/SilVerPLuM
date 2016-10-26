@@ -10,12 +10,17 @@
 
 ImageMergePipeline::ImageMergePipeline(Modification *mod, const QString &id) : Pipeline(mod, id)
 {
-
+    m_defaultAlgorithm = new AlphaThresholdMergeAlgorithm();
 }
 
 ImageMergePipeline::~ImageMergePipeline()
 {
+    for(MergeAlgorithm * alg : m_mergeAlgorithms.values())
+    {
+        delete alg;
+    }
 
+    delete m_defaultAlgorithm;
 }
 
 ImageMergePipeline *ImageMergePipeline::loadFromJson(Modification *mod, const QString &id, const QJsonObject &json)
@@ -38,24 +43,24 @@ ImageMergePipeline *ImageMergePipeline::loadFromJson(Modification *mod, const QS
 
         if(type == "alpha-threshold")
         {
-            MergeAlgorithm alg;
+            AlphaThresholdMergeAlgorithm * alg = new AlphaThresholdMergeAlgorithm();
             pip->m_mergeAlgorithms[key] = alg;
         }
         else if(type == "overwrite")
         {
-            OverwriteAlgorithm alg;
+            OverwriteMergeAlgorithm * alg =  new OverwriteMergeAlgorithm();
             pip->m_mergeAlgorithms[key] = alg;
         }
         else if(type == "mask")
         {
-            MaskMergeAlgorithm alg;
+            MaskMergeAlgorithm * alg = new MaskMergeAlgorithm();
             pip->m_mergeAlgorithms[key] = alg;
         }
         else if(type == "tile")
         {
-            TileMergeAlgorithm alg;
-            alg.tilesx = merge_json["tilesx"].toInt();
-            alg.tilesy = merge_json["tilesy"].toInt();
+            TileMergeAlgorithm * alg = new TileMergeAlgorithm();
+            alg->tilesx = merge_json["tilesx"].toInt();
+            alg->tilesy = merge_json["tilesy"].toInt();
             pip->m_mergeAlgorithms[key] = alg;
         }
         else
@@ -110,25 +115,28 @@ void ImageMergePipeline::install()
             continue;
         }
 
-        MergeAlgorithm alg = m_mergeAlgorithms[destinationkeys[dst]];
+        QString inversed_dst = destinationkeys[dst];
+        MergeAlgorithm * alg = m_mergeAlgorithms[inversed_dst];
+
+        if(alg == nullptr)
+        {
+            alg = m_defaultAlgorithm;
+        }
 
         if(merge(dst, src, tmpdir.path(), alg))
             m_fgInstalledFiles.insert(dst); // Mark as installed
 
     }
+
+    getLogger().log(Logger::Info, "pipeline-merge-image", id(), "install", "Finished installation");
 }
 
-QMap<QString, ImageMergePipeline::MergeAlgorithm> ImageMergePipeline::mergeAlgorithms() const
+QMap<QString, ImageMergePipeline::MergeAlgorithm *> ImageMergePipeline::mergeAlgorithms() const
 {
     return m_mergeAlgorithms;
 }
 
-void ImageMergePipeline::setMergeAlgorithms(const QMap<QString, MergeAlgorithm> &mergeAlgorithms)
-{
-    m_mergeAlgorithms = mergeAlgorithms;
-}
-
-bool ImageMergePipeline::merge(const QString &xnb_file, const QString &png_file, const QDir & tmpdir, MergeAlgorithm alg)
+bool ImageMergePipeline::merge(const QString &xnb_file, const QString &png_file, const QDir & tmpdir, MergeAlgorithm * alg)
 {
     getLogger().log(Logger::Info, "pipeline", id(), "install", "Merging " + png_file + " into " + xnb_file);
 
@@ -143,7 +151,7 @@ bool ImageMergePipeline::merge(const QString &xnb_file, const QString &png_file,
     }
 
     // Then merge
-    alg.apply(getLogger(), destinationfile, QFileInfo(png_file).absolutePath() + "/" + basename);
+    alg->apply(getLogger(), destinationfile, QFileInfo(png_file).absolutePath() + "/" + basename);
 
     // Then pack it
     QString tmp_xnb = tmpdir.absoluteFilePath(basename + ".xnb");
@@ -233,7 +241,7 @@ bool ImageMergePipeline::pack(const QString &png_file, const QString &xnb_file)
     return true;
 }
 
-bool ImageMergePipeline::MergeAlgorithm::apply(Logger & log, const QString &destinationfile, const QString &sourcefilebase)
+bool ImageMergePipeline::AlphaThresholdMergeAlgorithm::apply(Logger &log, const QString &destinationfile, const QString &sourcefilebase)
 {
     log.log(Logger::Info, "pipeline", "filter-alpha-threshold", "install", "Applying alpha treshold filter in " + destinationfile);
 
@@ -266,9 +274,7 @@ bool ImageMergePipeline::MergeAlgorithm::apply(Logger & log, const QString &dest
             const QColor there = filter.pixelColor(x,y);
 
             if(there.alpha() > 0)
-            {
                 img.setPixelColor(x,y,there);
-            }
         }
     }
 
@@ -276,9 +282,10 @@ bool ImageMergePipeline::MergeAlgorithm::apply(Logger & log, const QString &dest
     return img.save(destinationfile);
 }
 
-bool ImageMergePipeline::OverwriteAlgorithm::apply(Logger &log, const QString &destinationfile, const QString &sourcefilebase)
+
+bool ImageMergePipeline::OverwriteMergeAlgorithm::apply(Logger &log, const QString &destinationfile, const QString &sourcefilebase)
 {
-    log.log(Logger::Info, "pipeline", "filter-alpha-threshold", "install", "Applying alpha treshold filter in " + destinationfile);
+    log.log(Logger::Info, "pipeline", "filter-overwrite", "install", "Applying overwrite filter in " + destinationfile);
 
     QImage img;
     QImage filter;
@@ -288,17 +295,17 @@ bool ImageMergePipeline::OverwriteAlgorithm::apply(Logger &log, const QString &d
 
     if(img.isNull())
     {
-        log.log(Logger::Error, "pipeline-merge-image", "filter-alpha-threshold", "merge-merge", "Image " + destinationfile + " not loadable!");
+        log.log(Logger::Error, "pipeline-merge-image", "filter-overwrite", "merge-merge", "Image " + destinationfile + " not loadable!");
         return false;
     }
     if(filter.isNull())
     {
-        log.log(Logger::Error, "pipeline-merge-image", "filter-alpha-threshold", "merge-merge", "Image " + sourcefilebase + " not loadable!");
+        log.log(Logger::Error, "pipeline-merge-image", "filter-overwrite", "merge-merge", "Image " + sourcefilebase + " not loadable!");
         return false;
     }
     if(filter.width() != img.width() || filter.height() != img.height())
     {
-        log.log(Logger::Error, "pipeline-tile", "filter-alpha-threshold", "merge-merge", "Images don't have the same size!");
+        log.log(Logger::Error, "pipeline-tile", "filter-overwrite", "merge-merge", "Images don't have the same size!");
         return false;
     }
 
@@ -307,6 +314,7 @@ bool ImageMergePipeline::OverwriteAlgorithm::apply(Logger &log, const QString &d
         for(int x = 0; x < img.width(); ++x)
         {
             const QColor there = filter.pixelColor(x,y);
+
             img.setPixelColor(x,y,there);
         }
     }
@@ -314,7 +322,6 @@ bool ImageMergePipeline::OverwriteAlgorithm::apply(Logger &log, const QString &d
     QFile(destinationfile).remove();
     return img.save(destinationfile);
 }
-
 
 bool ImageMergePipeline::MaskMergeAlgorithm::apply(Logger &log, const QString &destinationfile, const QString &sourcefilebase)
 {
@@ -414,7 +421,7 @@ bool ImageMergePipeline::TileMergeAlgorithm::apply(Logger &log, const QString &d
 
     for(int tx = 0; tx < tilesx; ++tx)
     {
-        for(int ty = 0; ty < tilesx; ++ty)
+        for(int ty = 0; ty < tilesy; ++ty)
         {
             // Determine if tile will be overwritten
             bool overwrite = false;
@@ -434,6 +441,8 @@ bool ImageMergePipeline::TileMergeAlgorithm::apply(Logger &log, const QString &d
             // Overwrite
             if(overwrite)
             {
+                log.log(Logger::Error, "pipeline-merge-image", "filter-tile", "merge-merge", QString("Tile detected @ %1 %2").arg(tx).arg(ty));
+
                 for(int y = ty * th; y < (ty + 1) * th; ++y)
                 {
                     for(int x = tx * tw; x < (tx + 1) * tw; ++x)
@@ -462,4 +471,3 @@ bool ImageMergePipeline::TileMergeAlgorithm::apply(Logger &log, const QString &d
     QFile(destinationfile).remove();
     return img.save(destinationfile);
 }
-

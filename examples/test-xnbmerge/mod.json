@@ -1,0 +1,35 @@
+{
+    "id": "test-xnbmerge",
+    "name": "XNB image merging test",
+    "author": "mrboese",
+    "license": "GPLv3",
+    "description": "",
+    "url": "",
+    "version": "1.0",
+    "requires": ["stardewvalley=1.1.1"],
+    "content": {
+        "content": {
+            "name": "The content",
+            "description": "",
+            "default": true,
+            "platforms": ["windows", "linux", "mac"],
+            "priority": 0,
+            "pipeline": "merge-image",
+            "installables": {
+                "Cursors.png" : "stardewvalley-content://LooseSprites/Cursors.xnb",
+                "paths.png" : "stardewvalley-content://paths.xnb",
+                "Floors.png" : "stardewvalley-content://TileSheets/Floors.xnb",
+                "Flooring.png" : "stardewvalley-content://TerrainFeatures/Flooring.xnb",
+                "hoeDirt.png" : "stardewvalley-content://TerrainFeatures/hoeDirt.xnb"
+            },
+            "merge-algorithm" : {
+                "Cursors.png" : { "algorithm" : "alpha-threshold" },
+                "Floors.png" : { "algorithm" : "mask" },
+                "Flooring.png" : { "algorithm" : "mask" },
+                "paths.png" : { "algorithm" : "tile", "tilesx" : 4, "tilesy" : 8 },
+                "hoeDirt.png" : { "algorithm" : "overwrite" }
+            },
+            "launchers": {}
+        }
+    }
+}

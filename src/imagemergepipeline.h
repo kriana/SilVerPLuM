@@ -12,19 +12,41 @@ class ImageMergePipeline : public Pipeline
 public:
 
     /**
-     * @brief Default merge algorithm. Overwrites if alpha value is not 0.
+     * @brief
      */
     struct MergeAlgorithm
     {
-        virtual bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase);
+        virtual ~MergeAlgorithm()
+        {
+
+        }
+
+        virtual bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase) = 0;
+    };
+
+    /**
+     * @brief Overwrites if alpha value is not 0.
+     */
+    struct AlphaThresholdMergeAlgorithm : public MergeAlgorithm
+    {
+        ~AlphaThresholdMergeAlgorithm()
+        {
+        }
+
+        bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase) override;
     };
 
     /**
      * @brief Overwrites image with filter image
      */
-    struct OverwriteAlgorithm : public MergeAlgorithm
+    struct OverwriteMergeAlgorithm : public MergeAlgorithm
     {
-        virtual bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase);
+        ~OverwriteMergeAlgorithm()
+        {
+
+        }
+
+        bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase) override;
     };
 
     /**
@@ -32,7 +54,12 @@ public:
      */
     struct MaskMergeAlgorithm : public MergeAlgorithm
     {
-        virtual bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase);
+        ~MaskMergeAlgorithm()
+        {
+
+        }
+
+        bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase) override;
     };
 
     /**
@@ -44,7 +71,12 @@ public:
 
         int tilesy = 0;
 
-        virtual bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase);
+        ~TileMergeAlgorithm()
+        {
+
+        }
+
+        bool apply(Logger &log, const QString & destinationfile, const QString & sourcefilebase) override;
     };
 
     ~ImageMergePipeline();
@@ -59,17 +91,17 @@ public:
 
     void install();
 
-    QMap<QString, MergeAlgorithm> mergeAlgorithms() const;
-
-    void setMergeAlgorithms(const QMap<QString, MergeAlgorithm> &mergeAlgorithms);
+    QMap<QString, MergeAlgorithm *> mergeAlgorithms() const;
 
 private:
 
-    QMap<QString, MergeAlgorithm> m_mergeAlgorithms;
+    QMap<QString, MergeAlgorithm *> m_mergeAlgorithms;
+
+    MergeAlgorithm * m_defaultAlgorithm;
 
     ImageMergePipeline(Modification * mod, const QString &id);
 
-    bool merge(const QString & xnb_file, const QString & png_file, const QDir &tmpdir, MergeAlgorithm alg);
+    bool merge(const QString & xnb_file, const QString & png_file, const QDir &tmpdir, MergeAlgorithm *alg);
 
     bool extract(const QString & xnb_file, const QString & destination);
 
