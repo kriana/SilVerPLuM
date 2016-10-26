@@ -26,7 +26,7 @@ void DebugLauncher::start()
         QMessageBox dlg;
 
         dlg.setText("Debug Launcher");
-        dlg.setInformativeText("The profile should new be active. Select one of the options:");
+        dlg.setInformativeText("The profile should now be active. Select one of the options:");
         dlg.setStandardButtons(QMessageBox::Cancel | QMessageBox::Open | QMessageBox::Save | QMessageBox::Yes | QMessageBox::Close);
         dlg.setButtonText(QMessageBox::Yes, "Show profile log");
         dlg.setButtonText(QMessageBox::Close, "Finish and close log");
