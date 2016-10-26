@@ -121,7 +121,7 @@ bool Pipeline::loadGenericFromJson(const QJsonObject &json, Pipeline * pip)
     return true;
 }
 
-QMap<QString, QString> Pipeline::resolveInstallables(const QMap<QString, QString> &input, const QString & default_destination)
+QMap<QString, QString> Pipeline::resolveInstallables(const QMap<QString, QString> &input, const QString & default_destination, QMap<QString, QString> *destinationsources)
 {
     QMap<QString, QString> result;
 
@@ -201,6 +201,11 @@ QMap<QString, QString> Pipeline::resolveInstallables(const QMap<QString, QString
                 getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-dir", "Resolved " + rsrc + " to " + rdst);
 
                 result[rsrc] = rdst;
+
+                if(destinationsources != nullptr)
+                {
+                    destinationsources->insert(rdst, key);
+                }
             }
         }
         else
@@ -211,6 +216,11 @@ QMap<QString, QString> Pipeline::resolveInstallables(const QMap<QString, QString
             getLogger().log(Logger::Info, "pipeline", id(), "resolve-installables-file", "Resolved " + src + " to " + dst);
 
             result[src] = dst;
+
+            if(destinationsources != nullptr)
+            {
+                destinationsources->insert(dst, key);
+            }
         }
     }
 

@@ -242,7 +242,7 @@ private:
 
     QStringList m_unloadableModPaths;
 
-    Logger m_logger;
+    //Logger m_logger;
 
     DependencyTree * m_dependencyTree;
 

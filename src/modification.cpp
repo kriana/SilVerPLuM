@@ -24,7 +24,8 @@ void Modification::setModBasePath(const QDir &modBasePath)
 
 Logger &Modification::getLogger()
 {
-    return m_logger;
+    //return m_logger;
+    return m_modManager->getLogger();
 }
 
 bool Modification::exportToZip(const QString &path)

@@ -197,7 +197,7 @@ QProcessEnvironment ModManager::processEnvironment()
 
 Logger &ModManager::getLogger()
 {
-    return m_logger;
+    return m_profile->getLogger();
 }
 
 bool ModManager::importModFromDirectory(const QDir &dir, bool force_overwrite, bool interactive)

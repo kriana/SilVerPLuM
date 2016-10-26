@@ -33,7 +33,7 @@ private:
     QList<Dependency> m_Dependencies;
     QList<Pipeline*> m_Pipelines;
     QSet<QString> m_PipelineIds;
-    Logger m_logger;
+    //Logger m_logger;
     QStringList m_provides;
     QStringList m_categories;
 

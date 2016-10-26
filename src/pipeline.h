@@ -269,7 +269,7 @@ protected:
 
     static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
 
-    virtual QMap<QString, QString> resolveInstallables(const QMap<QString, QString> & input, const QString &default_destination);
+    virtual QMap<QString, QString> resolveInstallables(const QMap<QString, QString> & input, const QString &default_destination, QMap<QString, QString> * destinationsources = nullptr);
 
     virtual bool alreadyPrimed();
 

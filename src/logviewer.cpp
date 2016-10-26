@@ -52,7 +52,7 @@ void LogViewer::execForProfile(Profile *p)
     QApplication::processEvents();
 
     joined.insert(p->getLogger());
-    joined.insert(p->getModManager()->getLogger());
+    //joined.insert(p->getModManager()->getLogger());
     joined.insert(ProfileManager::instance()->getLogger());
 
     for(Modification * mod : p->getModManager()->getModifications())
