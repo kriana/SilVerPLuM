@@ -95,6 +95,8 @@ void ImageMergePipeline::install()
     QMap<QString, QString> destinationkeys;
     QMap<QString, QString> resolved_installables = resolveInstallables(m_installables, mod()->getModManager()->profile()->StardewValleyDir().absolutePath(), &destinationkeys);
 
+    QStringList failedfiles;
+
     for(QString src : resolved_installables.keys())
     {
         QString dst = resolved_installables[src];
@@ -102,16 +104,19 @@ void ImageMergePipeline::install()
         if(!dst.endsWith(".xnb"))
         {
             getLogger().log(Logger::Error, "pipeline-merge-image", id(), "install", "Destination must be XNB file! But is " + dst);
+            failedfiles << src;
             continue;
         }
         if(!src.endsWith(".png"))
         {
             getLogger().log(Logger::Error, "pipeline-merge-image", id(), "install", "Source must be PNG file! But is " + src);
+            failedfiles << src;
             continue;
         }
         if(!QFileInfo(dst).exists())
         {
             getLogger().log(Logger::Error, "pipeline-merge-image", id(), "install", "Destination " + dst + " must exist!");
+            failedfiles << src;
             continue;
         }
 
@@ -125,8 +130,46 @@ void ImageMergePipeline::install()
 
         if(merge(dst, src, tmpdir.path(), alg))
             m_fgInstalledFiles.insert(dst); // Mark as installed
+        else
+            failedfiles << src;
 
     }
+
+    getLogger().log(Logger::Info, "pipeline", id(), "install-non-image", QString::number(failedfiles.size()) + " files failed to be processed. Installing them like in file pipeline.");
+
+    // Install all other files or incompatible ones
+    for(QString src : failedfiles)
+    {
+        QString dst = resolved_installables[src];
+        QDir dst_file_dir = QFileInfo(dst).absoluteDir();
+
+        // Install
+        dst_file_dir.mkpath(".");
+
+        if(QFileInfo(dst).exists())
+        {
+            if(!QFile(dst).remove())
+            {
+                getLogger().log(Logger::Warning, "pipeline", id(), "install-non-image", "Could not replace " + dst);
+            }
+            else
+            {
+                getLogger().log(Logger::Info, "pipeline", id(), "install-non-image", "Successfully replaced " + dst);
+            }
+        }
+
+        if(QFile::copy(src, dst))
+        {
+            getLogger().log(Logger::Info, "pipeline", id(), "install-non-image", "Successfully installed " + src + " to " + dst);
+        }
+        else
+        {
+            getLogger().log(Logger::Warning, "pipeline", id(), "install-non-image", "Could not install " + src + " to " + dst);
+        }
+
+        m_fgInstalledFiles.insert(dst); // Mark as installed
+    }
+
 
     getLogger().log(Logger::Info, "pipeline-merge-image", id(), "install", "Finished installation");
 }
@@ -441,7 +484,7 @@ bool ImageMergePipeline::TileMergeAlgorithm::apply(Logger &log, const QString &d
             // Overwrite
             if(overwrite)
             {
-                log.log(Logger::Error, "pipeline-merge-image", "filter-tile", "merge-merge", QString("Tile detected @ %1 %2").arg(tx).arg(ty));
+                log.log(Logger::Info, "pipeline-merge-image", "filter-tile", "merge-merge", QString("Tile detected @ %1 %2").arg(tx).arg(ty));
 
                 for(int y = ty * th; y < (ty + 1) * th; ++y)
                 {
