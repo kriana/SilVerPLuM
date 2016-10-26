@@ -109,6 +109,8 @@ public:
      */
     void setEnvironment(const QProcessEnvironment &environment);
 
+    void setEnvironmentVariable(const QString & var, const QString & value);
+
 private:
 
     QString m_executablePath;

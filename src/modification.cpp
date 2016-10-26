@@ -7,6 +7,7 @@
 #include "custompipeline.h"
 #include "programpipeline.h"
 #include "repositorypipeline.h"
+#include "imagemergepipeline.h"
 #include "globalsettings.h"
 #include "utils.h"
 #include <JlCompress.h>
@@ -316,6 +317,10 @@ Modification * Modification::loadFromJson(ModManager * modmgr, const QDir & base
         else if(content_json["pipeline"] == "repository")
         {
             pipeline = RepositoryPipeline::loadFromJson(mod, key, content_json);
+        }
+        else if(content_json["pipeline"] == "merge-image")
+        {
+            pipeline = ImageMergePipeline::loadFromJson(mod, key, content_json);
         }
         else
         {

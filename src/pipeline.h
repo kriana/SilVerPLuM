@@ -265,6 +265,8 @@ public:
 
 protected:
 
+    QSet<QString> m_fgInstalledFiles;
+
     static bool loadGenericFromJson(const QJsonObject & json, Pipeline *pip);
 
     virtual QMap<QString, QString> resolveInstallables(const QMap<QString, QString> & input, const QString &default_destination);
@@ -275,7 +277,7 @@ protected:
 
     virtual void postprimeCopy();
 
-private:
+protected:
 
     Modification * m_mod;
 
@@ -297,9 +299,7 @@ private:
 
     QMap<QString, QString> m_postprimeCopy;
 
-    QMap<QString, Launcher *> m_launchers;
-
-    QSet<QString> m_fgInstalledFiles;
+    QMap<QString, Launcher *> m_launchers;    
 
     QStringList m_provides;
 

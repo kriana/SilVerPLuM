@@ -56,6 +56,14 @@ void GlobalSettings::initializeWindowsExternalPrograms()
                                                            QStringList() << "/c" << "{file}" << "{joinedargs}",
                                                            QStringList() << "text/plain&.bat",
                                                            true);
+    m_DefaultExternalPrograms["xnb-to-png"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("xnb_to_png.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           true);
+    m_DefaultExternalPrograms["png-to-xnb"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("png_to_xnb.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           true);
 }
 
 void GlobalSettings::initializeLinuxExternalPrograms()
@@ -80,6 +88,15 @@ void GlobalSettings::initializeLinuxExternalPrograms()
                                                            QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "text/x-python",
                                                          true);
+
+    m_DefaultExternalPrograms["xnb-to-png"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("xnb_to_png.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           false);
+    m_DefaultExternalPrograms["png-to-xnb"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("png_to_xnb.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           false);
 }
 
 void GlobalSettings::initializeMacExternalPrograms()
@@ -104,6 +121,18 @@ void GlobalSettings::initializeMacExternalPrograms()
                                                            QStringList() << "{file}" << "{insertargs}",
                                                            QStringList() << "text/x-python",
                                                          true);
+    m_DefaultExternalPrograms["xnbnode"] = ExternalProgram(QStringList() << "xnbnode.sh",
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           true);
+    m_DefaultExternalPrograms["xnb-to-png"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("xnb_to_png.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           false);
+    m_DefaultExternalPrograms["png-to-xnb"] = ExternalProgram(QStringList() << QDir(QApplication::applicationDirPath()).absoluteFilePath("png_to_xnb.exe"),
+                                                           QStringList() << "{file}" <<"{insertargs}",
+                                                           QStringList(),
+                                                           false);
 }
 
 GlobalSettings *GlobalSettings::instance()

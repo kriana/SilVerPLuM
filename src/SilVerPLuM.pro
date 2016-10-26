@@ -80,7 +80,8 @@ SOURCES += main.cpp\
     categorycombobox.cpp \
     activatemoddialog.cpp \
     dependencytree.cpp \
-    modrepositorysource.cpp
+    modrepositorysource.cpp \
+    imagemergepipeline.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -149,7 +150,8 @@ HEADERS  += mainwindow.h \
     categorycombobox.h \
     activatemoddialog.h \
     dependencytree.h \
-    modrepositorysource.h
+    modrepositorysource.h \
+    imagemergepipeline.h
 
 
 FORMS    += mainwindow.ui \

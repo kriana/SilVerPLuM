@@ -172,3 +172,8 @@ void ExternalProgram::setEnvironment(const QProcessEnvironment &environment)
 {
     m_environment = environment;
 }
+
+void ExternalProgram::setEnvironmentVariable(const QString &var, const QString &value)
+{
+    m_environment.insert(var, value);
+}
