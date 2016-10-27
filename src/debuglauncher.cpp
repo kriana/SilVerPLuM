@@ -6,13 +6,14 @@
 #include "game.h"
 #include <QDesktopServices>
 #include <QUrl>
+#include "developerlauncherdialog.h"
 
 QString DebugLauncher::ID = "debug";
 
 DebugLauncher::DebugLauncher(Profile * p) : Launcher(p)
 {
     setId("debug");
-    setName("Debug Launcher");
+    setName("Developer Launcher");
     setDescription("For testing modifications. Launches nothing, but prevents uninstallation until manually closed.");
     setExecutable(Platform::Windows, LauncherExecutable("stardewvalley://StardewValley.exe"));
     setExecutable(Platform::Linux, LauncherExecutable("stardewvalley://StardewValley"));
@@ -21,7 +22,18 @@ DebugLauncher::DebugLauncher(Profile * p) : Launcher(p)
 
 void DebugLauncher::start()
 {
-    while(true)
+    DeveloperLauncherDialog dlg;
+
+    if(dlg.exec() == DeveloperLauncherDialog::Accepted)
+    {
+        emit finished(0);
+    }
+    else
+    {
+        emit finished(-1);
+    }
+
+    /*while(true)
     {
         QMessageBox dlg;
 
@@ -52,5 +64,5 @@ void DebugLauncher::start()
             emit finished(0);
             return;
         }
-    }
+    }*/
 }

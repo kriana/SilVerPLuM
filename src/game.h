@@ -6,6 +6,7 @@
 #include <QtConcurrent>
 #include "logger.h"
 #include <QTimer>
+#include <QTemporaryDir>
 
 class Game : public QObject
 {
@@ -70,6 +71,33 @@ public:
      */
     QSet<QString> getUnoverrideableGameFiles() const;
 
+    /**
+     * @brief Returns the cache directory that is currently used.
+     * @return
+     */
+    QDir getCacheDir() const;
+
+    /**
+     * @brief Returns the cache path for given mod URL
+     * @param modurl
+     * @return
+     */
+    QString getCachePathFor(const QString &component, const QString & modurl);
+
+    /**
+     * @brief The directory where the savegames are moved before launching
+     * @return
+     */
+    QDir sdvSavegameBackupDir();
+
+    /**
+     * @brief Returns the backup path for given mod URL
+     * @param modurl
+     * @return
+     */
+    QString getBackupPathFor(const QString & modurl);
+
+
 private:
 
     Game();
@@ -87,6 +115,8 @@ private:
     QFutureWatcher<void> m_postWatcher;
 
     int m_exitCode = 0;
+
+    QTemporaryDir m_cacheDir;
 
     /**
      * @brief Sends progress to any listener
@@ -133,20 +163,7 @@ private:
     /**
      * @brief Uninstalls all activated mods
      */
-    void postUninstallMods();
-
-    /**
-     * @brief The directory where the savegames are moved before launching
-     * @return
-     */
-    QDir sdvSavegameBackupDir();
-
-    /**
-     * @brief Returns the backup path for given mod URL
-     * @param modurl
-     * @return
-     */
-    QString getBackupPathFor(const QString & modurl);
+    void postUninstallMods();   
 
 private slots:
 

@@ -37,7 +37,7 @@ CustomPipeline *CustomPipeline::loadFromJson(Modification *mod, const QString &i
     return pip;
 }
 
-int CustomPipeline::prime(bool is_forced)
+bool CustomPipeline::prime(bool is_forced)
 {
     mod()->getModManager()->profile()->fixCrazyness();
 
@@ -47,7 +47,7 @@ int CustomPipeline::prime(bool is_forced)
     {
         getLogger().log(Logger::Error, "pipeline-custom", id(), "prime", "Could not run! No executable for this platform!");
 
-        return -1;
+        return false;
     }
 
     // Resolve the executable
@@ -93,7 +93,7 @@ int CustomPipeline::prime(bool is_forced)
     if(process.state() != QProcess::Running)
     {
         getLogger().log(Logger::Error, "pipeline-custom", id(), "prime", "Failed to start process!");
-        return -1;
+        return false;
     }
     process.waitForFinished(-1);
 
@@ -101,7 +101,7 @@ int CustomPipeline::prime(bool is_forced)
     getLogger().log(Logger::Info, "pipeline-custom", id(), "prime-output", output);
 
 
-    return process.exitCode();
+    return process.exitCode() == 0;
 }
 
 void CustomPipeline::setScript(Platform::Type platform, const LauncherExecutable &executable)

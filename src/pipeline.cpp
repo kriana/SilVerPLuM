@@ -466,12 +466,12 @@ void Pipeline::setLauncher(const QString &id, Launcher *launcher)
     m_launchers[id] = launcher;
 }
 
-int Pipeline::primePipeline(bool force)
+bool Pipeline::primePipeline(bool force)
 {
     if(!force && alreadyPrimed())
-        return 0;
+        return true;
 
-    int ret = 0;
+    int success = true;
 
     QStringList keep_encryped_raw;
     QStringList extracted;
@@ -500,15 +500,15 @@ int Pipeline::primePipeline(bool force)
 
         if(extracted_here.isEmpty())
         {
-            ret = 2;
+            success = false;
             break;
         }
     }
 
     // Prime
-    if(ret == 0)
+    if(success)
     {
-        ret = prime(force);
+        success &= prime(force);
     }
     else
     {
@@ -555,12 +555,12 @@ int Pipeline::primePipeline(bool force)
         }
     }
 
-    return ret;
+    return success;
 }
 
-int Pipeline::prime(bool is_forced)
+bool Pipeline::prime(bool is_forced)
 {
-    return 0;
+    return true;
 }
 
 void Pipeline::postprimeCopy()

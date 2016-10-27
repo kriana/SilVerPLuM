@@ -89,6 +89,10 @@ public:
      */
     virtual QString pipelineType() const;
 
+    bool alreadyPrimed();
+
+    bool prime(bool is_forced);
+
     void install();
 
     QMap<QString, MergeAlgorithm *> mergeAlgorithms() const;
@@ -101,7 +105,7 @@ private:
 
     ImageMergePipeline(Modification * mod, const QString &id);
 
-    bool merge(const QString & xnb_file, const QString & png_file, const QDir &tmpdir, MergeAlgorithm *alg);
+    bool merge(const QString & xnb_file, const QString & png_file, MergeAlgorithm *alg);
 
     bool extract(const QString & xnb_file, const QString & destination);
 

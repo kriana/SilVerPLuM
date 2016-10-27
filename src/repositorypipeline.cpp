@@ -71,7 +71,7 @@ bool RepositoryPipeline::alreadyPrimed()
     return true;
 }
 
-int RepositoryPipeline::prime(bool is_forced)
+bool RepositoryPipeline::prime(bool is_forced)
 {
-    return 0;
+    return true;
 }

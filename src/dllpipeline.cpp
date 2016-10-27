@@ -81,7 +81,7 @@ DllPipeline *DllPipeline::loadFromJson(Modification *mod, const QString &id, con
     return pip;
 }
 
-int DllPipeline::prime(bool is_forced)
+bool DllPipeline::prime(bool is_forced)
 {
     int this_exit = 0;
 
@@ -171,7 +171,7 @@ int DllPipeline::prime(bool is_forced)
         QFile(pipelineBaseDir().absoluteFilePath("PRIME")).remove(); // Remove PRIME
     }
 
-    return this_exit;
+    return this_exit == 0;
 }
 
 bool DllPipeline::enableNugetRestore() const

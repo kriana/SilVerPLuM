@@ -88,8 +88,7 @@
                     <string>Profile log</string>
                    </property>
                    <property name="icon">
-                    <iconset theme="view-list-text">
-                     <normaloff>.</normaloff>.</iconset>
+                    <iconset theme="view-history"/>
                    </property>
                    <property name="popupMode">
                     <enum>QToolButton::MenuButtonPopup</enum>

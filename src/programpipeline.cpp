@@ -165,9 +165,9 @@ void ProgramPipeline::uninstall()
 
 }
 
-int ProgramPipeline::prime(bool is_forced)
+bool ProgramPipeline::prime(bool is_forced)
 {
-    return 0;
+    return true;
 }
 
 bool ProgramPipeline::alreadyPrimed()

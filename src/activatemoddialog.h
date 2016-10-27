@@ -38,7 +38,7 @@ private:
 
     bool m_reinitialize;
 
-    QFutureWatcher<int> m_watcher;
+    QFutureWatcher<bool> m_watcher;
 
     ModManager * m_modManager = nullptr;
 

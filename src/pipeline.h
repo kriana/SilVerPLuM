@@ -102,7 +102,7 @@ public:
      * @param force
      * @return
      */
-    virtual int primePipeline(bool force);
+    virtual bool primePipeline(bool force);
 
     /**
      * @brief Returns true if this pipeline is supposed to be installed by default
@@ -273,7 +273,7 @@ protected:
 
     virtual bool alreadyPrimed();
 
-    virtual int prime(bool is_forced);
+    virtual bool prime(bool is_forced);
 
     virtual void postprimeCopy();
 

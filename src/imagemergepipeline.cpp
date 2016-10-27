@@ -7,6 +7,7 @@
 #include <QProcess>
 #include <QTemporaryDir>
 #include <QColor>
+#include "game.h"
 
 ImageMergePipeline::ImageMergePipeline(Modification *mod, const QString &id) : Pipeline(mod, id)
 {
@@ -77,19 +78,83 @@ QString ImageMergePipeline::pipelineType() const
     return "merge-image";
 }
 
+bool ImageMergePipeline::alreadyPrimed()
+{
+    QMap<QString, QString> resolved_installables = resolveInstallables(m_installables,
+                                                                       mod()->getModManager()->profile()->StardewValleyDir().absolutePath());
+
+    for(QString src : resolved_installables.keys())
+    {
+        QString dst = resolved_installables[src];
+
+        if(!dst.endsWith(".xnb"))
+        {
+            continue;
+        }
+        if(!src.endsWith(".png"))
+        {
+            continue;
+        }
+        if(!QFileInfo(dst).exists())
+        {
+            return false;
+        }
+
+        QFileInfo srcfile = src;
+        QFileInfo originalfile = QDir(srcfile.absolutePath()).absoluteFilePath(srcfile.baseName() + ".original.png");
+
+        if(!originalfile.exists())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool ImageMergePipeline::prime(bool is_forced)
+{
+    QMap<QString, QString> resolved_installables = resolveInstallables(m_installables,
+                                                                       mod()->getModManager()->profile()->StardewValleyDir().absolutePath());
+
+    bool success = true;
+
+    for(QString src : resolved_installables.keys())
+    {
+        QString dst = resolved_installables[src];
+
+        if(!dst.endsWith(".xnb"))
+        {
+            continue;
+        }
+        if(!src.endsWith(".png"))
+        {
+            continue;
+        }
+        if(!QFileInfo(dst).exists())
+        {
+            getLogger().log(Logger::Error, "pipeline-merge-image", id(), "prime", "Destination " + dst + " must exist!");
+            return false;
+        }
+
+        QFileInfo srcfile = src;
+        QFileInfo originalfile = QDir(srcfile.absolutePath()).absoluteFilePath(srcfile.baseName() + ".original.png");
+
+        if(originalfile.exists() && !is_forced)
+        {
+            continue;
+        }
+
+        // Extract XNB
+        success &= extract(dst, originalfile.absoluteFilePath());
+    }
+
+    return success;
+}
+
 void ImageMergePipeline::install()
 {
     getLogger().log(Logger::Info, "pipeline-merge-image", id(), "install", "Started installation");
-
-    QTemporaryDir tmpdir;
-
-    if(!tmpdir.isValid())
-    {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Could not create temporary directory!");
-        return;
-    }
-
-    QDir(tmpdir.path()).mkpath(".");
 
     m_fgInstalledFiles.clear();
     QMap<QString, QString> destinationkeys;
@@ -128,7 +193,7 @@ void ImageMergePipeline::install()
             alg = m_defaultAlgorithm;
         }
 
-        if(merge(dst, src, tmpdir.path(), alg))
+        if(merge(dst, src, alg))
             m_fgInstalledFiles.insert(dst); // Mark as installed
         else
             failedfiles << src;
@@ -179,40 +244,63 @@ QMap<QString, ImageMergePipeline::MergeAlgorithm *> ImageMergePipeline::mergeAlg
     return m_mergeAlgorithms;
 }
 
-bool ImageMergePipeline::merge(const QString &xnb_file, const QString &png_file, const QDir & tmpdir, MergeAlgorithm * alg)
+bool ImageMergePipeline::merge(const QString &xnb_file, const QString &png_file, MergeAlgorithm * alg)
 {
     getLogger().log(Logger::Info, "pipeline", id(), "install", "Merging " + png_file + " into " + xnb_file);
 
-    QString basename = QFileInfo(xnb_file).baseName();
-    QString destinationfile = tmpdir.absoluteFilePath(basename + ".png");
+    QString xnb_modurl = mod()->getModManager()->toModUrl(xnb_file);
+    QString xnb_cache_file = Game::instance()->getCachePathFor("pipeline-merge-image", xnb_modurl + ".png");
+    QString xnb_cache_packed_file = Game::instance()->getCachePathFor("pipeline-merge-image", xnb_modurl);
 
-    // First extract everything
-    if(!extract(xnb_file, destinationfile))
+    if(xnb_cache_file.isEmpty())
     {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Extraction failed! Skipping.");
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Could not find cached file path! Abort!");
         return false;
     }
 
-    // Then merge
-    alg->apply(getLogger(), destinationfile, QFileInfo(png_file).absolutePath() + "/" + basename);
+    QString png_original_file = QDir(QFileInfo(png_file).absolutePath()).absoluteFilePath(QFileInfo(png_file).baseName() + ".original.png");
+
+    if(!QFileInfo(png_original_file).exists())
+    {
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Unable to find original file for " + png_file + " in " + png_original_file);
+        return false;
+    }
+
+    // Copy the original file into the cache if it does not exist
+    if(!QFileInfo(xnb_cache_file).exists())
+    {
+        QFileInfo(xnb_cache_file).absoluteDir().mkpath(".");
+        if(QFile::copy(png_original_file, xnb_cache_file))
+        {
+            getLogger().log(Logger::Info, "pipeline-merge-image", id(), "merge", "Copied initial cache file " + png_original_file + " into " + xnb_cache_file);
+        }
+        else
+        {
+            getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Could not copy inital cache file " + png_original_file + " into " + xnb_cache_file);
+            return false;
+        }
+    }
+
+    // Merge
+    alg->apply(getLogger(), xnb_cache_file, QFileInfo(png_file).absoluteDir().absoluteFilePath(QFileInfo(png_file).baseName()));
 
     // Then pack it
-    QString tmp_xnb = tmpdir.absoluteFilePath(basename + ".xnb");
+    QFile(xnb_cache_packed_file).remove();
 
-    if(!pack(destinationfile, tmp_xnb))
+    if(!pack(xnb_cache_file, xnb_cache_packed_file))
     {
         getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge", "Packing failed! Skipping.");
         return false;
     }
     QFile(xnb_file).remove();
-    QFile::copy(tmp_xnb, xnb_file);
+    QFile::copy(xnb_cache_packed_file, xnb_file);
 
     return true;
 }
 
 bool ImageMergePipeline::extract(const QString &xnb_file, const QString &destination)
 {
-    getLogger().log(Logger::Info, "pipeline", id(), "install", "Extracting " + xnb_file + " to " + destination);
+    getLogger().log(Logger::Info, "pipeline", id(), "extract-xnb", "Extracting " + xnb_file + " to " + destination);
 
     QProcess process;
 
@@ -220,7 +308,7 @@ bool ImageMergePipeline::extract(const QString &xnb_file, const QString &destina
 
     if(xnb_to_png_program.isEmpty())
     {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge-extract", "xnb-to-png program is empty!");
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "extract-xnb", "xnb-to-png program is empty!");
         return false;
     }
 
@@ -236,20 +324,20 @@ bool ImageMergePipeline::extract(const QString &xnb_file, const QString &destina
     process.waitForStarted(-1);
     if(process.state() != QProcess::Running)
     {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge-extract", "Failed to start process!");
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "extract-xnb", "Failed to start process!");
         return false;
     }
     process.waitForFinished(-1);
 
     QString output(process.readAllStandardOutput());
-    getLogger().log(Logger::Info, "pipeline-merge-image", id(), "merge-extract", output);  
+    getLogger().log(Logger::Info, "pipeline-merge-image", id(), "extract-xnb", output);
 
     return true;
 }
 
 bool ImageMergePipeline::pack(const QString &png_file, const QString &xnb_file)
 {
-    getLogger().log(Logger::Info, "pipeline", id(), "install", "Packing " + png_file + " into " + xnb_file);
+    getLogger().log(Logger::Info, "pipeline", id(), "pack-xnb", "Packing " + png_file + " into " + xnb_file);
 
     QProcess process;
 
@@ -257,7 +345,7 @@ bool ImageMergePipeline::pack(const QString &png_file, const QString &xnb_file)
 
     if(png_to_xnb_program.isEmpty())
     {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge-pack", "png-to-xnb program is empty!");
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "pack-xnb", "png-to-xnb program is empty!");
         return false;
     }
 
@@ -273,13 +361,13 @@ bool ImageMergePipeline::pack(const QString &png_file, const QString &xnb_file)
     process.waitForStarted(-1);
     if(process.state() != QProcess::Running)
     {
-        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "merge-pack", "Failed to start process!");
+        getLogger().log(Logger::Error, "pipeline-merge-image", id(), "pack-xnb", "Failed to start process!");
         return false;
     }
     process.waitForFinished(-1);
 
     QString output(process.readAllStandardOutput());
-    getLogger().log(Logger::Info, "pipeline-merge-image", id(), "merge-pack", output);
+    getLogger().log(Logger::Info, "pipeline-merge-image", id(), "pack-xnb", output);
 
     return true;
 }

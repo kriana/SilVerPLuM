@@ -17,7 +17,7 @@ public:
 
     static CustomPipeline *loadFromJson(Modification * mod, const QString & id, const QJsonObject & json);
 
-    int prime(bool is_forced);
+    bool prime(bool is_forced);
 
     void setScript(Platform::Type platform, const LauncherExecutable & executable);
 

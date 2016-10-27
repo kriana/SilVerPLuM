@@ -18,6 +18,20 @@ Game::Game()
     connect(m_backupTimer, SIGNAL(timeout()), this, SLOT(issueFullBackup()));
 }
 
+QDir Game::getCacheDir() const
+{
+    return m_cacheDir.path();
+}
+
+QString Game::getCachePathFor(const QString & component, const QString &modurl)
+{
+    if(modurl.isEmpty())
+        return "";
+
+    QDir base = getCacheDir().filePath(component);
+    return base.absoluteFilePath(QString(modurl).replace(":/", ""));
+}
+
 QSet<QString> Game::getUnoverrideableGameFiles() const
 {
     return QSet<QString>(m_GameFiles);
@@ -209,6 +223,21 @@ void Game::prepareInstallMods()
 
 void Game::prepare()
 {
+    getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Creating cache directory");
+    QDir(m_cacheDir.path()).removeRecursively();
+    QDir(m_cacheDir.path()).mkpath(".");
+
+    if(!m_cacheDir.isValid())
+    {
+        getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Cache directory is in " + getCacheDir().absolutePath());
+    }
+    else
+    {
+        getLogger().log(Logger::Error, "launcher", "prepare", "prepare", "Could not create cache dir in " + getCacheDir().absolutePath() );
+    }
+
+    getCacheDir().mkpath(".");
+
     getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Starting to prepare game and user files");
 
     QDir sdvsavegames = m_Launcher->getProfile()->StardewValleySavegameDir();

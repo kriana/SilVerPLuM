@@ -42,7 +42,7 @@ public:
 
 protected:
 
-    int prime(bool is_forced);
+    bool prime(bool is_forced);
 
     bool alreadyPrimed();
 

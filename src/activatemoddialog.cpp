@@ -89,9 +89,9 @@ void ActivateModDialog::setIsWorking(bool isWorking)
 void ActivateModDialog::finishedWorking()
 {
     setIsWorking(false);
-    int result = m_watcher.result();
+    bool success = m_watcher.result();
 
-    if(result == 0)
+    if(success)
     {        
         Pipeline * pip = m_pipelinesToActivate.takeLast();
         pip->setEnabled(true, false);
@@ -173,7 +173,7 @@ void ActivateModDialog::runWorkload()
     qRegisterMetaType<Logger::Entry>("Entry");
     connect(&pip->getLogger(), &Logger::logged, this, &ActivateModDialog::gotLog, static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
 
-    QFuture<int> workload = QtConcurrent::run([&]() {
+    QFuture<bool> workload = QtConcurrent::run([&]() {
         return m_pipelinesToActivate.last()->primePipeline(m_reinitialize);
      });
 
