@@ -59,6 +59,8 @@ private slots:
 
     void profilesInitialized();
 
+    void rebuildPlayMenu();
+
 protected:
 
     void closeEvent(QCloseEvent * event);

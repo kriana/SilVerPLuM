@@ -111,30 +111,7 @@ void MainWindow::profileSelected(Profile *p)
 {
     ui->cmbProfile->setCurrentIndex(ProfileManager::instance()->getProfiles().indexOf(p));
 
-    // Populate menu
-
-    if(ui->btnPlay->menu() != nullptr)
-    {
-        delete ui->btnPlay->menu();
-        ui->btnPlay->setMenu(nullptr);
-    }
-
-    QMenu * play_menu = new QMenu(ui->btnPlay);
-    bool populated = false;
-
-    for(Launcher * l : ProfileManager::instance()->getSelectedProfile()->getLaunchers())
-    {
-        QAction * action = play_menu->addAction(l->name());
-        action->setProperty("launcher-type", "launcher");
-        action->setProperty("launcher-id", l->id());
-
-        populated = true;
-
-        connect(action, &QAction::triggered, this, &MainWindow::playSubActionTriggered);
-    }
-
-    ui->btnPlay->setMenu(populated ? play_menu : nullptr);
-    ui->btnPlay->setPopupMode(populated ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup);
+    rebuildPlayMenu();
 
     // Set matching views
     ui->configProfileConfig->setCurrentProfile(p);
@@ -144,6 +121,7 @@ void MainWindow::profileSelected(Profile *p)
     updateLauncherInfo();
 
     connect(p, &Profile::updated, this, &MainWindow::updateLauncherInfo, Qt::UniqueConnection);
+    connect(p, &Profile::updatedMods, this, &MainWindow::rebuildPlayMenu);
 }
 
 void MainWindow::profilesUpdated()
@@ -260,6 +238,34 @@ void MainWindow::profilesInitialized()
     connect(ui->cmbProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(cmbSelectedProfile(int)));
 
     setEnabled(true);
+}
+
+void MainWindow::rebuildPlayMenu()
+{
+    // Populate menu
+
+    if(ui->btnPlay->menu() != nullptr)
+    {
+        delete ui->btnPlay->menu();
+        ui->btnPlay->setMenu(nullptr);
+    }
+
+    QMenu * play_menu = new QMenu(ui->btnPlay);
+    bool populated = false;
+
+    for(Launcher * l : ProfileManager::instance()->getSelectedProfile()->getLaunchers())
+    {
+        QAction * action = play_menu->addAction(l->name());
+        action->setProperty("launcher-type", "launcher");
+        action->setProperty("launcher-id", l->id());
+
+        populated = true;
+
+        connect(action, &QAction::triggered, this, &MainWindow::playSubActionTriggered);
+    }
+
+    ui->btnPlay->setMenu(populated ? play_menu : nullptr);
+    ui->btnPlay->setPopupMode(populated ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
