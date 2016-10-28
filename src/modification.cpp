@@ -414,22 +414,19 @@ void Modification::addPipeline(const QString &id, Pipeline *p)
     });
 }
 
-int Modification::enableDefaults()
+bool Modification::enableDefaults()
 {
-    int err = 0;
+    bool success = true;
 
     for(Pipeline * pip : m_Pipelines)
     {
         if(pip->isdefault() &&(GlobalSettings::instance()->getForceUnsupported() || !pip->unsupported()))
         {
-           int e = pip->setEnabled(true);
-
-           if(e != 0)
-               err = e;
+           success &= pip->setEnabled(true);
         }
     }
 
-    return err;
+    return success;
 }
 
 QList<Pipeline *> Modification::getSupportedDefaultPipelines()

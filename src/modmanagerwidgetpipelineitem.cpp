@@ -7,6 +7,7 @@
 #include <QScrollBar>
 #include "utils.h"
 #include "logviewer.h"
+#include "activatemoddialog.h"
 
 ModManagerWidgetPipelineItem::ModManagerWidgetPipelineItem(QWidget *parent) :
     QWidget(parent),
@@ -124,10 +125,7 @@ void ModManagerWidgetPipelineItem::enableClicked()
 {
     if(m_currentPipeline != nullptr)
     {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        QApplication::processEvents();
-
-        int err = m_currentPipeline->setEnabled(true);
+        /*int err = m_currentPipeline->setEnabled(true);
 
         QApplication::restoreOverrideCursor();
 
@@ -160,7 +158,10 @@ void ModManagerWidgetPipelineItem::enableClicked()
             {
                 LogViewer::execForProfile(m_currentPipeline->mod()->getModManager()->profile());
             }
-        }
+        }*/
+
+        ActivateModDialog dlg;
+        dlg.activatePipeline(m_currentPipeline);
     }
 }
 

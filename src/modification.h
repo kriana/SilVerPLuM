@@ -133,7 +133,7 @@ public:
      * @brief Enable the default mods
      * @return exitcode
      */
-    int enableDefaults();
+    bool enableDefaults();
 
     /**
      * @brief Returns count of supported default mods

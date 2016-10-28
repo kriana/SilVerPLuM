@@ -85,7 +85,7 @@ Modification *ModManager::getModification(const QString &id)
     return nullptr;
 }
 
-int ModManager::setEnabled(Pipeline *pip, bool enabled, bool prime)
+bool ModManager::setEnabled(Pipeline *pip, bool enabled, bool prime)
 {
     // If not supported by platform, skip mod
     if(enabled && pip->unsupported() && !GlobalSettings::instance()->getForceUnsupported())
@@ -93,16 +93,16 @@ int ModManager::setEnabled(Pipeline *pip, bool enabled, bool prime)
 
     m_config->setValue(pip->mod()->id() + "/content/" + pip->id(), enabled);
 
-    int err = 0;
+    bool success = true;
 
     if(enabled && prime)
     {
-        err = pip->primePipeline(false);
+        success &= pip->primePipeline(false);
     }
 
     emit updatedModStatus(pip->mod()->id(), pip->id(), enabled);
 
-    return err;
+    return success;
 }
 
 bool ModManager::isEnabled(Pipeline *pip)
