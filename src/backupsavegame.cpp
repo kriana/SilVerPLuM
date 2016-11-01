@@ -281,7 +281,7 @@ bool BackupSavegame::backupUseful()
     {
         for(Savegame * sav : m_BackupSavegames)
         {
-            if(sav->contentEquals(sav))
+            if(m_mainSavegame->contentEquals(sav))
             {
                 return false;
             }

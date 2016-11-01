@@ -48,6 +48,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // UI beautify
     ui->scrollArea->setStyleSheet("QScrollArea { background: transparent; }");
     ui->scrollArea->viewport()->setStyleSheet(".QWidget { background: transparent; }");
+
+    // Message widget
+    ui->profileConfigWarningMessage->setText(tr("There seem to be problems with your current profile configuration. Click on the following button to check them."));
+    ui->profileConfigWarningMessage->getActionButton()->setVisible(true);
+    ui->profileConfigWarningMessage->getActionButton()->setText("Configuration");
+    connect(ui->profileConfigWarningMessage->getActionButton(), &QPushButton::clicked, this, [&]() {
+       ui->mainTabWidget->setCurrentWidget(ui->tabConfigure);
+    });
 }
 
 MainWindow::~MainWindow()
@@ -119,8 +127,10 @@ void MainWindow::profileSelected(Profile *p)
     ui->savegameManager->setSavegameManager(p->getSavegameManager());
 
     updateLauncherInfo();
+    checkProfileConfig();
 
     connect(p, &Profile::updated, this, &MainWindow::updateLauncherInfo, Qt::UniqueConnection);
+    connect(p, &Profile::updated, this, &MainWindow::checkProfileConfig, Qt::UniqueConnection);
     connect(p, &Profile::updatedMods, this, &MainWindow::rebuildPlayMenu);
 }
 
@@ -266,6 +276,20 @@ void MainWindow::rebuildPlayMenu()
 
     ui->btnPlay->setMenu(populated ? play_menu : nullptr);
     ui->btnPlay->setPopupMode(populated ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup);
+}
+
+void MainWindow::checkProfileConfig()
+{
+    Profile * p = ProfileManager::instance()->getSelectedProfile();
+
+    if(p->StardewValleyDir().exists() && p->StardewValleyContentDir().exists() && p->StardewValleySavegameDir().exists() && p->StardewValleyUserDataDir().exists())
+    {
+        ui->profileConfigWarningMessage->hide();
+    }
+    else
+    {
+        ui->profileConfigWarningMessage->show();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

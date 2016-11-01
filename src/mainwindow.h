@@ -61,6 +61,8 @@ private slots:
 
     void rebuildPlayMenu();
 
+    void checkProfileConfig();
+
 protected:
 
     void closeEvent(QCloseEvent * event);

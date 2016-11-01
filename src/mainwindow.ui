@@ -21,8 +21,11 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="MessageWidget" name="profileConfigWarningMessage" native="true"/>
+    </item>
+    <item>
      <widget class="QTabWidget" name="mainTabWidget">
       <property name="tabPosition">
        <enum>QTabWidget::South</enum>
@@ -88,7 +91,8 @@
                     <string>Profile log</string>
                    </property>
                    <property name="icon">
-                    <iconset theme="view-history"/>
+                    <iconset theme="view-history">
+                     <normaloff>.</normaloff>.</iconset>
                    </property>
                    <property name="popupMode">
                     <enum>QToolButton::MenuButtonPopup</enum>
@@ -143,7 +147,7 @@
                     <x>0</x>
                     <y>0</y>
                     <width>624</width>
-                    <height>195</height>
+                    <height>179</height>
                    </rect>
                   </property>
                   <property name="autoFillBackground">
@@ -488,6 +492,12 @@
    <class>SavegameManagerWidget</class>
    <extends>QWidget</extends>
    <header>savegamemanagerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MessageWidget</class>
+   <extends>QWidget</extends>
+   <header>messagewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
