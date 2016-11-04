@@ -168,6 +168,44 @@ bool ModManager::priotizeDown(Modification *mod)
     return false;
 }
 
+bool ModManager::swap(Modification *mod1, Modification *mod2)
+{
+    if(mod1 == mod2)
+        return true;
+
+    int index1 = m_mods.indexOf(mod1);
+    int index2 = m_mods.indexOf(mod2);
+
+    m_mods[index1] = mod2;
+    m_mods[index2] = mod1;
+
+    writePriorities();
+
+    emit updatedModList();
+
+    return true;
+}
+
+bool ModManager::priotizeTo(Modification *mod, int index)
+{
+    int currentidx = m_mods.indexOf(mod);
+
+    if(currentidx == index)
+        return true;
+
+    if(currentidx < index)
+        --index;
+
+    m_mods.removeAll(mod);
+    m_mods.insert(index, mod);
+
+    writePriorities();
+
+    emit updatedModList();
+
+    return true;
+}
+
 DependencyTree *ModManager::getDependencyTree() const
 {
     return m_dependencyTree;

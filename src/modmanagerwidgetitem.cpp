@@ -355,6 +355,39 @@ void ModManagerWidgetItem::openDirectoryClicked()
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentModification->modBasePath().absolutePath()));
 }
 
+void ModManagerWidgetItem::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        m_dragStartPosition = event->pos();
+    }
+}
+
+void ModManagerWidgetItem::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!(event->buttons() & Qt::LeftButton))
+            return;
+        if ((event->pos() - m_dragStartPosition).manhattanLength()
+             < QApplication::startDragDistance())
+            return;
+
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData();
+
+    mimeData->setText(m_currentModification->id() + "://");
+
+    drag->setMimeData(mimeData);
+
+    setDisabled(true);
+    Qt::DropAction dropAction = drag->exec(Qt::MoveAction);
+    setDisabled(false);
+}
+
+Modification *ModManagerWidgetItem::currentModification() const
+{
+    return m_currentModification;
+}
+
 void ModManagerWidgetItem::updateData()
 {
     Modification * mod = m_currentModification;

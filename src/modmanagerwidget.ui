@@ -157,7 +157,7 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="modList">
+     <widget class="ModManagerEntryList" name="modList">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -166,21 +166,6 @@
         <height>350</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>289</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
      </widget>
     </widget>
    </item>
@@ -221,7 +206,8 @@
   </action>
   <action name="actionAddDefaultMods">
    <property name="icon">
-    <iconset theme="list-add"/>
+    <iconset theme="list-add">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Add default mods</string>
@@ -248,6 +234,12 @@
    <class>CategoryComboBox</class>
    <extends>QComboBox</extends>
    <header>categorycombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ModManagerEntryList</class>
+   <extends>QWidget</extends>
+   <header>modmanagerentrylist.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

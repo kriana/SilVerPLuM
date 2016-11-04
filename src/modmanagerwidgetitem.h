@@ -22,6 +22,8 @@ public:
 
     void searchFilter(const QString & searchstring, const QString & category);
 
+    Modification *currentModification() const;
+
 private slots:
 
     void showMoreToggled(bool toggle);
@@ -46,10 +48,18 @@ private slots:
 
     void openDirectoryClicked();
 
+protected:
+
+    void mousePressEvent(QMouseEvent * event);
+
+    void mouseMoveEvent(QMouseEvent * event);
+
 private:
     Ui::ModManagerWidgetItem *ui;
 
     Modification * m_currentModification = nullptr;
+
+    QPoint m_dragStartPosition;
 
     void updateData();
 };

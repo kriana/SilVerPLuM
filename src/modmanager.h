@@ -98,6 +98,22 @@ public:
     bool priotizeDown(Modification * mod);      
 
     /**
+     * @brief Swaps priority of two mods
+     * @param mod1
+     * @param mod2
+     * @return
+     */
+    bool swap(Modification * mod1, Modification * mod2);
+
+    /**
+     * @brief Priotizes modification to index
+     * @param mod
+     * @param index
+     * @return
+     */
+    bool priotizeTo(Modification * mod, int index);
+
+    /**
      * @brief Creates an unique mod-id from the ID
      * @param id
      * @return

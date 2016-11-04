@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     }
 
     QApplication::setApplicationName("SilVerPLuM");
-    QApplication::setApplicationVersion("1.3.1.2");
+    QApplication::setApplicationVersion("1.3.2.0");
 
     MainWindow w;
     w.show();

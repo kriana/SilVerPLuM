@@ -31,6 +31,8 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     add_menu->addAction(ui->actionImportMod);
     add_menu->addAction(ui->actionAddDefaultMods);
     ui->btnInstallMod->setMenu(add_menu);
+
+    setAcceptDrops(true);
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -52,6 +54,7 @@ void ModManagerWidget::setModManager(ModManager *currentMM)
     }
 
     m_currentMM = currentMM;
+    ui->modList->setModManager(currentMM);
 
     if(m_currentMM != nullptr)
     {
@@ -71,22 +74,7 @@ void ModManagerWidget::refreshList()
     int scrollh =ui->scrollArea->horizontalScrollBar()->value();
     int scrollv = ui->scrollArea->verticalScrollBar()->value();
 
-    utils::clearLayout(ui->modList->layout());
-
-
-    QVBoxLayout * layout = dynamic_cast<QVBoxLayout*>(ui->modList->layout());
-
-    if(m_currentMM != nullptr)
-    {
-        for(Modification * mod : m_currentMM->getModifications())
-        {
-            ModManagerWidgetItem * item = new ModManagerWidgetItem(ui->modList);
-            item->setCurrentModification(mod);
-            layout->addWidget(item);
-        }
-    }
-
-    layout->addStretch(1);
+    ui->modList->refreshList();
 
 
     triggerSearchFilter();
@@ -160,29 +148,7 @@ void ModManagerWidget::repositoryClicked()
 
 void ModManagerWidget::triggerSearchFilter()
 {
-    searchFilter(ui->searchBar->text(), ui->categoryFilter->currentCategory());
-}
-
-void ModManagerWidget::searchFilter(const QString &searchstring_, const QString & _filter)
-{
-    QString searchstring = searchstring_.trimmed();
-
-    QLayout * layout = ui->modList->layout();
-
-    for(int i = 0; i < layout->count(); ++i)
-    {
-        QLayoutItem * item = layout->itemAt(i);
-
-        if(item->widget() != nullptr)
-        {
-            ModManagerWidgetItem * mitem = dynamic_cast<ModManagerWidgetItem*>(item->widget());
-
-            if(mitem != nullptr)
-            {
-                mitem->searchFilter(searchstring, _filter);
-            }
-        }
-    }
+    ui->modList->searchFilter(ui->searchBar->text(), ui->categoryFilter->currentCategory());
 }
 
 void ModManagerWidget::addDefaultModsClicked()

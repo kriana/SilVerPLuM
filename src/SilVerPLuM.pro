@@ -82,7 +82,8 @@ SOURCES += main.cpp\
     dependencytree.cpp \
     modrepositorysource.cpp \
     imagemergepipeline.cpp \
-    developerlauncherdialog.cpp
+    developerlauncherdialog.cpp \
+    modmanagerentrylist.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -153,7 +154,8 @@ HEADERS  += mainwindow.h \
     dependencytree.h \
     modrepositorysource.h \
     imagemergepipeline.h \
-    developerlauncherdialog.h
+    developerlauncherdialog.h \
+    modmanagerentrylist.h
 
 
 FORMS    += mainwindow.ui \
