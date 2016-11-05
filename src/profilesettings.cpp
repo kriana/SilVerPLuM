@@ -2,6 +2,7 @@
 #include "ui_profilesettings.h"
 #include "profilemanager.h"
 #include "utils.h"
+#include "game.h"
 
 ProfileSettings::ProfileSettings(QWidget *parent) :
     QWidget(parent),
@@ -39,6 +40,9 @@ ProfileSettings::ProfileSettings(QWidget *parent) :
     {
         ui->sdvVersion->addItem(version);
     }
+
+    ui->gameRunningMessage->setText(tr("The settings are locked while the game is running"));
+    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
 }
 
 ProfileSettings::~ProfileSettings()
@@ -210,4 +214,10 @@ void ProfileSettings::autodetectSDV()
         ui->sdvTechMonoGame->setChecked(true);
         break;
     }
+}
+
+void ProfileSettings::gameRunning(bool running)
+{
+    setDisabled(running);
+    ui->gameRunningMessage->setVisible(running);
 }

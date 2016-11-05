@@ -7,6 +7,7 @@
 #include <QMenu>
 #include "modimporter.h"
 #include "modrepositorywindow.h"
+#include "game.h"
 
 ModManagerWidget::ModManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -33,6 +34,9 @@ ModManagerWidget::ModManagerWidget(QWidget *parent) :
     ui->btnInstallMod->setMenu(add_menu);
 
     setAcceptDrops(true);
+
+    ui->gameRunningMessage->setText(tr("The mod manager is locked while the game is running"));
+    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
 }
 
 ModManagerWidget::~ModManagerWidget()
@@ -149,6 +153,12 @@ void ModManagerWidget::repositoryClicked()
 void ModManagerWidget::triggerSearchFilter()
 {
     ui->modList->searchFilter(ui->searchBar->text(), ui->categoryFilter->currentCategory());
+}
+
+void ModManagerWidget::gameRunning(bool running)
+{
+    setDisabled(running);
+    ui->gameRunningMessage->setVisible(running);
 }
 
 void ModManagerWidget::addDefaultModsClicked()

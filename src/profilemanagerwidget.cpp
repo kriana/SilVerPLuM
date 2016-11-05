@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QFileDialog>
+#include "game.h"
 
 ProfileManagerWidget::ProfileManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +27,8 @@ ProfileManagerWidget::ProfileManagerWidget(QWidget *parent) :
     ui->profileAdd->setMenu(menu);
 
     profilesUpdated();
+
+    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
 }
 
 ProfileManagerWidget::~ProfileManagerWidget()
@@ -189,4 +192,9 @@ void ProfileManagerWidget::importProfileClicked()
 
         QApplication::restoreOverrideCursor();
     }
+}
+
+void ProfileManagerWidget::gameRunning(bool running)
+{
+    setDisabled(running);
 }

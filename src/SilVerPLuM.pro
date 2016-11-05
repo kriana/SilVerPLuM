@@ -83,7 +83,8 @@ SOURCES += main.cpp\
     modrepositorysource.cpp \
     imagemergepipeline.cpp \
     developerlauncherdialog.cpp \
-    modmanagerentrylist.cpp
+    modmanagerentrylist.cpp \
+    modbuilderwindow.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -155,7 +156,8 @@ HEADERS  += mainwindow.h \
     modrepositorysource.h \
     imagemergepipeline.h \
     developerlauncherdialog.h \
-    modmanagerentrylist.h
+    modmanagerentrylist.h \
+    modbuilderwindow.h
 
 
 FORMS    += mainwindow.ui \
@@ -184,7 +186,8 @@ FORMS    += mainwindow.ui \
     modrepositoryentrywidget.ui \
     modrepositoryentrylist.ui \
     activatemoddialog.ui \
-    developerlauncherdialog.ui
+    developerlauncherdialog.ui \
+    modbuilderwindow.ui
 
 RESOURCES += \
     resources.qrc

@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "savegamemanagerwidgetitem.h"
 #include <QMenu>
+#include "game.h"
 
 SavegameManagerWidget::SavegameManagerWidget(QWidget *parent) :
     QWidget(parent),
@@ -17,6 +18,9 @@ SavegameManagerWidget::SavegameManagerWidget(QWidget *parent) :
     QMenu * refresh_menu = new QMenu(ui->btnRefresh);
     refresh_menu->addAction(ui->actionReloadSavegames);
     ui->btnRefresh->setMenu(refresh_menu);
+
+    ui->gameRunningMessage->setText(tr("The savegame manager is locked while the game is running"));
+    connect(Game::instance(), SIGNAL(running(bool)), this, SLOT(gameRunning(bool)));
 }
 
 SavegameManagerWidget::~SavegameManagerWidget()
@@ -111,4 +115,10 @@ void SavegameManagerWidget::importSavegame()
             }
         }
     }
+}
+
+void SavegameManagerWidget::gameRunning(bool running)
+{
+    setDisabled(running);
+    ui->gameRunningMessage->setVisible(running);
 }

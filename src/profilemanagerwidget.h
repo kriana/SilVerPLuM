@@ -34,6 +34,8 @@ private slots:
 
     void importProfileClicked();
 
+    void gameRunning(bool running);
+
 private:
     Ui::ProfileManagerWidget *ui;
 

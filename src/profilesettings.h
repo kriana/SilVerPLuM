@@ -29,6 +29,10 @@ public slots:
 
     void autodetectSDV();
 
+private slots:
+
+    void gameRunning(bool running);
+
 private:
     Ui::ProfileSettings *ui;
     Profile * m_CurrentProfile = nullptr;

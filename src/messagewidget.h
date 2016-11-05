@@ -14,6 +14,7 @@ class MessageWidget : public QWidget
     Q_OBJECT
 
 public:
+
     explicit MessageWidget(QWidget *parent = 0);
     ~MessageWidget();
 

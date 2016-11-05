@@ -31,11 +31,12 @@
    </property>
    <item row="0" column="0">
     <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+     <property name="styleSheet">
+      <string notr="true">QFrame {
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(52, 152, 219, 255), stop:1 rgba(41, 128, 185, 255));
+border: 1px solid rgb(77, 77, 77);
+border-radius: 3px;
+}</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -45,6 +46,10 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: none;
+color: #fcfcfc</string>
         </property>
         <property name="text">
          <string>TextLabel</string>

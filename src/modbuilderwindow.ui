@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ModBuilderWindow</class>
+ <widget class="QMainWindow" name="ModBuilderWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="ProfileManagerWidget" name="widget" native="true"/>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::South</enum>
+       </property>
+       <property name="currentIndex">
+        <number>3</number>
+       </property>
+       <widget class="QWidget" name="tabOverview">
+        <attribute name="title">
+         <string>Overview</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabMetaData">
+        <attribute name="title">
+         <string>Mod information</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabDependencies">
+        <attribute name="title">
+         <string>Mod dependencies</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabContent">
+        <attribute name="title">
+         <string>Mod content</string>
+        </attribute>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuModification">
+    <property name="title">
+     <string>&amp;Modification</string>
+    </property>
+    <addaction name="actionOpen_from_profile"/>
+    <addaction name="actionOpen_from_zip"/>
+    <addaction name="actionOpen_from_directory"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport_from_zip"/>
+    <addaction name="actionImport_from_directory"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionExport"/>
+    <addaction name="actionCopy_to_profile"/>
+   </widget>
+   <addaction name="menuModification"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen_from_profile">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
+   <property name="text">
+    <string>Open from profile</string>
+   </property>
+  </action>
+  <action name="actionOpen_from_zip">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
+   <property name="text">
+    <string>Open from *.zip</string>
+   </property>
+  </action>
+  <action name="actionOpen_from_directory">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
+   <property name="text">
+    <string>Open from directory</string>
+   </property>
+  </action>
+  <action name="actionImport_from_zip">
+   <property name="icon">
+    <iconset theme="document-import"/>
+   </property>
+   <property name="text">
+    <string>Import from *.zip</string>
+   </property>
+  </action>
+  <action name="actionImport_from_directory">
+   <property name="icon">
+    <iconset theme="document-import"/>
+   </property>
+   <property name="text">
+    <string>Import from directory</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset theme="document-save"/>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="icon">
+    <iconset theme="document-export"/>
+   </property>
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionCopy_to_profile">
+   <property name="icon">
+    <iconset theme="document-export"/>
+   </property>
+   <property name="text">
+    <string>Copy to profile</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProfileManagerWidget</class>
+   <extends>QWidget</extends>
+   <header>profilemanagerwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

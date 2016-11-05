@@ -18,6 +18,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
+    <widget class="MessageWidget" name="gameRunningMessage" native="true"/>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -32,7 +35,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-198</y>
+        <y>0</y>
         <width>538</width>
         <height>844</height>
        </rect>
@@ -506,6 +509,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>MessageWidget</class>
+   <extends>QWidget</extends>
+   <header>messagewidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>MarkdownTextEditor</class>
    <extends>QPlainTextEdit</extends>

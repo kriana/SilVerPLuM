@@ -44,6 +44,8 @@ private slots:
 
     void triggerSearchFilter();
 
+    void gameRunning(bool running);
+
 };
 
 #endif // MODMANAGERWIDGET_H

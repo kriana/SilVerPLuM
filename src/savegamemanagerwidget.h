@@ -36,6 +36,8 @@ private:
 private slots:
 
     void importSavegame();
+
+    void gameRunning(bool running);
 };
 
 #endif // SAVEGAMEMANAGERWIDGET_H

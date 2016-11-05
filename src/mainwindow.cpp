@@ -161,10 +161,10 @@ void MainWindow::updateLauncherInfo()
 
 void MainWindow::gameRunning(bool running)
 {
-    ui->tabConfigure->setEnabled(!running);
-    ui->tabMod->setEnabled(!running);
+    //ui->tabConfigure->setEnabled(!running);
+    //ui->tabMod->setEnabled(!running);
     ui->playLogClose->setEnabled(!running);
-    ui->tabManage->setEnabled(!running);
+    //ui->tabManage->setEnabled(!running);
 
     if(running)
     {
