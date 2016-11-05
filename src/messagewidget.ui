@@ -32,7 +32,7 @@
    <item row="0" column="0">
     <widget class="QFrame" name="frame">
      <property name="styleSheet">
-      <string notr="true">QFrame {
+      <string notr="true">QFrame#frame {
 background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(52, 152, 219, 255), stop:1 rgba(41, 128, 185, 255));
 border: 1px solid rgb(77, 77, 77);
 border-radius: 3px;
@@ -48,8 +48,7 @@ border-radius: 3px;
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">border: none;
-color: #fcfcfc</string>
+         <string notr="true">color: white</string>
         </property>
         <property name="text">
          <string>TextLabel</string>
