@@ -191,7 +191,7 @@ bool BackupSavegame::backup()
         QApplication::processEvents();
 
         destination.mkpath(".");
-        utils::copyDirectoryProgress(getMainSavegame()->directory(), destination, true);
+        utils::copyDirectory(getMainSavegame()->directory(), destination, true);
 
         QApplication::restoreOverrideCursor();
 

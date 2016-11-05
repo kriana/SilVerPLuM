@@ -163,7 +163,7 @@ bool ProfileManager::duplicateProfile(Profile *p, const QString &name)
         return false;
     }
 
-    utils::copyDirectoryProgress(p->profileBaseDir(), ProfilesDir().absoluteFilePath(id), true);
+    utils::copyDirectory(p->profileBaseDir(), ProfilesDir().absoluteFilePath(id), true);
     createOrLoadProfile(id, name);
 
     // Change the profile's name
