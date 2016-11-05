@@ -25,8 +25,6 @@ private:
 
     ModManager * m_currentMM = nullptr;
 
-    Modification * matchExactPosition(const QPoint & pos);
-
     int matchReorderPosition(const QPoint & pos);
 
 protected:

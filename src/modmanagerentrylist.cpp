@@ -63,23 +63,11 @@ void ModManagerEntryList::dropEvent(QDropEvent *event)
     Modification * mod = m_currentMM->getModification(modid);
 
     if(mod != nullptr)
-    {
-        //qDebug() << "Pos is" << event->pos().x() << event->pos().y();
+    {       
+        int index = matchReorderPosition(event->pos());
 
-        Modification * swap = matchExactPosition(event->pos());
-
-        if(swap != nullptr)
-        {
-            //qDebug() << "Swap with" << swap->id();
-            m_currentMM->swap(mod, swap);
-        }
-        else
-        {
-            int index = matchReorderPosition(event->pos());
-
-            //qDebug() << "Priotize to " << index;
-            m_currentMM->priotizeTo(mod, index);
-        }
+        //qDebug() << "Priotize to " << index;
+        m_currentMM->priotizeTo(mod, index);
     }
 }
 
@@ -105,29 +93,6 @@ void ModManagerEntryList::searchFilter(const QString &searchstring_, const QStri
     }
 }
 
-Modification *ModManagerEntryList::matchExactPosition(const QPoint &pos)
-{
-    QLayout * layout = this->layout();
-
-    for(int i = 0; i < layout->count(); ++i)
-    {
-        QLayoutItem * item = layout->itemAt(i);
-
-        if(item->widget() != nullptr)
-        {
-            ModManagerWidgetItem * mitem = dynamic_cast<ModManagerWidgetItem*>(item->widget());
-
-            if(mitem != nullptr)
-            {
-                if(pos.y() >= mitem->pos().y() && pos.y() < mitem->pos().y() + mitem->height())
-                    return mitem->currentModification();
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 int ModManagerEntryList::matchReorderPosition(const QPoint &pos)
 {
     QLayout * layout = this->layout();
@@ -143,8 +108,10 @@ int ModManagerEntryList::matchReorderPosition(const QPoint &pos)
 
             if(mitem != nullptr)
             {
-                if(mitem->pos().y() > pos.y()) //Reached an entry.
+                if(mitem->pos().y() + mitem->height() / 2 > pos.y()) //Reached an entry. Centroid of the entry decides if it's sorted before or after
+                {
                     return i;
+                }
             }
         }
     }
