@@ -150,7 +150,7 @@
     <widget class="MessageWidget" name="message" native="true"/>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="DragDropScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -242,6 +242,12 @@
    <class>ModManagerEntryList</class>
    <extends>QWidget</extends>
    <header>modmanagerentrylist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DragDropScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>dragdropscrollarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

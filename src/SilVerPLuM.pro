@@ -84,7 +84,8 @@ SOURCES += main.cpp\
     imagemergepipeline.cpp \
     developerlauncherdialog.cpp \
     modmanagerentrylist.cpp \
-    modbuilderwindow.cpp
+    modbuilderwindow.cpp \
+    dragdropscrollarea.cpp
 
 HEADERS  += mainwindow.h \
     fileselectoredit.h \
@@ -157,7 +158,8 @@ HEADERS  += mainwindow.h \
     imagemergepipeline.h \
     developerlauncherdialog.h \
     modmanagerentrylist.h \
-    modbuilderwindow.h
+    modbuilderwindow.h \
+    dragdropscrollarea.h
 
 
 FORMS    += mainwindow.ui \
