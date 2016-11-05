@@ -227,7 +227,7 @@ void Game::prepare()
     QDir(m_cacheDir.path()).removeRecursively();
     QDir(m_cacheDir.path()).mkpath(".");
 
-    if(!m_cacheDir.isValid())
+    if(m_cacheDir.isValid())
     {
         getLogger().log(Logger::Info, "launcher", "prepare", "prepare", "Cache directory is in " + getCacheDir().absolutePath());
     }
