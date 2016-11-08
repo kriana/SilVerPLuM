@@ -1,23 +1,7 @@
-![Logo](https://rumangerst.github.io/SilVerPLuM/docs/images/logo.png)
+**Development of this software ended.**
 
 |[Download](https://github.com/rumangerst/SilVerPLuM#installation)|[Wiki](https://github.com/rumangerst/SilVerPLuM/wiki)|[Tutorial: Steam overlay & achievements](https://github.com/rumangerst/SilVerPLuM/wiki/Tutorial:-Steam-overlay-and-achievements)|[Tutorial: Import mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Use-the-mod-importer)|[Tutorial: Create mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Create-a-mod)|
 |----|----|----|----|----|
-
-# SilVerPLuM
-**S** tardew **V** alley **P** rofiles, **L** auncher and **M** od-manager
-
-is a cross-platform tool to manage different Stardew Valley profiles with their own mods and savegames. It is written in C++/Qt and brings following features:
-
-## Profile manager
-You can have different profiles with their own savegames, mods and even Stardew Valley installations. For example you can keep old versions of Stardew Valley in a separate place to be still able to keep playing when an update is released.
-
-## Savegame manager
-Included is a simple savegame manager that can make backups of your savegames with a couple of clicks.
-
-## Mod manager
-The mod manager supports content replacer mods and DLL mods. It has dependency-checking, so you don't have to fear that you are missing a mod that is needed by another mod. A simple interface offers easy enabling/disabling of mods and optional content of mods with just one click.
-
-![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_play.png)
 
 ## All features
 
@@ -61,12 +45,6 @@ You may need to set the correct paths of some external programs in SilVerPLuM's 
 * Quazip5 (Arch: `quazip`, Debian: `libquazip5-1`)
 
 The updated Linux packages now provide the needed libraries if your distribution doesn't offer the needed ones. Just start `SilVerPLuM.sh` instead of `SilVerPLuM` to use them. Other users can delete the lib and plugin folder safely.
-
-**External programs**
-
-* Nuget CLI (Arch: `nuget`, Debian: `nuget` or download the Windows version)
-* Python3 (Arch: `python`, Debian: `python3`)
-* Mono (Arch: `mono`, Debian: `mono`)
 
 You may need to set the correct paths of some external programs in SilVerPLuM's application settings.
 
