@@ -1,5 +1,3 @@
-# Info: Unsupported. Don't expect new features or bugfixes without an issue tracker entry. Sorry, but I don't want you to think that there will be some major additions to the software; so I removed it from SDV forums and Nexusmods. 
-
 ![Logo](https://rumangerst.github.io/SilVerPLuM/docs/images/logo.png)
 
 |[Download](https://github.com/rumangerst/SilVerPLuM#installation)|[Wiki](https://github.com/rumangerst/SilVerPLuM/wiki)|[Tutorial: Steam overlay & achievements](https://github.com/rumangerst/SilVerPLuM/wiki/Tutorial:-Steam-overlay-and-achievements)|[Tutorial: Import mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Use-the-mod-importer)|[Tutorial: Create mods](https://github.com/rumangerst/SilVerPLuM/wiki/Modding-tutorial:-Create-a-mod)|
