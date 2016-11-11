@@ -140,48 +140,6 @@ This tab has a profile manager that allows you to create, duplicate and remove p
 
 ![Play tab](https://rumangerst.github.io/SilVerPLuM/docs/images/tab_manage.png)
 
-## Tips
-
-### Temporarily 'disable' a savegame
-1. Create a backup
-2. Delete only the current savegame (in the arrow menu)
-
-### See what's done by SilVerPLuM
-1. Click on the arrow next to 'Play'
-2. Select "Debug launcher"
-3. Visit your game director, etc. and look if everything is correct
-
-### Make a mod package
-1. Click on the 'Export profile to file' button next to the duplicate button
-2. Save your profile as \*.zip
-3. Share it online
-
-# Q.T.M.O - Questions that might occur
-
-## My savegame is broken!
-There's unfortunately no guarantee that everything works. There can be always bugs and some error maybe caused by some other program can lead to this. Always make backups.
-
-## My game won't load
-Should only happen if something crashed. Just verify your installation with Steam or re-install your game. You can also report this incident (plus the contents of 'Profile log') - maybe it's caused by a bug.
-
-## My mod won't load
-You can see the error in 'Profile log'. If it's not caused by you, report this incident.
-
-## Why not FAQ?
-No questions have been asked so far. They aren't 'frequently asked questions' (;
-
-## Wait ... where does the i, l, e, r, and u in SilVerPLuM came from?
-Actually the program's name should be SVPLM. I rotated the remaining letters until something usable came out. Even more loose variant of [making acronyms](http://www.phdcomics.com/comics.php?f=1100).
-
-## This program doesn't want to load my mods
-SilVerPLuM needs a certain structure of mod files. Modders unfortunately have to make mods specific for SilVerPLuM.
-
-## Why can't I download mods
-There *may* be a feature that can download mods, but this must be handled with care or it will go wrong. Already experienced it.
-
-## Why only \*.zip files?
-Because they are widely known and work everywhere. Also there's a nice library that handles this and integrates well.
-
 # Create mods for SilVerPLuM
 
 SilVerPLuM has its own mod format. You can find some more information in the [wiki](https://github.com/rumangerst/SilVerPLuM/wiki/Create-Mods).
